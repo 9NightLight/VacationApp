@@ -6,17 +6,23 @@ import React, {
   } from "react";
   import GlobalContext from "./GlobalContext";
   import dayjs, { Dayjs } from "dayjs";
+
+  export const ACTIONS = {
+    PUSH: "push",
+    UPDATE: "update",
+    DELETE: "delete",
+  }
   
-  function savedEventsReducer(state, { type, payload }) {
-    switch (type) {
-      case "push":
-        return [...state, payload];
-      case "update":
+  function savedEventsReducer(state, action) {
+    switch (action.type) {
+      case ACTIONS.PUSH:
+        return [...state, action.payload];
+      case ACTIONS.UPDATE:
         return state.map((evt) =>
-          evt.id === payload.id ? payload : evt
+          evt.id === action.payload.id ? action.payload : evt
         );
-      case "delete":
-        return state.filter((evt) => evt.id !== payload.id);
+      case ACTIONS.DELETE:
+        return state.filter((evt) => evt.id !== action.payload.id);
       default:
         throw new Error();
     }

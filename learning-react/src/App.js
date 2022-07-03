@@ -14,7 +14,7 @@ import EventBox from "./EventBox"
 
 function App() {
   const [currentMonth, setCurrentMonth] = useState(getMonth())
-  const { monthIndex, year } = useContext(GlobalContext)
+  const { monthIndex, year, savedEvents } = useContext(GlobalContext)
 
   useEffect(() => {
     setCurrentMonth(getMonth(year, monthIndex));
@@ -29,7 +29,13 @@ function App() {
           <CalendarHeader month={monthIndex}/>
           <DayNames />
           <Month month={currentMonth} />
-          <EventBox />
+          <div className='ml-2 w-192 h-full bg-red-500'>
+            {
+              savedEvents.map(event => {
+                return <EventBox key={event.id} event={event} />
+              })
+            }
+          </div>
         </div>
       </div>
     </React.Fragment>
