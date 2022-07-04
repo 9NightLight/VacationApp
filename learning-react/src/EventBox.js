@@ -2,7 +2,6 @@ import React from 'react'
 
 export default function EventBox({event}) {
 
-
   return (
     <>
       {event.startDate.slice(4, 15) == new Date().toString().slice(4, 15) ? 
