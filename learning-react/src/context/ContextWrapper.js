@@ -39,6 +39,8 @@ import React, {
     const [smallCalendarMonth, setSmallCalendarMonth] = useState(null);
     const [daySelected, setDaySelected] = useState(dayjs());
     const [showEventModal, setShowEventModal] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [labels, setLabels] = useState([]);
     const [savedEvents, dispatchCalEvent] = useReducer(
       savedEventsReducer,
       [],
