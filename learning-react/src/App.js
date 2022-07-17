@@ -32,13 +32,13 @@ function App() {
           <CalendarContext.Provider value={{currentCalendar, setCurrentCalendar}}>
             <Month month={currentCalendar} />
           </CalendarContext.Provider>
-          <div className='ml-2 w-192 h-full bg-red-500'>
+          {/* <div className='ml-2 w-192 h-full bg-red-500'>
             {
               savedEvents.map(event => {
                 return <EventBox key={event.id} event={event} />
               })
             }
-          </div>
+          </div> */}
         </div>
       </div>
     </React.Fragment>
