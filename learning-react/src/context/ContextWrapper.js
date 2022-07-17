@@ -12,6 +12,8 @@ import React, {
     UPDATE: "update",
     DELETE: "delete",
   }
+
+  
   
   function savedEventsReducer(state, action) {
     switch (action.type) {
@@ -32,10 +34,9 @@ import React, {
     const parsedEvents = storageEvents ? JSON.parse(storageEvents) : [];
     return parsedEvents;
   }
-  
   export default function ContextWrapper(props) {
     const [year, setYear] = useState(dayjs().year());
-    const [monthIndex, setMonthIndex] = useState(dayjs().month());
+    const [monthIndex, setMonthIndex] = useState(new Date().getMonth());
     const [smallCalendarMonth, setSmallCalendarMonth] = useState(null);
     const [daySelected, setDaySelected] = useState(dayjs());
     const [showEventModal, setShowEventModal] = useState(false);
@@ -46,7 +47,7 @@ import React, {
       [],
       initEvents
     );
-  
+      
     const filteredEvents = useMemo(() => {
       return savedEvents.filter((evt) =>
         labels

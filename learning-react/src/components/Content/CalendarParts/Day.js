@@ -2,36 +2,30 @@ import React from "react";
 import dayjs from "dayjs";
 import GlobalContext from "../../../context/GlobalContext";
 import VacationWindow from "../VacationWindow";
-import TransitionComponent from "../../TransitionComponent";
-import { render } from "@testing-library/react";
+import { CalendarContext } from "../../../App";
 
 
 export default function Day({day, rowIdx}) {
     const { monthIndex, savedEvents } = React.useContext(GlobalContext);
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(false);
-
-    function getEventColor() {
-        savedEvents.map(e => {
-            return e.startDate.slice(4, 15) <= new Date(day).toString().slice(4, 15) && e.endDate.slice(4, 15) >= new Date(day).toString().slice(4, 15) ? e.color.to : ""
-        })
-    }
+    const {currentCalendar} = React.useContext(CalendarContext);
 
     function initFunc() {
         let counter = 0
         savedEvents.map(e => {
-            return e.startDate.slice(4, 15) <= new Date(day).toString().slice(4, 15) && e.endDate.slice(4, 15) >= new Date(day).toString().slice(4, 15) ? counter++ : counter
+            return new Date(e.startDate).getTime() <= new Date(day).getTime() && new Date(e.endDate).getTime() >= new Date(day).getTime() ? counter++ : counter        
         })
         return counter
     }
     
-    function dispatch(state, action) {}
+    const [TodayEvents, setTodayEvents] = React.useState(initFunc())
 
-    const [TodayEvents, setTodayEvents] = React.useReducer(dispatch, 0, initFunc)
-
-
+    React.useEffect(() => {
+        setTodayEvents(initFunc());
+    }, [currentCalendar])
 
     function GetLessDays() {
-        return (day.month() != monthIndex
+        return (day.month() !== monthIndex
         ? <div className="relative w-8 h-8 justify-center items-center flex box-content text-gray-500">{ day.format("D") }</div>
         : <div className="relative w-8 h-8 justify-center items-center flex box-content text-white">{ day.format("D") }</div>
         )
@@ -39,7 +33,7 @@ export default function Day({day, rowIdx}) {
 
     function GetCurrentDay() { 
         return(
-        day.format("DD-MM-YYYY") != dayjs().format("DD-MM-YYYY")
+        day.format("DD-MM-YYYY") !== dayjs().format("DD-MM-YYYY")
         ? GetLessDays()
         : <div className="relative w-8 h-8 justify-center items-center flex box-content rounded-full bg-green-apple text-black">{ day.format("D") }</div>
         ) 

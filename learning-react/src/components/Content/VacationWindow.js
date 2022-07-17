@@ -21,7 +21,7 @@ export default function VacationWindow({show, date, setShow}) {
     }
 
     function onSubmit(e) {
-        e.preventDefault()
+        // e.preventDefault() // When throw to server, data not displayed imidiatelly, so I put auto refresh
         const col = GetColor();
         dispatchCalEvent({type: ACTIONS.PUSH, payload: {type: Type, description: Description, startDate: Dates[0].toString(), endDate: Dates[1].toString(), id: new Date(), color: {col} }})
         setShowVacationWindow(false)

@@ -11,13 +11,14 @@ import EventBox from "./EventBox"
 //Clean console
   console.clear()
 //
+export const CalendarContext = React.createContext();
 
 function App() {
-  const [currentMonth, setCurrentMonth] = useState(getMonth())
   const { monthIndex, year, savedEvents } = useContext(GlobalContext)
+  const [currentCalendar, setCurrentCalendar] = useState(getMonth(year, new Date().getMonth()))
 
   useEffect(() => {
-    setCurrentMonth(getMonth(year, monthIndex));
+    setCurrentCalendar(getMonth(year, monthIndex));
   }, [monthIndex]);
 
   return (
@@ -28,7 +29,9 @@ function App() {
         <div className="flex flex-1 flex-col">
           <CalendarHeader month={monthIndex}/>
           <DayNames />
-          <Month month={currentMonth} />
+          <CalendarContext.Provider value={{currentCalendar, setCurrentCalendar}}>
+            <Month month={currentCalendar} />
+          </CalendarContext.Provider>
           <div className='ml-2 w-192 h-full bg-red-500'>
             {
               savedEvents.map(event => {

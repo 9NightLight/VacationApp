@@ -12,25 +12,26 @@ export default function CalendarHeader({month}) {
     if(monthIndex === 0)
     { 
       setMonthIndex(11);
-      setYear(year-1);
+      setYear(year => year - 1);
     } 
     else
     {
-      setMonthIndex(monthIndex - 1)
+      setMonthIndex(e => e - 1)
     }
   }
 
   function handleNextMonth() {
-    if(monthIndex === 11)
+    if(monthIndex == 11)
     { 
       setMonthIndex(0);
-      setYear(year+1);
+      setYear(year => year + 1);
     } 
     else
     {
-      setMonthIndex(monthIndex + 1)
+      setMonthIndex(m => m + 1);    
     };
   }
+  React.useEffect(()=> console.log(monthIndex, year), [monthIndex])
 
   function handleReset() {
     setMonthIndex(
