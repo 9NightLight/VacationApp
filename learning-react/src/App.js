@@ -6,7 +6,10 @@ import CalendarHeader from "./components/Content/CalendarParts/CalendarHeader";
 import Month from "./components/Content/Month";
 import DayNames from "./components/Content/CalendarParts/DayNames";
 import GlobalContext from "./context/GlobalContext";
-import EventBox from "./EventBox"
+import SignIn from "./components/SignIn";
+import { auth } from './firebase.js';
+// import { BrowserRouter as Router, Routes, Route, useNavigate} from 'react-router-dom';
+
 
 //Clean console
   console.clear()
@@ -22,7 +25,8 @@ function App() {
   }, [monthIndex]);
 
   return (
-    <React.Fragment>
+    <div>
+      <SignIn />
       <TopNavBar />
       <div className="h-max--48 flex flex-1">
         <GlobalSideBar />
@@ -32,16 +36,9 @@ function App() {
           <CalendarContext.Provider value={{currentCalendar, setCurrentCalendar}}>
             <Month month={currentCalendar} />
           </CalendarContext.Provider>
-          {/* <div className='ml-2 w-192 h-full bg-red-500'>
-            {
-              savedEvents.map(event => {
-                return <EventBox key={event.id} event={event} />
-              })
-            }
-          </div> */}
         </div>
       </div>
-    </React.Fragment>
+    </div>
   );
 }
 

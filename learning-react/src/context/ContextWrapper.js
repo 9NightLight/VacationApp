@@ -5,7 +5,7 @@ import React, {
     useMemo,
   } from "react";
   import GlobalContext from "./GlobalContext";
-  import dayjs, { Dayjs } from "dayjs";
+  import dayjs from "dayjs"; // , { Dayjs }
 
   export const ACTIONS = {
     PUSH: "push",

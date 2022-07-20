@@ -1,5 +1,4 @@
 import React from "react";
-import { useTransition, animated } from 'react-spring';
 import Header from "../VacationWindowComponents/Header";
 import Submit from "../VacationWindowComponents/Submit";
 import TypeVacation from "../VacationWindowComponents/TypeVacation";
