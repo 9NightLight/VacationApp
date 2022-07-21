@@ -31,7 +31,6 @@ export default function CalendarHeader({month}) {
       setMonthIndex(m => m + 1);    
     };
   }
-  React.useEffect(()=> console.log(monthIndex, year), [monthIndex])
 
   function handleReset() {
     setMonthIndex(

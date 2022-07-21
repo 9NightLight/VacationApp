@@ -34,7 +34,6 @@ function TopNavBar() {
                     }
                     else if (user.uid === _user.uuid) {
                         setUserName(_user.name)
-                        
                     }
                 });
             });

@@ -7,7 +7,7 @@ export default function SignIn() {
     const NameRef = React.useRef();
     const EmailRef = React.useRef();
     const PasswordRef = React.useRef();
-    const [show, setShow] = React.useState(true);
+    const [show, setShow] = React.useState(false);
     const [showRegister, setShowRegister] = React.useState(false);
 
     React.useEffect(() => {
@@ -39,7 +39,6 @@ export default function SignIn() {
                 uuid: uuid,
             })
         })
-        
     } 
 
     const handleCreate = (e) => {

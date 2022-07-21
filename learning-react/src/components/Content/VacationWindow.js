@@ -8,6 +8,9 @@ import TransitionComponent from "../TransitionComponent";
 import GlobalContext from "../../context/GlobalContext";
 import { ACTIONS } from "../../context/ContextWrapper";
 import { render } from "@testing-library/react";
+import { ref, set } from 'firebase/database';
+import { auth, db } from '../../firebase.js';
+import { uid } from 'uid';
 
 export default function VacationWindow({show, date, setShow}) {
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(show)
@@ -20,9 +23,24 @@ export default function VacationWindow({show, date, setShow}) {
     }
 
     function onSubmit(e) {
-        // e.preventDefault() // When throw to server, data not displayed imidiatelly, so I put auto refresh
+        // e.preventDefault();
         const col = GetColor();
         dispatchCalEvent({type: ACTIONS.PUSH, payload: {type: Type, description: Description, startDate: Dates[0].toString(), endDate: Dates[1].toString(), id: new Date(), color: {col} }})
+        // Writing event to server
+        auth.onAuthStateChanged(user => {
+            const uuid = user.uid;
+            const uidd = uid();
+            // console.log("I'm here!")
+            set(ref(db, `/events/${uidd}`), {
+                type: Type,
+                description: Description,
+                startDate: Dates[0].toString(),
+                endDate: Dates[1].toString(),
+                id: new Date(),
+                uuid: uuid,
+            })
+        })
+        ///
         setShowVacationWindow(false)
         render()
     }

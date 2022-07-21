@@ -7,7 +7,7 @@ import Month from "./components/Content/Month";
 import DayNames from "./components/Content/CalendarParts/DayNames";
 import GlobalContext from "./context/GlobalContext";
 import SignIn from "./components/SignIn";
-import { auth } from './firebase.js';
+// import { auth } from './firebase.js';
 // import { BrowserRouter as Router, Routes, Route, useNavigate} from 'react-router-dom';
 
 
@@ -17,7 +17,7 @@ import { auth } from './firebase.js';
 export const CalendarContext = React.createContext();
 
 function App() {
-  const { monthIndex, year, savedEvents } = useContext(GlobalContext)
+  const { monthIndex, year } = useContext(GlobalContext)
   const [currentCalendar, setCurrentCalendar] = useState(getMonth(year, new Date().getMonth()))
 
   useEffect(() => {
