@@ -6,6 +6,9 @@ import React, {
   } from "react";
   import GlobalContext from "./GlobalContext";
   import dayjs from "dayjs"; // , { Dayjs }
+  import { onValue, ref, set } from 'firebase/database';
+  import { auth } from '../firebase.js';
+  import { db } from '../firebase';
 
   export const ACTIONS = {
     PUSH: "push",
@@ -29,11 +32,36 @@ import React, {
         throw new Error();
     }
   }
-  function initEvents() {
-    const storageEvents = localStorage.getItem("savedEvents");
-    const parsedEvents = storageEvents ? JSON.parse(storageEvents) : [];
-    return parsedEvents;
+  
+  function initEvents() { // Here occurs taking events from server 
+    // const storageEvents = localStorage.getItem("savedEvents");
+    // const parsedEvents = storageEvents ? JSON.parse(storageEvents) : [];
+    // console.log(storageEvents, parsedEvents)
+    // return parsedEvents;
+    // Firebase read
+    auth.onAuthStateChanged((user) => {
+      let e = new Array();
+
+      if (user) {
+        onValue(ref(db, `/events`), (snapshot) => {
+          // setEvents(new Array());
+          const data = snapshot.val();
+          if (data !== null) {
+            Object.values(data).map((event) => {
+              e = [...e, event]
+                // setEvents((oldArray) => [...oldArray, event]);
+            });
+          }
+          // console.log(e)
+          return e;
+        });
+      } else if (!user) 
+      {
+        return [];
+      }
+    });
   }
+
   export default function ContextWrapper(props) {
     const [year, setYear] = useState(dayjs().year());
     const [monthIndex, setMonthIndex] = useState(new Date().getMonth());
@@ -42,57 +70,60 @@ import React, {
     const [showEventModal, setShowEventModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [labels, setLabels] = useState([]);
-    const [savedEvents, dispatchCalEvent] = useReducer(
+    const [_savedEvents, dispatchCalEvent] = useReducer(
       savedEventsReducer,
       [],
-      initEvents
+      // initEvents
     );
+    const [savedEvents, setSavedEvents] = React.useState(initEvents)
       
     const filteredEvents = useMemo(() => {
-      return savedEvents.filter((evt) =>
-        labels
-          .filter((lbl) => lbl.checked)
-          .map((lbl) => lbl.label)
-          .includes(evt.label)
-      );
+      let e = new Array()
+      return e
+      // return savedEvents.filter((evt) =>
+      //   labels
+      //     .filter((lbl) => lbl.checked)
+      //     .map((lbl) => lbl.label)
+      //     .includes(evt.label)
+      // );
     }, [savedEvents, labels]);
   
-    useEffect(() => {
-      localStorage.setItem("savedEvents", JSON.stringify(savedEvents));
-    }, [savedEvents]);
+    // useEffect(() => {
+    //   localStorage.setItem("savedEvents", JSON.stringify(savedEvents));
+    // }, [savedEvents]);
   
-    useEffect(() => {
-      setLabels((prevLabels) => {
-        return [...new Set(savedEvents.map((evt) => evt.label))].map(
-          (label) => {
-            const currentLabel = prevLabels.find(
-              (lbl) => lbl.label === label
-            );
-            return {
-              label,
-              checked: currentLabel ? currentLabel.checked : true,
-            };
-          }
-        );
-      });
-    }, [savedEvents]);
+    // useEffect(() => {
+    //   setLabels((prevLabels) => {
+    //     return [...new Set(savedEvents.map((evt) => evt.label))].map(
+    //       (label) => {
+    //         const currentLabel = prevLabels.find(
+    //           (lbl) => lbl.label === label
+    //         );
+    //         return {
+    //           label,
+    //           checked: currentLabel ? currentLabel.checked : true,
+    //         };
+    //       }
+    //     );
+    //   });
+    // }, [savedEvents]);
   
-    useEffect(() => {
-      if (smallCalendarMonth !== null) {
-        setMonthIndex(smallCalendarMonth);
-      }
-    }, [smallCalendarMonth]);
+    // useEffect(() => {
+    //   if (smallCalendarMonth !== null) {
+    //     setMonthIndex(smallCalendarMonth);
+    //   }
+    // }, [smallCalendarMonth]);
   
-    useEffect(() => {
-      if (!showEventModal) {
-        setSelectedEvent(null);
-      }
-    }, [showEventModal]);
+    // useEffect(() => {
+    //   if (!showEventModal) {
+    //     setSelectedEvent(null);
+    //   }
+    // }, [showEventModal]);
   
     function updateLabel(label) {
-      setLabels(
-        labels.map((lbl) => (lbl.label === label.label ? label : lbl))
-      );
+      // setLabels(
+      //   labels.map((lbl) => (lbl.label === label.label ? label : lbl))
+      // );
     }
   
     return (

@@ -6,8 +6,6 @@ import VacationDescription from "../VacationWindowComponents/VacationDescription
 import CalendarMini from "../VacationWindowComponents/CalendarMini";
 import TransitionComponent from "../TransitionComponent";
 import GlobalContext from "../../context/GlobalContext";
-import { ACTIONS } from "../../context/ContextWrapper";
-import { render } from "@testing-library/react";
 import { ref, set } from 'firebase/database';
 import { auth, db } from '../../firebase.js';
 import { uid } from 'uid';
@@ -15,18 +13,10 @@ import { uid } from 'uid';
 export default function VacationWindow({show, date, setShow}) {
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(show)
     const {savedEvents, dispatchCalEvent} = React.useContext(GlobalContext)
-    const [eventColors, setEventColors] = React.useState(new Array("bg-white", "bg-yellow-400", "bg-orange-400", "bg-blue-400"))
-
-
-    function GetColor() {
-        return eventColors[Math.floor(Math.random() * 4)]
-    }
 
     function onSubmit(e) {
+        // e.preventDefault(); // Here is problem, if on, creating multi displaying events, should work here
         // e.preventDefault();
-        const col = GetColor();
-        dispatchCalEvent({type: ACTIONS.PUSH, payload: {type: Type, description: Description, startDate: Dates[0].toString(), endDate: Dates[1].toString(), id: new Date(), color: {col} }})
-        // Writing event to server
         auth.onAuthStateChanged(user => {
             const uuid = user.uid;
             const uidd = uid();
@@ -42,7 +32,6 @@ export default function VacationWindow({show, date, setShow}) {
         })
         ///
         setShowVacationWindow(false)
-        render()
     }
     
     const [Type, SetType] = React.useState("Unpayed")

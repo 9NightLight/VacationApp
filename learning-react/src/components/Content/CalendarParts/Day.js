@@ -3,26 +3,47 @@ import dayjs from "dayjs";
 import GlobalContext from "../../../context/GlobalContext";
 import VacationWindow from "../VacationWindow";
 import { CalendarContext } from "../../../App";
-
+import { onValue, ref } from 'firebase/database';
+import { auth, db } from '../../../firebase.js';
 
 export default function Day({day, rowIdx}) {
-    const { monthIndex, savedEvents } = React.useContext(GlobalContext);
+    const { monthIndex } = React.useContext(GlobalContext); // savedEvents
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(false);
     const {currentCalendar} = React.useContext(CalendarContext);
-
-    function initFunc() {
-        let counter = 0
-        savedEvents.map(e => {
-            return new Date(e.startDate).getTime() <= new Date(day).getTime() && new Date(e.endDate).getTime() >= new Date(day).getTime() ? counter++ : counter        
-        })
-        return counter
-    }
-    
-    const [TodayEvents, setTodayEvents] = React.useState(initFunc())
+    const [savedEvents, setSavedEvents] = React.useState([])
 
     React.useEffect(() => {
-        setTodayEvents(initFunc());
-    }, [currentCalendar])
+        auth.onAuthStateChanged((user) => {
+            let e = new Array();
+    
+            if (user) {
+            onValue(ref(db, `/events`), (snapshot) => {
+                // setEvents(new Array());
+                const data = snapshot.val();
+                if (data !== null) {
+                Object.values(data).map((event) => {
+                    e = [...e, event]
+                    // setEvents((oldArray) => [...oldArray, event]);
+                });
+                }
+                // console.log(e)
+                setSavedEvents(e);
+            });
+            } else if (!user) 
+            {
+
+            }
+        });
+    }, [])
+    const [TodayEvents, setTodayEvents] = React.useState(0);
+
+    React.useEffect(()=> {
+        let i = 0;
+        savedEvents.map(e => {
+            return new Date(e.startDate).getTime() <= new Date(day).getTime() && new Date(e.endDate).getTime() >= new Date(day).getTime() ? ++i : i     
+        })
+        setTodayEvents(i)
+    }, [currentCalendar, savedEvents, ShowVacationWindow, monthIndex])
 
     function GetLessDays() {
         return (day.month() !== monthIndex
