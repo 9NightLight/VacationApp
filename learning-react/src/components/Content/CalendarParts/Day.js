@@ -2,7 +2,7 @@ import React from "react";
 import dayjs from "dayjs";
 import GlobalContext from "../../../context/GlobalContext";
 import VacationWindow from "../VacationWindow";
-import { CalendarContext } from "../../../App";
+import { CalendarContext } from "../../../Home";
 import { onValue, ref } from 'firebase/database';
 import { auth, db } from '../../../firebase.js';
 
