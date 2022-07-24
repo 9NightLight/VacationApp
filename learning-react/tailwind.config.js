@@ -10,6 +10,7 @@ module.exports = {
           "192": "calc(192px*4)",
           "192/7": "calc(192px*4/7)",
           "max--75": "calc(100vw - 75px)",
+          "34px": "34px",
         },
         height: {
           "192": "calc(192px*4)",
@@ -29,6 +30,12 @@ module.exports = {
         borderColor: {
           "grid-gray-180-17": "rgba(180, 180, 180, 0.17)",
         },
+        gridTemplateColumns: {
+          "35": "repeat(35, minmax(0, 1fr))",
+        },
+        spacing: {
+          "34px": "34px",
+        }
       },
     },
     plugins: [],

@@ -5,11 +5,16 @@ export function getMonth(year = dayjs().year(), month) {
   month = Math.floor(month);
   const firstDayOfTheMonth = dayjs(new Date(year, month, 1)).day();
   let currentMonthCount = 0 - firstDayOfTheMonth;
-  const daysMatrix = new Array(5).fill([]).map(() => {
-    return new Array(7).fill(null).map(() => {
+  // const daysMatrix = new Array(5).fill([]).map(() => {
+  //   return new Array(7).fill(null).map(() => {
+  //     currentMonthCount++;
+  //     return dayjs(new Date(year, month, currentMonthCount));
+  //   });
+  // });
+  const daysMatrix = new Array(35).fill([]).map(() => {
       currentMonthCount++;
       return dayjs(new Date(year, month, currentMonthCount));
-    });
+
   });
   return daysMatrix;
 }
