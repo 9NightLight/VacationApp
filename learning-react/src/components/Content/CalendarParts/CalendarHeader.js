@@ -3,10 +3,12 @@ import dayjs from "dayjs";
 import GlobalContext from "../../../context/GlobalContext";
 import { faCircleChevronLeft, faCircleChevronRight, } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import VacationWindow from "../VacationWindow";
 
 export default function CalendarHeader({month}) {
   const { monthIndex, setMonthIndex } = React.useContext(GlobalContext);
-  const { year, setYear } = React.useContext(GlobalContext)
+  const { year, setYear } = React.useContext(GlobalContext);
+  const [ShowVacationWindow, setShowVacationWindow] = React.useState(false);
 
   function handlePrevMonth() {
     if(monthIndex === 0)
@@ -52,11 +54,13 @@ export default function CalendarHeader({month}) {
           <div>{Monthes[month]}</div>
           <div>{year}</div>
         </div>
-        <div className="ml-4 w-32 flex justify-between">
+        <div className="ml-4 w-40 flex justify-between">
           <FontAwesomeIcon onClick={handlePrevMonth} className="w-8 h-8 text-orange-apple cursor-pointer" icon={faCircleChevronLeft}/>
           <FontAwesomeIcon onClick={handleNextMonth} className="w-8 h-8 text-orange-apple cursor-pointer" icon={faCircleChevronRight}/>
           <div onClick={handleReset} className="w-8 h-8 relative bg-green-apple text-black box-content rounded-full flex items-center justify-center cursor-pointer">{dayjs().format("D")}</div>
+          <div onClick={()=>setShowVacationWindow(true)} className="bg-blue-300 text-white w-8 h-8 flex justify-center items-center text-3xl rounded-full cursor-pointer pb-1">+</div>
         </div>
+        <VacationWindow show={ShowVacationWindow} setShow={setShowVacationWindow} date={dayjs()}/>
       </div>
   )
 }

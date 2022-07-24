@@ -2,7 +2,7 @@ import React from "react";
 import SignIn from "./components/SignIn";
 import Home from "./Home.js";
 // import { auth } from './firebase.js';
-// import { BrowserRouter as Router, Routes, Route, useNavigate} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate} from 'react-router-dom';
 
 
 //Clean console
@@ -13,8 +13,12 @@ function App() {
 
   return (
     <div>
-      <SignIn />
-      <Home />
+      <Router>
+        <Routes>
+          <Route path="/auth" element={<SignIn />} />
+          <Route path="/calendar" element={<Home />} />
+        </Routes>
+      </Router>
     </div>
   );
 }

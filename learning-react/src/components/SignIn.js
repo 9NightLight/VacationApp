@@ -2,27 +2,29 @@ import React from 'react'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { auth, db } from '../firebase.js';
 import { ref, set } from 'firebase/database';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignIn() {
     const NameRef = React.useRef();
     const EmailRef = React.useRef();
     const PasswordRef = React.useRef();
-    const [show, setShow] = React.useState(false);
     const [showRegister, setShowRegister] = React.useState(false);
-
+    const navigate = useNavigate();
     React.useEffect(() => {
         auth.onAuthStateChanged(user => {
             if(user) {
-                setShow(false)
+                // setShow(false)
+                navigate("/calendar");
             }
-            else if(user === null){
-                setShow(true)
+            else if(!user){
+                // setShow(true)
+                navigate("/auth");
             }
         })
     }, [])
 
     React.useEffect(() => {
-        setShow(prev => !prev)
+        // setShow(prev => !prev)
     }, [auth])
 
     const handleSignIn = (e) => {
@@ -50,7 +52,7 @@ export default function SignIn() {
 
     return (
         <React.Fragment>
-            { show ?
+            {
             <div className='absolute left-0 top-0 w-full h-full bg-blue-200 z-10 flex justify-center items-center'>
                 <div className="z-20 w-96 h-120 bg-white flex flex-col justify-between rounded-xl shadow-xl">
                     { !showRegister ?
@@ -100,7 +102,7 @@ export default function SignIn() {
                     }
                 </div>
             </div>
-            : <div></div>
+            
         }
         </React.Fragment>
     )
