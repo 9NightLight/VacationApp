@@ -10,7 +10,9 @@ const firebaseConfig = {
   storageBucket: "vacateme-75946.appspot.com",
   messagingSenderId: "773638070568",
   appId: "1:773638070568:web:ae06bfa59cc561400bf01d",
-  measurementId: "G-VPFT9GFHEG"
+  measurementId: "G-VPFT9GFHEG",
+  appAssociation: "AUTO",
+  rewrites: [ { "source": "/room/**", "dynamicLinks": true } ]
 };
 
 // Initialize Firebase

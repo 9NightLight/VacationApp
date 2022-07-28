@@ -5,22 +5,17 @@ import TypeVacation from "../VacationWindowComponents/TypeVacation";
 import VacationDescription from "../VacationWindowComponents/VacationDescription";
 import CalendarMini from "../VacationWindowComponents/CalendarMini";
 import TransitionComponent from "../TransitionComponent";
-import GlobalContext from "../../context/GlobalContext";
 import { ref, set } from 'firebase/database';
 import { auth, db } from '../../firebase.js';
 import { uid } from 'uid';
 
 export default function VacationWindow({show, date, setShow}) {
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(show)
-    const {savedEvents, dispatchCalEvent} = React.useContext(GlobalContext)
-
-    function onSubmit(e) {
-        // e.preventDefault(); // Here is problem, if on, creating multi displaying events, should work here
-        // e.preventDefault();
+    
+    function onSubmit() {
         auth.onAuthStateChanged(user => {
             const uuid = user.uid;
             const uidd = uid();
-            // console.log("I'm here!")
             set(ref(db, `/events/${uidd}`), {
                 type: Type,
                 description: Description,
@@ -30,13 +25,12 @@ export default function VacationWindow({show, date, setShow}) {
                 uuid: uuid,
             })
         })
-        ///
         setShowVacationWindow(false)
     }
     
     const [Type, SetType] = React.useState("Unpayed")
     const [Description, SetDescription] = React.useState("")
-    const [Dates, SetDates] = React.useState(new Array(new Date(date), new Date(date)))
+    const [Dates, SetDates] = React.useState(new Array(new Date(), new Date()))
 
     React.useEffect(() => {
         setShowVacationWindow(show)
@@ -49,7 +43,7 @@ export default function VacationWindow({show, date, setShow}) {
 
     return (
         <React.Fragment>
-            <TransitionComponent content={<div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
+            <TransitionComponent content={<div className="z-10 absolute left-0 top-0 w-full h-full flex justify-center items-center">
                 <div className="z-20 w-96 h-120 bg-white flex flex-col justify-around rounded-xl shadow-xl">
                     <form onSubmit={onSubmit}>
                         <div className="w-full h-20 flex justify-center items-center">

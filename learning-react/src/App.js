@@ -16,7 +16,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/auth" element={<SignIn />} />
-          <Route path="/calendar" element={<Home />} />
+          <Route path="/" element={<Home />} />
         </Routes>
       </Router>
     </div>
