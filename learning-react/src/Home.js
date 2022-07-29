@@ -9,6 +9,7 @@ import GlobalContext from "./context/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { auth } from "./firebase";
 import UsersSettings from "./components/Navigations/UsersSettings";
+import Notifications from "./components/Navigations/Notifications";
 
 export const CalendarContext = React.createContext();
 
@@ -18,6 +19,8 @@ export default function Home() {
     const [tab, setTab] = useState(0);
     const [users, setUsers] = React.useState(new Array());
     const [currUser, setCurrUser] = React.useState(new Array());
+    const [roomUsers, setRoomUsers] = React.useState(new Array());
+    
 
     useEffect(() => {
         setCurrentCalendar(getMonth(year, monthIndex));
@@ -37,7 +40,11 @@ export default function Home() {
 
     return (
         <React.Fragment>
-            <CalendarContext.Provider value={{currentCalendar, setCurrentCalendar, tab, setTab, users, setUsers, currUser, setCurrUser}}>
+            <CalendarContext.Provider value={{  currentCalendar, setCurrentCalendar, 
+                                                tab, setTab, 
+                                                users, setUsers, 
+                                                currUser, setCurrUser, 
+                                                roomUsers, setRoomUsers}}>
                     <TopNavBar />
                     <div className="h-max--48 flex flex-1">
                         <GlobalSideBar />
@@ -52,7 +59,7 @@ export default function Home() {
                         : tab === 2 ?
                             <div>User Settings</div>
                         : tab === 3 ?
-                            <div>Mail</div>
+                            <Notifications />
                         : tab === 4 ?
                             <div>Settings</div>
                         : <div></div>

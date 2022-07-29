@@ -1,12 +1,46 @@
 import React from 'react';
+import { db, auth } from '../../firebase';
+import { ref, set, onValue } from 'firebase/database';
+import { CalendarContext } from '../../Home';
+
+// export const STATE = {
+//     UNCONFIRMED: "Unconfirmed",
+//     CONFIRMED: "Confirmed"
+// }
 
 export default function AddMember({setShow}) {
     const EmailRef = React.useRef();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(EmailRef.current.value);
-        EmailRef.current.value = "";
+        if(EmailRef.current.value !== "")
+        {
+            let str = EmailRef.current.value;
+            let arr = new Array();
+            auth.onAuthStateChanged(u => {
+                arr = new Array()
+                onValue(ref(db, `/rooms/${u.uid}/pending/emailArray`), (snapshot) => {
+                    const data = snapshot.val();
+                    Object.values(data).map(() => {
+                    arr = data
+                    })
+                })
+                // ... Fix adding email same to yourself's
+                if(arr.find((val) =>{return val === str.toLowerCase()}) === undefined)
+                {
+                    arr = [...arr, str.toLowerCase()];
+                    set(ref(db, `/rooms/${u.uid}/pending/`), {
+                        emailArray: arr
+                    })
+                    .then(EmailRef.current.value = "")
+                }
+                else 
+                {
+                    console.log("Email already exist")
+                    EmailRef.current.value = ""
+                }
+            })
+        }
     }
 
     return (
@@ -23,7 +57,6 @@ export default function AddMember({setShow}) {
                     </div>
                     <div className='z-20 w-full h-full absolute top-0 left-0' onClick={()=>setShow(false)}></div>
                 </div>
-                
         </React.Fragment>      
     )
 }

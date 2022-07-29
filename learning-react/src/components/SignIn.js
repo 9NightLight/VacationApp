@@ -1,5 +1,5 @@
 import React from 'react'
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from '../firebase.js';
 import { ref, set } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
@@ -33,22 +33,22 @@ export default function SignIn() {
         .catch(err => console.log(err))
     }
 
-    const writeName = () => {
+    const writeUsers = () => {
         auth.onAuthStateChanged(user => {
             const uuid = user.uid;
-            let str = EmailRef.current.value; 
-            str.toLowerCase()
+            let str = EmailRef.current.value;
             set(ref(db, `/users/${uuid}`), {
                 firstName: FirstNameRef.current.value,
                 lastName: LastNameRef.current.value,
                 vacationsNum: 10,
-                role: ROLES.EMPLOYER,
+                role: ROLES.HRMANAGER,
                 email: str.toLowerCase(),
+                room: uuid,
                 uuid: uuid,
             })
             set(ref(db, `/rooms/${uuid}`), {
                 email: str.toLowerCase(),
-                uuid: uuid,
+                uuid: uuid
             })
         })
     } 
@@ -56,7 +56,7 @@ export default function SignIn() {
     const handleCreate = (e) => {
         e.preventDefault();
         createUserWithEmailAndPassword(auth, EmailRef.current.value, PasswordRef.current.value)
-        .then(writeName)
+        .then(writeUsers)
         .catch(err => console.log(err))
     }
 

@@ -19,7 +19,7 @@ function TopNavBar() {
         <div className="w-full h-12 border-b-2">
             <div className="relative w-max--75 h-full left-12 flex justify-between items-center ">
                     <div className="min-w-fit">
-                        Hello, {currUser.firstName}!
+                        Hello, <div className="font-bold inline-block">{currUser.firstName}!</div>
                     </div>
                     <div className="w-72 max-w-lg min-w-fit h-full flex items-center justify-between">
                         <div className="mr-6 p-1 rounded-md bg-blue-600 text-white cursor-pointer" onClick={() => setShowAddMember(true)}>Add member</div>
