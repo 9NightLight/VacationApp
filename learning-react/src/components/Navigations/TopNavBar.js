@@ -15,6 +15,18 @@ const handleSignOut = () => {
 function TopNavBar() {
     const { currUser } = React.useContext(CalendarContext)
     const [ showAddMember, setShowAddMember] = React.useState(false);
+    // const [ letter, setLetter ] = React.useState("")
+
+    const generateColor = () => 
+    {
+        const col = Math.floor(Math.random() * 4);
+    }
+    // console.log(col)
+    // React.useEffect(() => {
+    //     let a = currUser.firstName;
+    //     let res = String(a)
+    //     setLetter(res[0])
+    // }, [currUser])
 
     return (
         <div className="w-full h-12 border-b-2">
@@ -29,7 +41,7 @@ function TopNavBar() {
                             : <div></div>
                         }
                         <div className="mr-6">Left: {currUser.vacationsNum} {currUser.vacationsNum !== 1 ? "days" : "day"}</div>
-                        <div className="mr-6"><img src={my_photo_1} alt="" className="w-8 h-8 rounded-full"></img></div>
+                        <div className="mr-6 w-8 h-8 flex justify-center items-center rounded-full text-white bg-orange-400">{String(currUser.firstName)[0]}</div>
                         <FontAwesomeIcon onClick={handleSignOut} icon={faArrowRightFromBracket} className="mr-6 cursor-pointer"/>
                     </div>
             </div>

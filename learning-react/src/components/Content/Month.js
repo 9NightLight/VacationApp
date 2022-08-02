@@ -9,7 +9,7 @@ export default function Month({ month }) {
   const {roomUsers} = React.useContext(CalendarContext)
 
   return (
-    <div className="ml-40 w-fit h-fit grid grid-cols-35"> {/* I can change {w, h} to set calendar sizes*/ }
+    <div className="w-fit h-fit grid grid-cols-35 ml-44"> {/* I can change {w, h} to set calendar sizes*/ }
       <div className="absolute flex flex-col left-12 mt-34px">
           <UsersCalendar/>
       </div>

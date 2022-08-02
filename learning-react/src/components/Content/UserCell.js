@@ -13,7 +13,7 @@ export default function UserCell({day, _user}) {
         auth.onAuthStateChanged((user) => {
             let e = new Array();
             if (user) {
-                onValue(ref(db, `/rooms/${currUser.room}/events/`), (snapshot) => {
+                onValue(ref(db, `/rooms/${currUser.room}/events/confirmed/`), (snapshot) => {
                     const data = snapshot.val();
                     if (data !== null) {
                     Object.values(data).map((event) => {

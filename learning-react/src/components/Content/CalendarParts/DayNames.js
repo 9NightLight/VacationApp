@@ -9,7 +9,7 @@ export default function DayNames() {
     );
 
     return (
-        <div className="ml-40 w-fit h-6 flex">
+        <div className="ml-44 w-fit h-6 flex">
             {listItems}
         </div>
     )

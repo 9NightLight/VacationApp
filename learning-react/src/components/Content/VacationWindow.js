@@ -30,6 +30,7 @@ export default function VacationWindow({show, date, setShow}) {
                     startDate: sD.toString(),
                     endDate: eD.toString(),
                     uuid: currUser.uuid,
+                    eventUID: _uid,
                 })
             }
         })
@@ -47,7 +48,7 @@ export default function VacationWindow({show, date, setShow}) {
         const eD = new Date(Dates[1].toString());
         eD.setHours(0, 0, 0, 0);
 
-        setDeltaDates(Math.ceil((sD  - eD) / (1000 * 3600 * 24)) - 1)
+        setDeltaDates(Math.ceil((sD - eD) / (1000 * 3600 * 24)) - 1)
     }, [Dates])
 
     React.useEffect(() => {

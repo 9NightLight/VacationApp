@@ -7,6 +7,7 @@ module.exports = {
         },
         width: {
           "18": "72px",
+          "120": "calc(120px*4)",
           "192": "calc(192px*4)",
           "192/7": "calc(192px*4/7)",
           "max--75": "calc(100vw - 75px)",
