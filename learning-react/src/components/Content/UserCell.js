@@ -5,27 +5,24 @@ import { CalendarContext } from '../../Home.js';
 import VacationWindow from './VacationWindow.js';
 
 export default function UserCell({day, _user}) {
-    const [savedEvents, setSavedEvents] = React.useState([]);
-    const { users } = React.useContext(CalendarContext);
+    const [savedEvents, setSavedEvents] = React.useState(new Array()); // previous - new Array([])
+    const { currUser, roomUsers } = React.useContext(CalendarContext);
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(false);
 
     React.useEffect(() => {
         auth.onAuthStateChanged((user) => {
             let e = new Array();
             if (user) {
-            onValue(ref(db, `/events`), (snapshot) => {
-                const data = snapshot.val();
-                if (data !== null) {
-                Object.values(data).map((event) => {
-                    e = [...e, event]
+                onValue(ref(db, `/rooms/${currUser.room}/events/`), (snapshot) => {
+                    const data = snapshot.val();
+                    if (data !== null) {
+                    Object.values(data).map((event) => {
+                        e = [...e, event]
+                    });
+                    setSavedEvents(e);
+                    }
                 });
-                }
-                setSavedEvents(e);
-            });
-            } else if (!user) 
-            {
-
-            }
+            } 
         });
     }, [])
 
@@ -43,11 +40,11 @@ export default function UserCell({day, _user}) {
                     const D = new Date(day);
                     sD.setHours(0, 0, 0, 0);
 
-                    return sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && users[_user].uuid === e.uuid && e.type === "Vacation" 
+                    return sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === "Vacation" 
                     ? <div className='absolute w-4 h-4 bg-green-400 rounded-full'></div>
-                    : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && users[_user].uuid === e.uuid && e.type === "Unpayed" 
+                    : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === "Unpayed" 
                     ? <div className='absolute w-4 h-4 bg-red-400 rounded-full'></div>
-                    : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && users[_user].uuid === e.uuid && e.type === "Sick leave" 
+                    : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === "Sick leave" 
                     ? <div className='absolute w-4 h-4 bg-orange-400 rounded-full'></div>
                     : <div></div>
                 })

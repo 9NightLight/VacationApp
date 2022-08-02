@@ -8,22 +8,30 @@ import TransitionComponent from "../TransitionComponent";
 import { ref, set } from 'firebase/database';
 import { auth, db } from '../../firebase.js';
 import { uid } from 'uid';
+import { CalendarContext } from "../../Home";
 
 export default function VacationWindow({show, date, setShow}) {
-    const [ShowVacationWindow, setShowVacationWindow] = React.useState(show)
+    const [ShowVacationWindow, setShowVacationWindow] = React.useState(show);
+    const {currUser} = React.useContext(CalendarContext)
     
-    function onSubmit() {
+    function onSubmit(e) {
+        e.preventDefault()
         auth.onAuthStateChanged(user => {
-            const uuid = user.uid;
-            const uidd = uid();
-            set(ref(db, `/events/${uidd}`), {
-                type: Type,
-                description: Description,
-                startDate: Dates[0].toString(),
-                endDate: Dates[1].toString(),
-                id: new Date(),
-                uuid: uuid,
-            })
+            if(user)
+            {
+                const _uid = uid();
+                const sD = new Date(Dates[0].toString());
+                sD.setHours(0, 0, 0, 0);
+                const eD = new Date(Dates[1].toString());
+                eD.setHours(0, 0, 0, 0);
+                set(ref(db, `/rooms/${currUser.room}/events/pending/${_uid}`), {
+                    type: Type,
+                    description: Description,
+                    startDate: sD.toString(),
+                    endDate: eD.toString(),
+                    uuid: currUser.uuid,
+                })
+            }
         })
         setShowVacationWindow(false)
     }
@@ -31,6 +39,16 @@ export default function VacationWindow({show, date, setShow}) {
     const [Type, SetType] = React.useState("Unpayed")
     const [Description, SetDescription] = React.useState("")
     const [Dates, SetDates] = React.useState(new Array(new Date(), new Date()))
+    const [deltaDates, setDeltaDates] = React.useState(1)
+
+    React.useEffect(()=> {
+        const sD = new Date(Dates[0].toString());
+        sD.setHours(0, 0, 0, 0);
+        const eD = new Date(Dates[1].toString());
+        eD.setHours(0, 0, 0, 0);
+
+        setDeltaDates(Math.ceil((sD  - eD) / (1000 * 3600 * 24)) - 1)
+    }, [Dates])
 
     React.useEffect(() => {
         setShowVacationWindow(show)
@@ -47,7 +65,7 @@ export default function VacationWindow({show, date, setShow}) {
                 <div className="z-20 w-96 h-120 bg-white flex flex-col justify-around rounded-xl shadow-xl">
                     <form onSubmit={onSubmit}>
                         <div className="w-full h-20 flex justify-center items-center">
-                            <Header />
+                            <Header delta={deltaDates}/>
                         </div>
                         <div className="w-full h-32 flex justify-center items-center">
                             <TypeVacation setType={SetType}/>
@@ -60,7 +78,7 @@ export default function VacationWindow({show, date, setShow}) {
                         </div>
                         <div className="w-full h-20 flex justify-center items-center"
                              >
-                            <Submit />
+                            <Submit delta={deltaDates}/>
                         </div>
                     </form>
                     </div>

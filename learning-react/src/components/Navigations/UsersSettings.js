@@ -1,25 +1,9 @@
 import React from 'react';
 import { CalendarContext } from '../../Home';
-import { auth, db } from '../../firebase.js';
-import { ref, update } from 'firebase/database';
-import { ROLES } from '../SignIn';
 import UserSettingsCell from './UserSettingsComonents/UserSettingsCell';
 
 export default function UsersSettings() {
-    const {users, currUser} = React.useContext(CalendarContext)
-    const vacationsNumRef = React.useRef()
-
-    const handleVacationNumChange = () => {
-        if(vacationsNumRef.current.value !== "")
-        {
-            auth.onAuthStateChanged(user => {
-                const uuid = user.uid;
-                update(ref(db, `/users/${users.uuid}`), {
-                    vacationsNum: vacationsNumRef.current.value
-                })
-            })
-        }
-    }
+    const { roomUsers } = React.useContext(CalendarContext)
 
     return (
         <React.Fragment>
@@ -35,7 +19,7 @@ export default function UsersSettings() {
                 </div>
                 <hr className='mt-1 mb-1 bg-gray-100 opacity-25'></hr>
                 {
-                    users.map((val, idx) => {
+                    roomUsers.map((val, idx) => {
                         let u = val.lastName + ", " + val.firstName;
                         if(u.length > 20) 
                         {

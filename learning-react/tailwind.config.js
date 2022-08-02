@@ -29,6 +29,11 @@ module.exports = {
         },
         borderColor: {
           "grid-gray-180-17": "rgba(180, 180, 180, 0.17)",
+          "green-apple": "#62C554",
+          "red-apple": "#F55050",
+          "orange-apple": "#F5C150",
+          "indigo-apple": "#C250F5",
+          "blue-apple": "#5EC0EC",
         },
         gridTemplateColumns: {
           "35": "repeat(35, minmax(0, 1fr))",

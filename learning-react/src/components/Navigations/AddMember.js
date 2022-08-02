@@ -10,37 +10,44 @@ import { CalendarContext } from '../../Home';
 
 export default function AddMember({setShow}) {
     const EmailRef = React.useRef();
+    const {currUser, roomUsers} = React.useContext(CalendarContext)
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if(EmailRef.current.value !== "")
-        {
-            let str = EmailRef.current.value;
-            let arr = new Array();
-            auth.onAuthStateChanged(u => {
-                arr = new Array()
-                onValue(ref(db, `/rooms/${u.uid}/pending/emailArray`), (snapshot) => {
-                    const data = snapshot.val();
-                    Object.values(data).map(() => {
-                    arr = data
-                    })
-                })
-                // ... Fix adding email same to yourself's
-                if(arr.find((val) =>{return val === str.toLowerCase()}) === undefined)
+
+        auth.onAuthStateChanged(user => {
+            if (user)
+            {    
+                if(EmailRef.current.value !== "")
                 {
-                    arr = [...arr, str.toLowerCase()];
-                    set(ref(db, `/rooms/${u.uid}/pending/`), {
-                        emailArray: arr
+                    let str = EmailRef.current.value;
+                    let pendingArr = new Array()
+                    onValue(ref(db, `/rooms/${currUser.room}/pending/emailArray`), (snapshot) => {
+                        const data = snapshot.val();
+                        if(data !== null)
+                        {
+                            Object.values(data).map(() => {
+                                pendingArr = data 
+                            })
+                        }
                     })
-                    .then(EmailRef.current.value = "")
+                    // ... Fix adding email same to yourself's
+                    if(pendingArr.find((val) =>{return val === str.toLowerCase()}) === undefined && roomUsers.find(val => {return val.email === str.toLowerCase()}) === undefined)
+                    {
+                        pendingArr = [...pendingArr, str.toLowerCase()];
+                        set(ref(db, `/rooms/${currUser.room}/pending/`), {
+                            emailArray: pendingArr
+                        })
+                        .then(EmailRef.current.value = "")
+                    }
+                    else 
+                    {
+                        console.log("Email already exist")
+                        EmailRef.current.value = ""
+                    }
                 }
-                else 
-                {
-                    console.log("Email already exist")
-                    EmailRef.current.value = ""
-                }
-            })
-        }
+            }
+        })
     }
 
     return (

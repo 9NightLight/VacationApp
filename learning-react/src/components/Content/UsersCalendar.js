@@ -4,61 +4,44 @@ import { onValue, ref } from 'firebase/database';
 import { CalendarContext } from '../../Home';
 
 export default function UsersCalendar() {
-    const {users, setUsers, setCurrUser, roomUsers, setRoomUsers} = React.useContext(CalendarContext);
+    const {users, setUsers, currUser, setCurrUser, roomUsers, setRoomUsers} = React.useContext(CalendarContext);
 
     React.useEffect(() => {
         auth.onAuthStateChanged((user) => {
           if (user) {
             onValue(ref(db, `/users`), (snapshot) => {
                 let sArray = new Array();
-                let roomUsersArray = new Array()
                 const data = snapshot.val();
-                Object.values(data).map((_user) => {
-                    sArray = [...sArray, {  firstName:_user.firstName, 
-                                            lastName: _user.lastName, 
-                                            vacationsNum: _user.vacationsNum, 
-                                            role: _user.role,
-                                            email: _user.email,
-                                            room: _user.room,
-                                            uuid:_user.uuid }]
-                    if(_user.room === user.uid) // should check route
-                    {
-                        console.log(_user.room, user.uid)
-                        roomUsersArray = [...roomUsersArray, {  firstName:_user.firstName, 
-                                                        lastName: _user.lastName, 
-                                                        vacationsNum: _user.vacationsNum, 
-                                                        role: _user.role,
-                                                        email: _user.email,
-                                                        room: _user.room,
-                                                        uuid:_user.uuid }]
-                    }
-                    if(user.uid === _user.uuid)
-                    {
-                        setCurrUser({
-                            firstName:_user.firstName, 
-                            lastName: _user.lastName, 
-                            vacationsNum: _user.vacationsNum, 
-                            role: _user.role,
-                            email: _user.email,
-                            room: _user.room,
-                            uuid:_user.uuid
-                        })
-                    }
-                });
-                sArray.sort(((a, b) => {
-                    let fa = a.firstName.toLowerCase() + a.lastName.toLowerCase(),
-                        fb = b.firstName.toLowerCase() + b.lastName.toLowerCase();
-                    if (fa < fb) {
-                        return -1;
-                    }
-                    if (fa > fb) {
-                        return 1;
-                    }
-                    return 0
-                }));
-                setUsers(sArray)
-                console.log(roomUsersArray)
-                setRoomUsers(roomUsersArray)
+                if(data !== null)
+                {
+                    Object.values(data).map((_user) => {
+                        sArray = [...sArray, {  firstName:      _user.firstName, 
+                                                lastName:       _user.lastName, 
+                                                vacationsNum:   _user.vacationsNum, 
+                                                role:           _user.role,
+                                                email:          _user.email,
+                                                room:           _user.room,
+                                                uuid:           _user.uuid          }]
+                        if(user.uid === _user.uuid)
+                        {
+                            setCurrUser({
+                                firstName:_user.firstName,
+                                lastName: _user.lastName,
+                                vacationsNum: _user.vacationsNum, 
+                                role: _user.role,
+                                email: _user.email,
+                                room: _user.room,
+                                uuid:_user.uuid
+                            })
+                        }
+                    });
+                    sArray.sort(((a, b) => {
+                        let fa = a.firstName.toLowerCase() + a.lastName.toLowerCase(),
+                            fb = b.firstName.toLowerCase() + b.lastName.toLowerCase();
+                        return fa < fb ? -1 : fa > fb ? 1 : 0;
+                    }));
+                    setUsers(sArray)
+                }
             });
           } 
           else if (!user) {
@@ -67,10 +50,31 @@ export default function UsersCalendar() {
         });
     }, []);
 
-    React.useEffect(() => console.log(roomUsers), [roomUsers])
+    React.useEffect(()=> {
+        auth.onAuthStateChanged(user => {
+            if(user) {
+                onValue(ref(db, `/rooms/${currUser.room}/members`), (snapshot) => {
+                    let rUsers = new Array();
+                    const data = snapshot.val()
+                    if(data)
+                    {
+                        Object.values(data).map((val)=> {
+                            rUsers = [...rUsers, val]
+                        })
+                        rUsers.sort(((a, b) => {
+                            let fa = a.firstName.toLowerCase() + a.lastName.toLowerCase(),
+                                fb = b.firstName.toLowerCase() + b.lastName.toLowerCase();
+                            return fa < fb ? -1 : fa > fb ? 1 : 0;
+                        }));
+                        setRoomUsers(rUsers);
+                    }
+                })
+            }
+        })
+    }, [currUser])
 
     return (
-        <div>
+        <div className='ml-3'>
             {
                 roomUsers.map((val, idx) => {
                     let u = val.lastName + ", " + val.firstName;

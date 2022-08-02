@@ -16,6 +16,7 @@ export default function SignIn() {
     const PasswordRef = React.useRef();
     const [showRegister, setShowRegister] = React.useState(false);
     const navigate = useNavigate();
+
     React.useEffect(() => {
         auth.onAuthStateChanged(user => {
             if(user) {
@@ -35,21 +36,26 @@ export default function SignIn() {
 
     const writeUsers = () => {
         auth.onAuthStateChanged(user => {
-            const uuid = user.uid;
-            let str = EmailRef.current.value;
-            set(ref(db, `/users/${uuid}`), {
-                firstName: FirstNameRef.current.value,
-                lastName: LastNameRef.current.value,
-                vacationsNum: 10,
-                role: ROLES.HRMANAGER,
-                email: str.toLowerCase(),
-                room: uuid,
-                uuid: uuid,
-            })
-            set(ref(db, `/rooms/${uuid}`), {
-                email: str.toLowerCase(),
-                uuid: uuid
-            })
+            if(user)
+            {
+                const uuid = user.uid;
+                let str = EmailRef.current.value;
+                set(ref(db, `/users/${uuid}`), {
+                    firstName: FirstNameRef.current.value,
+                    lastName: LastNameRef.current.value,
+                    vacationsNum: 10,
+                    role: ROLES.HRMANAGER,
+                    email: str.toLowerCase(),
+                    room: uuid,
+                    uuid: uuid,
+                })
+                .then(set(ref(db, `/rooms/${uuid}/members/${uuid}`), { firstName: FirstNameRef.current.value,
+                                                                        lastName: LastNameRef.current.value,
+                                                                        vacationsNum: 10,
+                                                                        role: ROLES.HRMANAGER,
+                                                                        email: str.toLowerCase(),
+                                                                        uuid: uuid,}))
+            }
         })
     } 
 

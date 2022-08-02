@@ -3,36 +3,28 @@ import Day from "./CalendarParts/Day";
 import UsersCalendar from "./UsersCalendar";
 import UserCell from "./UserCell";
 import { CalendarContext } from "../../Home";
-
-// export const UsersContext = React.createContext();
+import { uid } from "uid";
 
 export default function Month({ month }) {
-  // const [users, setUsers] = React.useState(new Array());
-  const {users} = React.useContext(CalendarContext)
+  const {roomUsers} = React.useContext(CalendarContext)
 
   return (
     <div className="ml-40 w-fit h-fit grid grid-cols-35"> {/* I can change {w, h} to set calendar sizes*/ }
-    <div className="absolute flex flex-col left-12 mt-34px">
-      {/* <UsersContext.Provider value={{users, setUsers}}> */}
-        <UsersCalendar/>
-      {/* </UsersContext.Provider> */}
-    </div>
+      <div className="absolute flex flex-col left-12 mt-34px">
+          <UsersCalendar/>
+      </div>
 
-    
-      {month.map((day, idx) => (
-        <React.Fragment key={idx}>
-              <div className="flex flex-col">
-                <Day day={day} />
-                {/* <UsersContext.Provider value={{users, setUsers}}> */}
-                  {users.map((val, id) => {
-                    return <UserCell day={day} _user={id}/>
-                  })}
-                {/* </UsersContext.Provider> */}
-              </div>
-        </React.Fragment>
-      ))
+      { month.map((day, idx) => (
+          <React.Fragment key={idx}>
+                <div className="flex flex-col">
+                  <Day day={day} />
+                    {roomUsers.map((val, id) => {
+                      return <UserCell day={day} _user={id}/>
+                    })}
+                </div>
+          </React.Fragment>
+        ))
       }
-    
     </div>
   );
 }

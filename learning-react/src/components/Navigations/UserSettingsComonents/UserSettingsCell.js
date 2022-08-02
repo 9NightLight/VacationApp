@@ -10,14 +10,21 @@ export default function UserSettingsCell({user}) {
     const vacationsNumRef = React.useRef()
 
     const handleVacationNumChange = () => {
-        console.log(vacationsNumRef.current.value)
-        if(vacationsNumRef.current.value !== "")
+        if(vacationsNumRef.current.value !== "" && !isNaN(Number(vacationsNumRef.current.value)))
         {
             auth.onAuthStateChanged(u => {
                 update(ref(db, `/users/${user.uuid}`), {
                     vacationsNum: vacationsNumRef.current.value
                 })
+                .then(update(ref(db, `/rooms/${currUser.room}/members/${user.uuid}`), {
+                    vacationsNum: vacationsNumRef.current.value
+                }))
+                .then(vacationsNumRef.current.value = "")
             })
+        } 
+        else 
+        {
+            vacationsNumRef.current.value = ""
         }
     }
 
