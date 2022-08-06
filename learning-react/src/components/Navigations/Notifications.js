@@ -6,7 +6,7 @@ import { ref, onValue } from 'firebase/database';
 import VacationsAsk from './VacationsAsk';
 import { ROLES } from '../SignIn';
 
-export default function Notifications() {
+export default function Notifications({tab}) {
     const {users, currUser, roomUsers} = React.useContext(CalendarContext)
     const [invites, setInvites] = React.useState(new Array())
     const [vacations, setVacations] = React.useState(new Array())
@@ -43,7 +43,7 @@ export default function Notifications() {
           })
         }
       });
-    }, []);
+    }, [tab]);
 
     return (
       <div className='ml-4 flex justify-between w-192 h-full'>
@@ -52,14 +52,7 @@ export default function Notifications() {
           <div className='font-bold text-2xl mb-4'>Vacations</div>
             {
               vacations.map((val, idx) => {
-                const sD = new Date(val.startDate);
-                sD.setHours(0, 0, 0, 0);
-                const eD = new Date(val.endDate);
-                eD.setHours(0, 0, 0, 0);
-                const owner = roomUsers.find(value => {return value.uuid === val.uuid})
-                const res = owner.vacationsNum + (Math.ceil((sD - eD) / (1000 * 3600 * 24)) - 1)
-                const check = res >= 0 ? true : false
-                return <VacationsAsk vacation={val} key={idx} setVacations={setVacations} vacations={vacations} submitAllow={check}/>
+                return <VacationsAsk vacation={val} key={idx} setVacations={setVacations} vacations={vacations}/>
               })
             }
           </div>

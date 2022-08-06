@@ -19,9 +19,20 @@ export default function Notify({uuid, setInvites, invites}) {
   const handleAccept = (e) => {
     e.preventDefault()
     auth.onAuthStateChanged(user => {
-      if (user)
+      if (user && currUser !== undefined)
       {    
-        update(ref(db, `/users/${currUser.uuid}`), { room: owner.uuid, role: ROLES.EMPLOYER }) // Here problem with reupdating
+        console.log("Notify")
+        update(ref(db, `/users/${currUser.uuid}`), { room: owner.uuid, role: ROLES.EMPLOYER, vacationsNum: owner.defaultVacationsNum }) // Here problem with reupdating
+
+        if(currUser.room === currUser.uuid)
+        {
+          // remove user from current room if that exist
+          remove(ref(db, `/rooms/${currUser.uuid}`))
+        }
+        else if(currUser.room !== currUser.uuid)
+        {
+          remove(ref(db, `/rooms/${currUser.room}/members/${currUser.uuid}`))
+        }
 
         // remove user from pending requests
         onValue(ref(db, `/rooms/${owner.uuid}/pending/`), (snapshot) => {
@@ -33,11 +44,6 @@ export default function Notify({uuid, setInvites, invites}) {
               {
                 remove(ref(db, `/rooms/${owner.uuid}/pending/emailArray/${idx}`))
               }
-              // let a = new Array()
-              // invites.map((val, idx) => { 
-              //   if(val !== owner.room) {a = [...a, val]}
-              // })
-              // setInvites(a)
             }))
           }
         })
@@ -60,13 +66,12 @@ export default function Notify({uuid, setInvites, invites}) {
         // Adding new member to owner room 
         set(ref(db, `/rooms/${owner.uuid}/members/${currUser.uuid}/`), { firstName: currUser.lastName,
                                                                         lastName: currUser.firstName,
-                                                                        vacationsNum: 10,
+                                                                        vacationsNum: owner.defaultVacationsNum,
                                                                         role: ROLES.EMPLOYER,
                                                                         email: currUser.email,
                                                                         uuid: currUser.uuid, })
 
-        //  removing room who's accepted invite
-        remove(ref(db, `/rooms/${currUser.uuid}`))
+        // remove(ref(db, `/rooms/${currUser.uuid}`))
 
         auth.onAuthStateChanged(user => {
           if(user)

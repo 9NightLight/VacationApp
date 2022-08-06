@@ -21,11 +21,13 @@ module.exports = {
         textColor: {
           "grid-gray-180-17": "rgba(180, 180, 180, 0.17)",
           "main-gray": "#8D8D8D",
+          "gray-light": "#A0A0A0",
           "green-apple": "#62C554",
           "orange-apple": "#F5C150",
         },
         backgroundColor: {
           "main-gray": "#404040",
+          "gray-light": "#A0A0A0",
           "green-apple": "#62C554",
         },
         borderColor: {

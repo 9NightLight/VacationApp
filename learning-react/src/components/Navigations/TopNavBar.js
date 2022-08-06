@@ -1,32 +1,26 @@
 import React from "react";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import my_photo_1 from "../../my_photo_1.png";
 import { auth } from "../../firebase";
 import { signOut } from "firebase/auth";
 import { CalendarContext } from "../../Home";
 import AddMember from "./AddMember";
 import { ROLES } from "../SignIn";
 
-const handleSignOut = () => {
-    signOut(auth).catch(err => console.log(err))
-}
-
 function TopNavBar() {
     const { currUser } = React.useContext(CalendarContext)
     const [ showAddMember, setShowAddMember] = React.useState(false);
-    // const [ letter, setLetter ] = React.useState("")
 
     const generateColor = () => 
     {
         const col = Math.floor(Math.random() * 4);
     }
-    // console.log(col)
-    // React.useEffect(() => {
-    //     let a = currUser.firstName;
-    //     let res = String(a)
-    //     setLetter(res[0])
-    // }, [currUser])
+
+    const handleSignOut = () => {
+        signOut(auth)
+        .then(localStorage.clear())
+        .catch(err => console.log(err))
+    }
 
     return (
         <div className="w-full h-12 border-b-2">

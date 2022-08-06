@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "./firebase";
 import UsersSettings from "./components/Navigations/UsersSettings";
 import Notifications from "./components/Navigations/Notifications";
+import UserSettings from "./components/Navigations/UserSettings";
+import SettingsTab from "./components/Navigations/SettingsTab";
 
 export const CalendarContext = React.createContext();
 
@@ -20,6 +22,7 @@ export default function Home() {
     const [users, setUsers] = React.useState(new Array());
     const [currUser, setCurrUser] = React.useState(new Array());
     const [roomUsers, setRoomUsers] = React.useState(new Array());
+    const [darkTheme, setDarkTheme] = React.useState(false)
     
 
     useEffect(() => {
@@ -40,11 +43,14 @@ export default function Home() {
 
     return (
         <React.Fragment>
-            <CalendarContext.Provider value={{  currentCalendar, setCurrentCalendar, 
+            <CalendarContext.Provider value={{  
+                                                currentCalendar, setCurrentCalendar, 
                                                 tab, setTab, 
                                                 users, setUsers, 
                                                 currUser, setCurrUser, 
-                                                roomUsers, setRoomUsers}}>
+                                                roomUsers, setRoomUsers,
+                                                darkTheme, setDarkTheme
+                                                }}>
                     <TopNavBar />
                     <div className="h-max--48 flex flex-1">
                         <GlobalSideBar />
@@ -57,11 +63,11 @@ export default function Home() {
                         : tab === 1 ?
                             <UsersSettings />
                         : tab === 2 ?
-                            <div>User Settings</div>
+                            <UserSettings />
                         : tab === 3 ?
-                            <Notifications />
+                            <Notifications tab={tab}/>
                         : tab === 4 ?
-                            <div>Settings</div>
+                            <SettingsTab />
                         : <div></div>
                         }
                     </div>

@@ -21,6 +21,7 @@ export default function UsersCalendar() {
                                                 role:           _user.role,
                                                 email:          _user.email,
                                                 room:           _user.room,
+                                                defaultVacationsNum: _user.defaultVacationsNum,
                                                 uuid:           _user.uuid          }]
                         if(user.uid === _user.uuid)
                         {
@@ -31,6 +32,7 @@ export default function UsersCalendar() {
                                 role: _user.role,
                                 email: _user.email,
                                 room: _user.room,
+                                defaultVacationsNum: _user.defaultVacationsNum,
                                 uuid:_user.uuid
                             })
                         }
@@ -39,14 +41,14 @@ export default function UsersCalendar() {
                         let fa = a.firstName.toLowerCase() + a.lastName.toLowerCase(),
                             fb = b.firstName.toLowerCase() + b.lastName.toLowerCase();
                         return fa < fb ? -1 : fa > fb ? 1 : 0;
-                    }));
+                        }));
                     setUsers(sArray)
                 }
             });
           } 
           else if (!user) {
     
-          }
+            }
         });
     }, []);
 
@@ -56,7 +58,7 @@ export default function UsersCalendar() {
                 onValue(ref(db, `/rooms/${currUser.room}/members`), (snapshot) => {
                     let rUsers = new Array();
                     const data = snapshot.val()
-                    if(data)
+                    if(data !== null)
                     {
                         Object.values(data).map((val)=> {
                             rUsers = [...rUsers, val]

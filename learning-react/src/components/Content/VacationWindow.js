@@ -5,7 +5,7 @@ import TypeVacation from "../VacationWindowComponents/TypeVacation";
 import VacationDescription from "../VacationWindowComponents/VacationDescription";
 import CalendarMini from "../VacationWindowComponents/CalendarMini";
 import TransitionComponent from "../TransitionComponent";
-import { ref, set } from 'firebase/database';
+import { ref, set, update } from 'firebase/database';
 import { auth, db } from '../../firebase.js';
 import { uid } from 'uid';
 import { CalendarContext } from "../../Home";
@@ -13,17 +13,25 @@ import { CalendarContext } from "../../Home";
 export default function VacationWindow({show, date, setShow}) {
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(show);
     const {currUser} = React.useContext(CalendarContext)
+    const [Type, SetType] = React.useState("Unpayed")
+    const [Description, SetDescription] = React.useState("")
+    const [Dates, SetDates] = React.useState(new Array(new Date(), new Date()))
+    const [deltaDates, setDeltaDates] = React.useState(1)
+     const _uid = uid(); // if on, occurs some problems with confirmed
     
-    function onSubmit(e) {
+    const onSubmit = (e) => {
         e.preventDefault()
         auth.onAuthStateChanged(user => {
-            if(user)
+            if(user && ShowVacationWindow === true)
             {
-                const _uid = uid();
+                // const _uid = uid();
                 const sD = new Date(Dates[0].toString());
                 sD.setHours(0, 0, 0, 0);
                 const eD = new Date(Dates[1].toString());
                 eD.setHours(0, 0, 0, 0);
+                const minusVacationNum = Math.ceil((sD - eD) / (1000 * 3600 * 24)) - 1
+                
+
                 set(ref(db, `/rooms/${currUser.room}/events/pending/${_uid}`), {
                     type: Type,
                     description: Description,
@@ -32,15 +40,14 @@ export default function VacationWindow({show, date, setShow}) {
                     uuid: currUser.uuid,
                     eventUID: _uid,
                 })
+                update(ref(db, `rooms/${currUser.room}/members/${currUser.uuid}/`), { vacationsNum: currUser.vacationsNum + minusVacationNum})
+                update(ref(db, `users/${currUser.uuid}/`), { vacationsNum: currUser.vacationsNum + minusVacationNum})
             }
         })
         setShowVacationWindow(false)
     }
     
-    const [Type, SetType] = React.useState("Unpayed")
-    const [Description, SetDescription] = React.useState("")
-    const [Dates, SetDates] = React.useState(new Array(new Date(), new Date()))
-    const [deltaDates, setDeltaDates] = React.useState(1)
+    
 
     React.useEffect(()=> {
         const sD = new Date(Dates[0].toString());

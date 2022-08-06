@@ -1,6 +1,6 @@
 import React from 'react';
 import { CalendarContext } from '../../Home';
-import UserSettingsCell from './UserSettingsComonents/UserSettingsCell';
+import UserSettingsCell from './UserSettingsCell';
 
 export default function UsersSettings() {
     const { roomUsers } = React.useContext(CalendarContext)
