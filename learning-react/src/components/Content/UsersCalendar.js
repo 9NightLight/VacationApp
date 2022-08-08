@@ -21,7 +21,6 @@ export default function UsersCalendar() {
                                                 role:           _user.role,
                                                 email:          _user.email,
                                                 room:           _user.room,
-                                                defaultVacationsNum: _user.defaultVacationsNum,
                                                 uuid:           _user.uuid          }]
                         if(user.uid === _user.uuid)
                         {
@@ -32,7 +31,6 @@ export default function UsersCalendar() {
                                 role: _user.role,
                                 email: _user.email,
                                 room: _user.room,
-                                defaultVacationsNum: _user.defaultVacationsNum,
                                 uuid:_user.uuid
                             })
                         }

@@ -33,10 +33,10 @@ export default function UserSettings() {
           <div className='w-4/5 h-5/6 bg-main-gray rounded-xl pl-4 mt-6'>
               <form onSubmit={onSubmit} className='font-bold text-2xl w-full h-16 pr-4 mb-2 mt-3 flex justify-between items-center'>
                 <img src={PersonPNG} className="w-12 h-12" alt=''></img>
-                <button type={onEdit === false ? "submit" : "button"} 
+                {/* <button type={onEdit === false ? "submit" : "button"} 
                         // onClick={() => setOnEdit(!onEdit)} 
                         className='bg-white w-10 h-10 flex justify-center items-center rounded-full'>
-                          {onEdit ? <FontAwesomeIcon icon={faCheck}/> : <FontAwesomeIcon icon={faPencil} />}</button>
+                          {onEdit ? <FontAwesomeIcon icon={faCheck}/> : <FontAwesomeIcon icon={faPencil} />}</button> */}
               </form>
               <div className='w-5/6 h-10 mb-2 flex flex-col justify-center'>
                 <div className='text-gray-light text-base'>First name</div>

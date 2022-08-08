@@ -43,7 +43,6 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
     }
 
     const onEventConfirm = (e) => {
-        console.log("I was called")
         e.preventDefault()
         auth.onAuthStateChanged(user => {
             if(user)

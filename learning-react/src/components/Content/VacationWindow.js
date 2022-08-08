@@ -17,7 +17,7 @@ export default function VacationWindow({show, date, setShow}) {
     const [Description, SetDescription] = React.useState("")
     const [Dates, SetDates] = React.useState(new Array(new Date(), new Date()))
     const [deltaDates, setDeltaDates] = React.useState(1)
-     const _uid = uid(); // if on, occurs some problems with confirmed
+    const _uid = uid(); // if on, occurs some problems with confirmed
     
     const onSubmit = (e) => {
         e.preventDefault()

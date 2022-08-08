@@ -47,7 +47,6 @@ export default function SignIn() {
                     role: ROLES.HRMANAGER,
                     email: str.toLowerCase(),
                     room: uuid,
-                    defaultVacationsNum: 10,
                     uuid: uuid,
                 })
                 .then(set(ref(db, `/rooms/${uuid}/members/${uuid}`), { firstName: FirstNameRef.current.value,
@@ -56,6 +55,7 @@ export default function SignIn() {
                                                                         role: ROLES.HRMANAGER,
                                                                         email: str.toLowerCase(),
                                                                         uuid: uuid,}))
+                .then(set(ref(db, `rooms/${uuid}/settings`), {defaultNumVacations: 10}))
             }
         })
     } 

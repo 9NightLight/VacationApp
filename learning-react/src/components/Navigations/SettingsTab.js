@@ -1,11 +1,23 @@
 import React from 'react'
 import { CalendarContext } from '../../Home'
 import { auth, db } from '../../firebase.js';
-import { ref, update } from 'firebase/database';
+import { onValue, ref, update } from 'firebase/database';
+import { ROLES } from '../SignIn';
 
 export default function SettingsTab() {
     const {darkTheme, setDarkTheme, currUser} = React.useContext(CalendarContext)
     const vacationsNumRef = React.useRef()
+    const [defaultNumVacations, setDefaultNumVacations] = React.useState(0)
+
+    React.useEffect(() => {
+        onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
+            const data = snapshot.val()
+            if(data !== null)
+            {
+                setDefaultNumVacations(data.defaultNumVacations)
+            }
+        })
+    }, [])
 
     const handleChangeDefaultVacations = () => {
         auth.onAuthStateChanged(user => {
@@ -13,14 +25,8 @@ export default function SettingsTab() {
             {
                 if(vacationsNumRef.current.value !== "" && !isNaN(Number(vacationsNumRef.current.value)))
                 {
-                    console.log(Number(vacationsNumRef.current.value))
                     auth.onAuthStateChanged(u => {
-                        update(ref(db, `/users/${user.uid}`), {
-                            defaultVacationsNum: Number(vacationsNumRef.current.value)
-                        })
-                        .then(update(ref(db, `/rooms/${currUser.room}/members/${user.uid}`), {
-                            defaultVacationsNum: Number(vacationsNumRef.current.value)
-                        }))
+                        update(ref(db, `rooms/${currUser.room}/settings`), {defaultNumVacations: Number(vacationsNumRef.current.value)})
                         .then(vacationsNumRef.current.value = "")
                     })
                 } 
@@ -42,10 +48,13 @@ export default function SettingsTab() {
                             <div className={darkTheme ? 'w-1/2 h-full rounded-full bg-white' : 'w-1/2 h-full rounded-full bg-black'} onClick={() => setDarkTheme(!darkTheme)}></div>
                         </div>
                     </div>
-                    <div className='flex items-center justify-between w-full h-10 mt-2 font-bold text-white'>
-                        <div>Default number vacations</div>
-                        <input type="text" ref={vacationsNumRef} className="w-8 h-6 bg-gray-200 text-black/50 text-center" placeholder={currUser.defaultVacationsNum} onBlur={handleChangeDefaultVacations}></input>
-                    </div>
+                    {currUser.role === ROLES.HRMANAGER ? 
+                        <div className='flex items-center justify-between w-full h-10 mt-2 font-bold text-white'>
+                            <div>Default number vacations</div>
+                            <input type="text" ref={vacationsNumRef} className="w-8 h-6 bg-gray-200 text-black/50 text-center" placeholder={defaultNumVacations} onBlur={handleChangeDefaultVacations}></input>
+                        </div>
+                        : <div></div>
+                    }
                 </div>
             </div>
         </div>

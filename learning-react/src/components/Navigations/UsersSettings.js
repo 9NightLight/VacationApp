@@ -1,20 +1,48 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowsRotate} from "@fortawesome/free-solid-svg-icons"
 import React from 'react';
 import { CalendarContext } from '../../Home';
 import UserSettingsCell from './UserSettingsCell';
+import { onValue, ref, update } from 'firebase/database';
+import { db } from '../../firebase';
+import { ROLES } from '../SignIn';
 
 export default function UsersSettings() {
-    const { roomUsers } = React.useContext(CalendarContext)
+    const { roomUsers, currUser } = React.useContext(CalendarContext)
+
+    const onRefresh = () => {
+        let dvn = 0;
+        onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
+            const data = snapshot.val()
+            if(data !== null)
+            {
+                dvn =  data.defaultNumVacations
+            }
+        })
+        roomUsers.map(val => {
+            update(ref(db, `rooms/${currUser.room}/members/${val.uuid}/`), {vacationsNum: dvn})
+            .then(update(ref(db, `users/${val.uuid}/`), {vacationsNum: dvn}))
+        })
+    }
 
     return (
         <React.Fragment>
             <div className='w-192 h-fit bg-main-gray text-gray-100'>
-                <div className='relative flex justify-between font-bold'>
-                    <div className='w-fit ml-8'> 
+                <div className='relative h-6 flex justify-between font-bold'>
+                    <div className='w-fit h-full ml-8'> 
                         <div>User</div>
                     </div>
-                    <div className='relative w-56 flex justify-between mr-8'>
+                    <div className='relative h-full w-60 flex justify-between mr-8'>
                         <div>Role</div>
-                        <div>Vacations</div>
+                        <div className='flex w-full h-6 justify-end ml-3'>
+                            <div>Vacations</div>
+                            { currUser.role === ROLES.HRMANAGER ? 
+                                <div onClick={onRefresh} className='w-6 h-6 bg-white flex justify-center items-center ml-2 rounded-full cursor-pointer' title='Refresh vacations'>
+                                    <FontAwesomeIcon className='w-4 h-4 flex text-center justify-center items-center text-black' icon={faArrowsRotate} />
+                                </div>
+                                : <div className='w-3 h-3'></div>
+                            }
+                        </div>
                     </div>
                 </div>
                 <hr className='mt-1 mb-1 bg-gray-100 opacity-25'></hr>
