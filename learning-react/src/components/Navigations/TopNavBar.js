@@ -8,7 +8,7 @@ import AddMember from "./AddMember";
 import { ROLES } from "../SignIn";
 
 function TopNavBar() {
-    const { currUser } = React.useContext(CalendarContext)
+    const { currUser, currUserPhoto } = React.useContext(CalendarContext)
     const [ showAddMember, setShowAddMember] = React.useState(false);
 
     const generateColor = () => 
@@ -35,7 +35,11 @@ function TopNavBar() {
                             : <div></div>
                         }
                         <div className="mr-6">Left: {currUser.vacationsNum} {currUser.vacationsNum !== 1 ? "days" : "day"}</div>
-                        <div className="mr-6 w-8 h-8 flex justify-center items-center rounded-full text-white bg-orange-400">{String(currUser.firstName)[0]}</div>
+                        { currUserPhoto !== null ? 
+                            <img className="mr-6 w-8 h-8 rounded-full" src={currUserPhoto} />
+                        :
+                            <div className="mr-6 w-8 h-8 flex justify-center items-center rounded-full text-white bg-orange-400">{String(currUser.firstName)[0]}</div>
+                        }
                         <FontAwesomeIcon onClick={handleSignOut} icon={faArrowRightFromBracket} className="mr-6 cursor-pointer"/>
                     </div>
             </div>

@@ -3,31 +3,32 @@ import { CalendarContext } from '../../Home';
 import PersonPNG from "../../PersonPNG.png";
 import { faPencil, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import EditPhotoPopUp from './EditPhotoPopUp';
 
 export default function UserSettings() {
-  const {currUser} = React.useContext(CalendarContext)
+  const {currUser, currUserPhoto} = React.useContext(CalendarContext)
   const [onEdit, setOnEdit] = React.useState(false)
   const firstNameRef = React.useRef()
   const lastNameRef = React.useRef()
+  const [showEditPhoto, setShowEditPhoto] = React.useState(false)
 
-  const onSubmit = (e) => {
-    e.preventDefault()
-    console.log("I am called")
-    console.log(firstNameRef.current.value, lastNameRef.current.value)
-    
+  const onSubmit = e => {
+
   }
 
   return (
     <div>
       <div className='w-120 h-full'>
+      <EditPhotoPopUp show={showEditPhoto} setShow={setShowEditPhoto}/>
         <div className='relative w-full h-56 flex justify-center'>
-          <div className='relative w-56 h-full bg-orange-400 flex justify-center items-center rounded-full'>
+          <button onClick={() => setShowEditPhoto(true)} className={currUserPhoto === null ? 'relative w-56 h-full bg-orange-400 text-white flex justify-center items-center rounded-full hover:bg-gray-500/10 hover:text-gray-400 active:shadow-xl active:bg-gray-500/30'
+                                                                    :'relative w-56 h-full flex justify-center items-center rounded-full hover:bg-gray-500/10 hover:text-gray-400 active:shadow-xl active:bg-gray-500/30'} title='Change profile image'>
               {
-                currUser.photo !== undefined ? <img src={currUser.photo} alt={String(currUser.firstName)[0]}></img>
+                currUserPhoto !== null ? <img className='w-full h-full rounded-full hover:opacity-50' src={currUserPhoto} alt={String(currUser.firstName)[0]}></img>
                 :
-                <div className='text-9xl text-white'>{String(currUser.firstName)[0]}</div>
+                <div className='text-9xl'>{String(currUser.firstName)[0]}</div>
               }
-          </div>
+          </button>
         </div>
         <div className='w-full h-96 flex justify-center'>
           <div className='w-4/5 h-5/6 bg-main-gray rounded-xl pl-4 mt-6'>

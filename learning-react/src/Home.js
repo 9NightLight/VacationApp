@@ -12,6 +12,12 @@ import UsersSettings from "./components/Navigations/UsersSettings";
 import Notifications from "./components/Navigations/Notifications";
 import UserSettings from "./components/Navigations/UserSettings";
 import SettingsTab from "./components/Navigations/SettingsTab";
+///
+import {
+ref,
+getDownloadURL,
+} from "firebase/storage";
+import { storage } from "./firebase";
 
 export const CalendarContext = React.createContext();
 
@@ -21,6 +27,7 @@ export default function Home() {
     const [tab, setTab] = useState(0);
     const [users, setUsers] = React.useState(new Array());
     const [currUser, setCurrUser] = React.useState(new Array());
+    const [currUserPhoto, setCurrUserPhoto] = React.useState(null);
     const [roomUsers, setRoomUsers] = React.useState(new Array());
     const [darkTheme, setDarkTheme] = React.useState(false)
     
@@ -41,6 +48,16 @@ export default function Home() {
         })
     }, [])
 
+    useEffect(() => {
+        if(currUser.uuid !== undefined) 
+        {
+            getDownloadURL(ref(storage, `${currUser.uuid}`))
+            .then((url) => { 
+                setCurrUserPhoto(url)
+            })
+        }
+    }, [currUser]);
+
     return (
         <React.Fragment>
             <CalendarContext.Provider value={{  
@@ -49,16 +66,17 @@ export default function Home() {
                                                 users, setUsers, 
                                                 currUser, setCurrUser, 
                                                 roomUsers, setRoomUsers,
-                                                darkTheme, setDarkTheme
+                                                darkTheme, setDarkTheme,
+                                                currUserPhoto, setCurrUserPhoto,
                                                 }}>
                     <TopNavBar />
                     <div className="h-max--48 flex flex-1">
                         <GlobalSideBar />
                         { tab === 0 ?
                             <div className="flex flex-1 flex-col">
-                            <CalendarHeader month={monthIndex}/>
-                            <DayNames />
-                            <Month month={currentCalendar} />
+                                <CalendarHeader month={monthIndex}/>
+                                <DayNames />
+                                <Month month={currentCalendar} />
                             </div>
                         : tab === 1 ?
                             <UsersSettings />
