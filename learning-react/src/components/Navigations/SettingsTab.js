@@ -7,17 +7,17 @@ import { ROLES } from '../SignIn';
 export default function SettingsTab() {
     const {darkTheme, setDarkTheme, currUser, defaultNumVacations, setDefaultNumVacations} = React.useContext(CalendarContext)
     const vacationsNumRef = React.useRef()
-    
 
-    // React.useEffect(() => {
-    //     onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
-    //         const data = snapshot.val()
-    //         if(data !== null)
-    //         {
-    //             setDefaultNumVacations(data.defaultNumVacations)
-    //         }
-    //     })
-    // }, [])
+    React.useEffect(() => {
+        onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
+            const data = snapshot.val()
+            if(data !== null)
+            {
+                console.log(data.defaultNumVacations)
+                setDefaultNumVacations(data.defaultNumVacations)
+            }
+        })
+    }, [])
 
     const handleChangeDefaultVacations = () => {
         auth.onAuthStateChanged(user => {
@@ -27,6 +27,7 @@ export default function SettingsTab() {
                 {
                     auth.onAuthStateChanged(u => {
                         update(ref(db, `rooms/${currUser.room}/settings`), {defaultNumVacations: Number(vacationsNumRef.current.value)})
+                        .then(setDefaultNumVacations(vacationsNumRef.current.value))
                         .then(vacationsNumRef.current.value = "")
                     })
                 } 

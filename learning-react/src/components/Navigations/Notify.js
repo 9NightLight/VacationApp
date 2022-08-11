@@ -20,8 +20,7 @@ export default function Notify({uuid, setInvites, invites}) {
     e.preventDefault()
     auth.onAuthStateChanged(user => {
       if (user && currUser !== undefined)
-      {    
-        console.log("Notify")
+      {
         update(ref(db, `/users/${currUser.uuid}`), { room: owner.uuid, role: ROLES.EMPLOYER, vacationsNum: owner.defaultVacationsNum }) // Here problem with reupdating
 
         if(currUser.room === currUser.uuid)

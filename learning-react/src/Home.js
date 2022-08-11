@@ -42,14 +42,15 @@ export default function Home() {
     React.useEffect(() => {
         auth.onAuthStateChanged(user => {
             if(user) {
-                navigate("/");
-                onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
-                    const data = snapshot.val()
-                    if(data !== null)
-                    {
-                        setDefaultNumVacations(data.defaultNumVacations)
-                    }
-                })
+                navigate("/")
+                // onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
+                //     const data = snapshot.val()
+                //     if(data !== null)
+                //     {
+                //         console.log(data.defaultNumVacations)
+                //         setDefaultNumVacations(data.defaultNumVacations)
+                //     }
+                // })
             }
             else if(!user){
                 navigate("/auth");

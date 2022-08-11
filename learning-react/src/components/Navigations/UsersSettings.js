@@ -11,16 +11,9 @@ export default function UsersSettings() {
     const { roomUsers, currUser, defaultNumVacations } = React.useContext(CalendarContext)
 
     const onRefresh = () => {
-        let dvn = 0;
-        onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
-            const data = snapshot.val()
-            if(data !== null)
-            {
-                roomUsers.map(val => {
-                    update(ref(db, `rooms/${currUser.room}/members/${val.uuid}/`), {vacationsNum: data.defaultNumVacations})
-                    .then(update(ref(db, `users/${val.uuid}/`), {vacationsNum: data.defaultNumVacations}))
-                })
-            }
+        roomUsers.map(val => {
+            update(ref(db, `rooms/${currUser.room}/members/${val.uuid}/`), {vacationsNum: defaultNumVacations})
+            .then(update(ref(db, `users/${val.uuid}/`), {vacationsNum: defaultNumVacations}))
         })
     }
 

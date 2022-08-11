@@ -15,8 +15,6 @@ export default function UserSettingsCell({user}) {
             {
                 if(vacationsNumRef.current.value !== "" && !isNaN(Number(vacationsNumRef.current.value)))
                 {
-                    console.log(Number(vacationsNumRef.current.value))
-                    console.log(user)
                     auth.onAuthStateChanged(u => {
                         update(ref(db, `/users/${user.uuid}`), {
                             vacationsNum: Number(vacationsNumRef.current.value)
