@@ -5,19 +5,19 @@ import { onValue, ref, update } from 'firebase/database';
 import { ROLES } from '../SignIn';
 
 export default function SettingsTab() {
-    const {darkTheme, setDarkTheme, currUser} = React.useContext(CalendarContext)
+    const {darkTheme, setDarkTheme, currUser, defaultNumVacations, setDefaultNumVacations} = React.useContext(CalendarContext)
     const vacationsNumRef = React.useRef()
-    const [defaultNumVacations, setDefaultNumVacations] = React.useState(0)
+    
 
-    React.useEffect(() => {
-        onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
-            const data = snapshot.val()
-            if(data !== null)
-            {
-                setDefaultNumVacations(data.defaultNumVacations)
-            }
-        })
-    }, [])
+    // React.useEffect(() => {
+    //     onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
+    //         const data = snapshot.val()
+    //         if(data !== null)
+    //         {
+    //             setDefaultNumVacations(data.defaultNumVacations)
+    //         }
+    //     })
+    // }, [])
 
     const handleChangeDefaultVacations = () => {
         auth.onAuthStateChanged(user => {

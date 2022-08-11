@@ -18,30 +18,48 @@ export default function VacationWindow({show, date, setShow}) {
     const [Dates, SetDates] = React.useState(new Array(new Date(), new Date()))
     const [deltaDates, setDeltaDates] = React.useState(1)
     const _uid = uid(); // if on, occurs some problems with confirmed
+
+    const countDelta = () => {
+        const sD = new Date(Dates[0].toString());
+        sD.setHours(0, 0, 0, 0);
+        const eD = new Date(Dates[1].toString());
+        eD.setHours(0, 0, 0, 0);
+        
+        let a = 0;
+        let dd = sD
+        let counter = 0;
+        do {
+            dd = new Date(dd.setDate((dd.getDate() + a)))
+            if(dd.getDay() !== 6 && dd.getDay() !== 0) counter++
+            a = 1
+        } while(dd.getTime() !== eD.getTime())
+        setDeltaDates(counter)
+        return counter
+    }
     
     const onSubmit = (e) => {
         e.preventDefault()
         auth.onAuthStateChanged(user => {
             if(user && ShowVacationWindow === true)
             {
-                // const _uid = uid();
-                const sD = new Date(Dates[0].toString());
-                sD.setHours(0, 0, 0, 0);
-                const eD = new Date(Dates[1].toString());
-                eD.setHours(0, 0, 0, 0);
-                const minusVacationNum = Math.ceil((sD - eD) / (1000 * 3600 * 24)) - 1
-                
-
-                set(ref(db, `/rooms/${currUser.room}/events/pending/${_uid}`), {
-                    type: Type,
-                    description: Description,
-                    startDate: sD.toString(),
-                    endDate: eD.toString(),
-                    uuid: currUser.uuid,
-                    eventUID: _uid,
-                })
-                update(ref(db, `rooms/${currUser.room}/members/${currUser.uuid}/`), { vacationsNum: currUser.vacationsNum + minusVacationNum})
-                update(ref(db, `users/${currUser.uuid}/`), { vacationsNum: currUser.vacationsNum + minusVacationNum})
+                let d = countDelta()
+                if(d !== 0)
+                {
+                    const sD = new Date(Dates[0].toString());
+                    sD.setHours(0, 0, 0, 0);
+                    const eD = new Date(Dates[1].toString());
+                    eD.setHours(0, 0, 0, 0);
+                    set(ref(db, `/rooms/${currUser.room}/events/pending/${_uid}`), {
+                        type: Type,
+                        description: Description,
+                        startDate: sD.toString(),
+                        endDate: eD.toString(),
+                        uuid: currUser.uuid,
+                        eventUID: _uid,
+                    })
+                    update(ref(db, `rooms/${currUser.room}/members/${currUser.uuid}/`), { vacationsNum: currUser.vacationsNum - d})
+                    update(ref(db, `users/${currUser.uuid}/`), { vacationsNum: currUser.vacationsNum - d})
+                }
             }
         })
         setShowVacationWindow(false)
@@ -50,12 +68,7 @@ export default function VacationWindow({show, date, setShow}) {
     
 
     React.useEffect(()=> {
-        const sD = new Date(Dates[0].toString());
-        sD.setHours(0, 0, 0, 0);
-        const eD = new Date(Dates[1].toString());
-        eD.setHours(0, 0, 0, 0);
-
-        setDeltaDates(Math.ceil((sD - eD) / (1000 * 3600 * 24)) - 1)
+        countDelta()
     }, [Dates])
 
     React.useEffect(() => {
@@ -92,7 +105,7 @@ export default function VacationWindow({show, date, setShow}) {
                     </div>
                     <TransitionComponent
                         content = {
-                            <div onClick={() => setShow(false)} className="z-10 absolute w-full h-full left-0 top-0"></div>
+                            <div onClick={() => setShow(false)} className="z-10 bg-gray-700/50 absolute w-full h-full left-0 top-0"></div>
                         }
                     show={ShowVacationWindow}/>
                 </div>

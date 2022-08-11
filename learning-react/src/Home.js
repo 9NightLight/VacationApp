@@ -7,7 +7,7 @@ import Month from "./components/Content/Month";
 import DayNames from "./components/Content/CalendarParts/DayNames";
 import GlobalContext from "./context/GlobalContext";
 import { useNavigate } from "react-router-dom";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 import UsersSettings from "./components/Navigations/UsersSettings";
 import Notifications from "./components/Navigations/Notifications";
 import UserSettings from "./components/Navigations/UserSettings";
@@ -18,6 +18,7 @@ ref,
 getDownloadURL,
 } from "firebase/storage";
 import { storage } from "./firebase";
+import { onValue } from "firebase/database";
 
 export const CalendarContext = React.createContext();
 
@@ -30,6 +31,7 @@ export default function Home() {
     const [currUserPhoto, setCurrUserPhoto] = React.useState(null);
     const [roomUsers, setRoomUsers] = React.useState(new Array());
     const [darkTheme, setDarkTheme] = React.useState(false)
+    const [defaultNumVacations, setDefaultNumVacations] = React.useState(0)
     
 
     useEffect(() => {
@@ -41,6 +43,13 @@ export default function Home() {
         auth.onAuthStateChanged(user => {
             if(user) {
                 navigate("/");
+                onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
+                    const data = snapshot.val()
+                    if(data !== null)
+                    {
+                        setDefaultNumVacations(data.defaultNumVacations)
+                    }
+                })
             }
             else if(!user){
                 navigate("/auth");
@@ -68,6 +77,7 @@ export default function Home() {
                                                 roomUsers, setRoomUsers,
                                                 darkTheme, setDarkTheme,
                                                 currUserPhoto, setCurrUserPhoto,
+                                                defaultNumVacations, setDefaultNumVacations,
                                                 }}>
                     <TopNavBar />
                     <div className="h-max--48 flex flex-1">

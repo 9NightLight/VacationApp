@@ -10,13 +10,30 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
     const [vacationOwnerName, setVacationOwnerName] = React.useState("")
     const {currUser, roomUsers} = React.useContext(CalendarContext)
 
-    const minusVacationNum = () => {
+    const countDelta = () => {
         const sD = new Date(vacation.startDate);
         sD.setHours(0, 0, 0, 0);
         const eD = new Date(vacation.endDate);
         eD.setHours(0, 0, 0, 0);
-        return vacationOwner.vacationsNum + (Math.ceil((sD - eD) / (1000 * 3600 * 24)) - 1)
+        
+        let a = 0;
+        let dd = sD
+        let counter = 0;
+        do {
+            dd = new Date(dd.setDate((dd.getDate() + a)))
+            if(dd.getDay() !== 6 && dd.getDay() !== 0) counter++
+            a = 1
+        } while(dd.getTime() !== eD.getTime())
+        return counter
     }
+
+    // const minusVacationNum = () => {
+    //     const sD = new Date(vacation.startDate);
+    //     sD.setHours(0, 0, 0, 0);
+    //     const eD = new Date(vacation.endDate);
+    //     eD.setHours(0, 0, 0, 0);
+    //     return vacationOwner.vacationsNum + (Math.ceil((sD - eD) / (1000 * 3600 * 24)) - 1)
+    // }
 
     React.useEffect(() => {
         auth.onAuthStateChanged(user => {
@@ -72,8 +89,8 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
         auth.onAuthStateChanged(user => {
             if(user)
             {
-                update(ref(db, `rooms/${currUser.room}/members/${vacationOwner.uuid}`), {vacationsNum: vacationOwner.vacationsNum - minusVacationNum()})
-                update(ref(db, `users/${vacationOwner.uuid}/`), {vacationsNum: vacationOwner.vacationsNum - minusVacationNum()})
+                update(ref(db, `rooms/${currUser.room}/members/${vacationOwner.uuid}`), {vacationsNum: vacationOwner.vacationsNum + countDelta()})
+                update(ref(db, `users/${vacationOwner.uuid}/`), {vacationsNum: vacationOwner.vacationsNum + countDelta()})
                 remove(ref(db, `rooms/${currUser.room}/events/pending/${vacation.eventUID}`))
                 let arr = new Array()
                 vacations.map(val => {
