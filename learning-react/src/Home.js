@@ -5,25 +5,25 @@ import { getMonth } from "./util";
 import CalendarHeader from "./components/Content/CalendarParts/CalendarHeader";
 import Month from "./components/Content/Month";
 import DayNames from "./components/Content/CalendarParts/DayNames";
-import GlobalContext from "./context/GlobalContext";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "./firebase";
 import UsersSettings from "./components/Navigations/UsersSettings";
 import Notifications from "./components/Navigations/Notifications";
 import UserSettings from "./components/Navigations/UserSettings";
 import SettingsTab from "./components/Navigations/SettingsTab";
+import dayjs from "dayjs";
 ///
 import {
 ref,
 getDownloadURL,
 } from "firebase/storage";
 import { storage } from "./firebase";
-import { onValue } from "firebase/database";
 
 export const CalendarContext = React.createContext();
 
 export default function Home() {
-    const { monthIndex, year } = useContext(GlobalContext)
+    const [year, setYear] = useState(dayjs().year());
+    const [monthIndex, setMonthIndex] = useState(new Date().getMonth());
     const [currentCalendar, setCurrentCalendar] = useState(getMonth(year, new Date().getMonth()))
     const [tab, setTab] = useState(0);
     const [users, setUsers] = React.useState(new Array());
@@ -43,14 +43,6 @@ export default function Home() {
         auth.onAuthStateChanged(user => {
             if(user) {
                 navigate("/")
-                // onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
-                //     const data = snapshot.val()
-                //     if(data !== null)
-                //     {
-                //         console.log(data.defaultNumVacations)
-                //         setDefaultNumVacations(data.defaultNumVacations)
-                //     }
-                // })
             }
             else if(!user){
                 navigate("/auth");
@@ -79,6 +71,8 @@ export default function Home() {
                                                 darkTheme, setDarkTheme,
                                                 currUserPhoto, setCurrUserPhoto,
                                                 defaultNumVacations, setDefaultNumVacations,
+                                                year, setYear,
+                                                monthIndex, setMonthIndex
                                                 }}>
                     <TopNavBar />
                     <div className="h-max--48 flex flex-1">

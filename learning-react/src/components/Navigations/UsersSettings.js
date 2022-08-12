@@ -8,7 +8,7 @@ import { db } from '../../firebase';
 import { ROLES } from '../SignIn';
 
 export default function UsersSettings() {
-    const { roomUsers, currUser, defaultNumVacations } = React.useContext(CalendarContext)
+    const { roomUsers, currUser, defaultNumVacations, setDefaultNumVacations } = React.useContext(CalendarContext)
 
     const onRefresh = () => {
         roomUsers.map(val => {
@@ -16,6 +16,16 @@ export default function UsersSettings() {
             .then(update(ref(db, `users/${val.uuid}/`), {vacationsNum: defaultNumVacations}))
         })
     }
+
+    React.useEffect(() => {
+        onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
+            const data = snapshot.val()
+            if(data !== null)
+            {
+                setDefaultNumVacations(data.defaultNumVacations)
+            }
+        })
+    }, [])
 
     return (
         <React.Fragment>

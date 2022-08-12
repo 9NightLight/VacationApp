@@ -1,13 +1,12 @@
 import React from "react";
 import dayjs from "dayjs";
-import GlobalContext from "../../../context/GlobalContext";
 import { faCircleChevronLeft, faCircleChevronRight, } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import VacationWindow from "../VacationWindow";
+import { CalendarContext } from "../../../Home";
 
 export default function CalendarHeader({month}) {
-  const { monthIndex, setMonthIndex } = React.useContext(GlobalContext);
-  const { year, setYear } = React.useContext(GlobalContext);
+  const { year, setYear, monthIndex, setMonthIndex } = React.useContext(CalendarContext);
   const [ShowVacationWindow, setShowVacationWindow] = React.useState(false);
 
   function handlePrevMonth() {

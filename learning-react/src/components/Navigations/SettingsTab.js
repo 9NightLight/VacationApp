@@ -13,7 +13,6 @@ export default function SettingsTab() {
             const data = snapshot.val()
             if(data !== null)
             {
-                console.log(data.defaultNumVacations)
                 setDefaultNumVacations(data.defaultNumVacations)
             }
         })

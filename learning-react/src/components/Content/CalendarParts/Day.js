@@ -1,12 +1,11 @@
 import React from "react";
 import dayjs from "dayjs";
-import GlobalContext from "../../../context/GlobalContext";
 import VacationWindow from "../VacationWindow";
+import { CalendarContext } from "../../../Home";
 
-export default function Day({day, rowIdx}) {
-    const { monthIndex } = React.useContext(GlobalContext); // savedEvents
+export default function Day({day}) {
+    const { monthIndex } = React.useContext(CalendarContext);
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(false);
-
 
     function GetLessDays() {
         return (day.month() !== monthIndex
@@ -23,7 +22,7 @@ export default function Day({day, rowIdx}) {
             <div className="w-6 h-6 bg-green-apple flex justify-center items-center rounded-full">
                 { day.format("D") }
             </div>
-            </div>
+          </div>
         ) 
     }
 
