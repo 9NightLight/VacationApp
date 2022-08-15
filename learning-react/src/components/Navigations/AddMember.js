@@ -11,6 +11,7 @@ import { CalendarContext } from '../../Home';
 export default function AddMember({setShow}) {
     const EmailRef = React.useRef();
     const {currUser, roomUsers} = React.useContext(CalendarContext)
+    const [existError, setExistError] = React.useState(false)
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -42,7 +43,7 @@ export default function AddMember({setShow}) {
                     }
                     else 
                     {
-                        console.log("Email already exist")
+                        setExistError(true)
                         EmailRef.current.value = ""
                     }
                 }
@@ -57,8 +58,12 @@ export default function AddMember({setShow}) {
                         <form onSubmit={handleSubmit}>
                             <div className='font-bold text-2xl ml-4'>Add member</div>
                             <div className='absolute flex flex-col justify-around items-center h-5/6 w-full'>
-                                <input className='w-5/6 h-10 border-2' type="email" ref={EmailRef} placeholder="example@example.com"></input>
-                                <button type='submit' className='w-1/2 h-fit p-4 bg-blue-300'>Add member</button>
+                                <div className='relative w-full flex flex-col items-center'>
+                                    <input className='w-5/6 h-10 border-2' type="email" ref={EmailRef} placeholder="example@example.com"></input>
+                                    {existError === false ? "" : <div className='text-red-400 text-sm'>Email already on pending</div> }
+                                </div>
+
+                                <button type='submit' className='w-1/2 h-fit p-4 bg-blue-300 rounded-xl font-semibold'>Add member</button>
                             </div>
                         </form>
                     </div>

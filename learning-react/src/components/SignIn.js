@@ -15,6 +15,7 @@ export default function SignIn() {
     const EmailRef = React.useRef();
     const PasswordRef = React.useRef();
     const [showRegister, setShowRegister] = React.useState(false);
+    const [showInvalidData, setShowInvalidData] = React.useState(false);
     const navigate = useNavigate();
 
     React.useEffect(() => {
@@ -31,7 +32,7 @@ export default function SignIn() {
     const handleSignIn = (e) => {
         e.preventDefault();
         signInWithEmailAndPassword(auth, EmailRef.current.value, PasswordRef.current.value)
-        .catch(err => console.log(err))
+        .catch(err => setShowInvalidData(true))
     }
 
     const writeUsers = () => {
@@ -64,7 +65,7 @@ export default function SignIn() {
         e.preventDefault();
         createUserWithEmailAndPassword(auth, EmailRef.current.value, PasswordRef.current.value)
         .then(writeUsers)
-        .catch(err => console.log(err))
+        .catch(err => setShowInvalidData(true))
     }
 
     return (
@@ -89,7 +90,8 @@ export default function SignIn() {
                             </div>
                             <div className="w-full h-40 flex flex-col justify-center items-center">
                                 <button type='submit' className="w-24 h-10 bg-green-apple rounded-xl">Sign in</button>
-                                <button onClick={() => (setShowRegister(true), EmailRef.current.value ="", PasswordRef.current.value ="")} className="w-44 h-6 bg-red-400 rounded-xl mt-2 text-sm">Create an account</button>
+                                <button onClick={() => (setShowRegister(true), EmailRef.current.value ="", PasswordRef.current.value ="", setShowInvalidData(false))} className="w-44 h-6 bg-red-400 rounded-xl mt-2 text-sm">Create an account</button>
+                                {showInvalidData ? <div className='text-red-400 text-sm'>Invalid data</div> : ""}
                             </div>
                         </form>
                         :
@@ -119,7 +121,8 @@ export default function SignIn() {
                                     </div>
                                     <div className="w-full h-40 flex flex-col justify-center items-center">
                                         <button type='submit' className="w-24 h-10 bg-green-apple rounded-xl">Create</button>
-                                        <button onClick={() => (setShowRegister(false), EmailRef.current.value ="", PasswordRef.current.value ="")} className="w-44 h-6 bg-red-400 rounded-xl mt-2 text-sm">Back to sign in</button>
+                                        <button onClick={() => (setShowRegister(false), EmailRef.current.value ="", PasswordRef.current.value ="", setShowInvalidData(false))} className="w-44 h-6 bg-red-400 rounded-xl mt-2 text-sm">Back to sign in</button>
+                                        {showInvalidData ? <div className='text-red-400 text-sm'>Invalid data</div> : ""}
                                     </div>
                                 </form>
                             </div>

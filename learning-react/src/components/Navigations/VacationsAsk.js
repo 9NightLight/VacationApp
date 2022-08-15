@@ -56,7 +56,7 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
     }, [vacationOwner])
 
     const getFormatedDate = (date) => {
-        return new Date(date).getDate() + "-" + new Date(date).getMonth() + "-" + new Date(date).getFullYear()
+        return (new Date(date).getDate() < 10 ? "0" + new Date(date).getDate() : new Date(date).getDate()) + "-" + (new Date(date).getMonth() < 10 ? "0" + (new Date(date).getMonth() + 1) : (new Date(date).getMonth() + 1)) + "-" + new Date(date).getFullYear()
     }
 
     const onEventConfirm = (e) => {

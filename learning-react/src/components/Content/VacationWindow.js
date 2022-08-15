@@ -5,7 +5,7 @@ import TypeVacation from "../VacationWindowComponents/TypeVacation";
 import VacationDescription from "../VacationWindowComponents/VacationDescription";
 import CalendarMini from "../VacationWindowComponents/CalendarMini";
 import TransitionComponent from "../TransitionComponent";
-import { ref, set, update } from 'firebase/database';
+import { onValue, ref, set, update } from 'firebase/database';
 import { auth, db } from '../../firebase.js';
 import { uid } from 'uid';
 import { CalendarContext } from "../../Home";
@@ -24,17 +24,60 @@ export default function VacationWindow({show, date, setShow}) {
         sD.setHours(0, 0, 0, 0);
         const eD = new Date(Dates[1].toString());
         eD.setHours(0, 0, 0, 0);
-        
-        let a = 0;
-        let dd = sD
-        let counter = 0;
-        do {
-            dd = new Date(dd.setDate((dd.getDate() + a)))
-            if(dd.getDay() !== 6 && dd.getDay() !== 0) counter++
-            a = 1
-        } while(dd.getTime() !== eD.getTime())
-        setDeltaDates(counter)
-        return counter
+        let arrUserEvents = new Array()
+        let arrUserEventsNotConfirmed = new Array()
+
+        onValue(ref(db, `rooms/${currUser.room}/events/confirmed/`), (snapshot) => {
+            const data = snapshot.val();
+            if(data !== null)
+            Object.values(data).map(e => {
+                if(e.uuid === currUser.uuid)
+                {
+                    arrUserEvents = [...arrUserEvents, e]
+                }
+            })
+        })
+        onValue(ref(db, `rooms/${currUser.room}/events/pending/`), (snapshot) => {
+            const data = snapshot.val();
+            if(data !== null)
+            Object.values(data).map(e => {
+                if(e.uuid === currUser.uuid)
+                {
+                    arrUserEventsNotConfirmed = [...arrUserEvents, e]
+                }
+            })
+        })
+        if(
+            arrUserEvents.find(e => {
+                if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) || eD >= new Date(e.startDate) && eD <= new Date(e.endDate))
+                {
+                    return true
+                }
+            })
+            || 
+            arrUserEventsNotConfirmed.find(e => {
+                if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) || eD >= new Date(e.startDate) && eD <= new Date(e.endDate))
+                {
+                    return true
+                }
+            })
+        ) {
+            setDeltaDates(-1)
+            return -1
+        }
+        else
+        {
+            let a = 0;
+            let dd = sD
+            let counter = 0;
+            do {
+                dd = new Date(dd.setDate((dd.getDate() + a)))
+                if(dd.getDay() !== 6 && dd.getDay() !== 0) counter++
+                a = 1
+            } while(dd.getTime() !== eD.getTime())
+            setDeltaDates(counter)
+            return counter
+        }
     }
     
     const onSubmit = (e) => {

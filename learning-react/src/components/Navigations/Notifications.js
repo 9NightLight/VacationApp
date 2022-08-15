@@ -46,7 +46,15 @@ export default function Notifications({tab}) {
     }, [tab]);
 
     return (
-      <div className='ml-4 flex justify-between w-192 h-full'>
+      <div className='ml-4 flex flex-col w-192 h-full'>
+        <div className='h-fit flex flex-col mb-4'>
+          <div className='font-bold text-2xl mb-4'>Invites</div>
+          {
+            invites.map((val, idx) => {
+              return <Notify uuid={val} key={idx} invites={invites} setInvites={setInvites}/>
+            })
+          }
+        </div>
         {currUser.role !== ROLES.HRMANAGER ? "" :
         <div>
           <div className='font-bold text-2xl mb-4'>Vacations</div>
@@ -57,14 +65,6 @@ export default function Notifications({tab}) {
             }
           </div>
         }     
-        <div className='flex flex-col'>
-          <div className='font-bold text-2xl mb-4'>Invites</div>
-          {
-            invites.map((val, idx) => {
-              return <Notify uuid={val} key={idx} invites={invites} setInvites={setInvites}/>
-            })
-          }
-        </div>
       </div>
     )
 }
