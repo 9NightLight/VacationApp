@@ -57,6 +57,7 @@ export default function Home() {
             .then((url) => { 
                 setCurrUserPhoto(url)
             })
+            .catch(err => console.log(err))
         }
     }, [currUser]);
 

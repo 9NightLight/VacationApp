@@ -18,7 +18,7 @@ function TopNavBar() {
 
     const handleSignOut = () => {
         signOut(auth)
-        .then(localStorage.clear())
+        .then()
         .catch(err => console.log(err))
     }
 
