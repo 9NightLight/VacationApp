@@ -1,18 +1,20 @@
 import React from "react";
-import Header from "../VacationWindowComponents/Header";
-import Submit from "../VacationWindowComponents/Submit";
-import TypeVacation from "../VacationWindowComponents/TypeVacation";
-import VacationDescription from "../VacationWindowComponents/VacationDescription";
-import CalendarMini from "../VacationWindowComponents/CalendarMini";
+import Header from "./VacationWindowComponents/Header";
+import Submit from "./VacationWindowComponents/Submit";
+import TypeVacation from "./VacationWindowComponents/TypeVacation";
+import VacationDescription from "./VacationWindowComponents/VacationDescription";
+import CalendarMini from "./VacationWindowComponents/CalendarMini";
 import TransitionComponent from "../TransitionComponent";
 import { onValue, ref, set, update } from 'firebase/database';
 import { auth, db } from '../../firebase.js';
 import { uid } from 'uid';
 import { CalendarContext } from "../../Home";
+import emailjs from "@emailjs/browser";
+import { ROLES } from "../SignIn";
 
 export default function VacationWindow({show, date, setShow}) {
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(show);
-    const {currUser} = React.useContext(CalendarContext)
+    const {currUser, roomUsers} = React.useContext(CalendarContext)
     const [Type, SetType] = React.useState("Unpayed")
     const [Description, SetDescription] = React.useState("")
     const [Dates, SetDates] = React.useState(new Array(new Date(), new Date()))
@@ -102,6 +104,22 @@ export default function VacationWindow({show, date, setShow}) {
                     })
                     update(ref(db, `rooms/${currUser.room}/members/${currUser.uuid}/`), { vacationsNum: currUser.vacationsNum - d})
                     update(ref(db, `users/${currUser.uuid}/`), { vacationsNum: currUser.vacationsNum - d})
+                    .then(
+                        roomUsers.map(u => {
+                            if(u.role === ROLES.HRMANAGER || u.role === ROLES.ADMIN)
+                            {
+                                emailjs.send("service_1gemy04", 
+                                    "template_5i2gmrf", 
+                                    {   from_firstName: currUser.firstName, 
+                                        from_lastName: currUser.lastName, 
+                                        to_name: u.firstName, 
+                                        to_email: u.email
+                                    }, 
+                                    "2qQ8h0nKPbPlCbXhx"
+                                )
+                            }
+                        })
+                    )
                 }
             }
         })

@@ -13,11 +13,7 @@ import UserSettings from "./components/Navigations/UserSettings";
 import SettingsTab from "./components/Navigations/SettingsTab";
 import dayjs from "dayjs";
 ///
-import {
-ref,
-getDownloadURL,
-} from "firebase/storage";
-import { storage } from "./firebase";
+
 
 export const CalendarContext = React.createContext();
 
@@ -49,17 +45,6 @@ export default function Home() {
             }
         })
     }, [])
-
-    useEffect(() => {
-        if(currUser.uuid !== undefined) 
-        {
-            getDownloadURL(ref(storage, `${currUser.uuid}`))
-            .then((url) => { 
-                setCurrUserPhoto(url)
-            })
-            .catch(err => console.log(err))
-        }
-    }, [currUser]);
 
     return (
         <React.Fragment>

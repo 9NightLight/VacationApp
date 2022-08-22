@@ -2,6 +2,7 @@ import React from 'react';
 import { db, auth } from '../../firebase';
 import { ref, set, onValue } from 'firebase/database';
 import { CalendarContext } from '../../Home';
+import emailjs from "@emailjs/browser";
 
 // export const STATE = {
 //     UNCONFIRMED: "Unconfirmed",
@@ -32,14 +33,16 @@ export default function AddMember({setShow}) {
                             })
                         }
                     })
-                    // ... Fix adding email same to yourself's
                     if(pendingArr.find((val) =>{return val === str.toLowerCase()}) === undefined && roomUsers.find(val => {return val.email === str.toLowerCase()}) === undefined)
                     {
                         pendingArr = [...pendingArr, str.toLowerCase()];
                         set(ref(db, `/rooms/${currUser.room}/pending/`), {
                             emailArray: pendingArr
                         })
+                        /// ...
+                        .then(emailjs.send("service_1gemy04", "template_bu9uf03", {from_name: currUser.firstName, to_email: EmailRef.current.value}, "2qQ8h0nKPbPlCbXhx"))
                         .then(EmailRef.current.value = "")
+                        .then(setExistError(false))
                     }
                     else 
                     {

@@ -1,5 +1,5 @@
 import React from "react";
-import { CalendarContext } from "../../Home";
+import { CalendarContext } from "../../../Home";
 
 export default function Header({delta}) {
     const { currUser } = React.useContext(CalendarContext)

@@ -3,11 +3,16 @@ import { isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink } fro
 import { auth, db } from '../firebase.js';
 import { onValue, ref, set } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
-import { SelectAllTwoTone } from '@mui/icons-material';
 
 export const ROLES = {
     EMPLOYER: "Employer",
-    HRMANAGER: "HR Manager"
+    HRMANAGER: "HR Manager",
+    ADMIN: "Admin"
+}
+
+const DEV_PATH = {
+    TEST: "http://localhost:3000/auth",
+    WEB: "https://calendar.apgix.com/auth"
 }
 
 export default function SignIn() {
@@ -28,7 +33,6 @@ export default function SignIn() {
 
     const trySignIn = async (e) => {
         e.preventDefault();
-        console.log("Createing new account")
         if (isSignInWithEmailLink(auth, email) && !!email) {
             signInWithEmailLink(auth, email, window.location.href)
             .catch((err) => {
@@ -38,9 +42,8 @@ export default function SignIn() {
             }
             });
         } else {
-            console.log("Createing new account")
             sendSignInLinkToEmail(auth, email, {
-                url: "https://civil-planet-357119.uc.r.appspot.com/auth",
+                url: DEV_PATH.WEB,
                 handleCodeInApp: true,
             })
             .then(() => {
@@ -61,11 +64,9 @@ export default function SignIn() {
         e.preventDefault()
         const saved_email = window.localStorage.getItem("emailForSignIn");
         if (isSignInWithEmailLink(auth, window.location.href) && !!saved_email) {
-            debugger;
             signInWithEmailLink(auth, saved_email, window.location.href)
             .then(writeUsers())
-            // .then(navigate("/"))
-            .catch(err => {setShowInvalidData(true); console.log(err); console.log("68: Error")})
+            .catch(err => {setShowInvalidData(true); console.log(err)})
         }
     }
 
@@ -99,19 +100,19 @@ export default function SignIn() {
                 const uuid = user.uid;
                 let str = saved_email;
                 set(ref(db, `/users/${uuid}`), {
-                    firstName: FirstNameRef.current.value,
-                    lastName: LastNameRef.current.value,
+                    firstName: String(FirstNameRef.current.value).trim(),
+                    lastName: String(LastNameRef.current.value).trim(),
                     vacationsNum: 10,
-                    role: ROLES.HRMANAGER,
-                    email: str.toLowerCase(),
+                    role: ROLES.ADMIN,
+                    email: str.toLowerCase().trim(),
                     room: uuid,
                     uuid: uuid,
                 })
-                .then(set(ref(db, `/rooms/${uuid}/members/${uuid}`), { firstName: FirstNameRef.current.value,
-                                                                        lastName: LastNameRef.current.value,
+                .then(set(ref(db, `/rooms/${uuid}/members/${uuid}`), { firstName: String(FirstNameRef.current.value).trim(),
+                                                                        lastName: String(LastNameRef.current.value).trim(),
                                                                         vacationsNum: 10,
-                                                                        role: ROLES.HRMANAGER,
-                                                                        email: str.toLowerCase(),
+                                                                        role: ROLES.ADMIN,
+                                                                        email: str.toLowerCase().trim(),
                                                                         uuid: uuid,}))
                 .then(set(ref(db, `rooms/${uuid}/settings`), {defaultNumVacations: 10}))
             }

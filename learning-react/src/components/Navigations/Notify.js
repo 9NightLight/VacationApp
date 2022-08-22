@@ -10,18 +10,29 @@ import { useNavigate } from 'react-router-dom';
 export default function Notify({uuid, setInvites, invites}) {
   const { users, currUser } = React.useContext(CalendarContext)
   const [ owner, setOwner ] = React.useState([])
+  const [ ownerDefaultVacateDays, setOwnerDefaultVacateDays ] = React.useState(0)
   const nav = useNavigate()
 
   React.useEffect(() => {
     setOwner(users.find((val) => { return val.uuid === uuid }))
   }, [])
 
+  React.useEffect(() => {
+    onValue(ref(db, `rooms/${owner.room}/settings/`), (snapshot) => {
+      const data = snapshot.val()
+      if(data !== null)
+      {
+        setOwnerDefaultVacateDays(data.defaultNumVacations)
+      }
+    })
+  }, [owner])
+
   const handleAccept = (e) => {
     e.preventDefault()
     auth.onAuthStateChanged(user => {
       if (user && currUser !== undefined)
       {
-        update(ref(db, `/users/${currUser.uuid}`), { room: owner.uuid, role: ROLES.EMPLOYER, vacationsNum: owner.defaultVacationsNum }) // Here problem with reupdating
+        update(ref(db, `/users/${currUser.uuid}`), { room: owner.uuid, role: ROLES.EMPLOYER, vacationsNum: ownerDefaultVacateDays }) // Here problem with reupdating
 
         if(currUser.room === currUser.uuid)
         {
@@ -65,12 +76,12 @@ export default function Notify({uuid, setInvites, invites}) {
         // Adding new member to owner room 
         set(ref(db, `/rooms/${owner.uuid}/members/${currUser.uuid}/`), { firstName: currUser.lastName,
                                                                         lastName: currUser.firstName,
-                                                                        vacationsNum: owner.defaultVacationsNum,
+                                                                        vacationsNum: ownerDefaultVacateDays,
                                                                         role: ROLES.EMPLOYER,
                                                                         email: currUser.email,
                                                                         uuid: currUser.uuid, })
 
-        // remove(ref(db, `/rooms/${currUser.uuid}`))
+        remove(ref(db, `/rooms/${currUser.uuid}`))
 
         auth.onAuthStateChanged(user => {
           if(user)

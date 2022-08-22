@@ -1,10 +1,6 @@
 import React from "react";
 
 export default function TypeVacation({setType}) {
-    // const handleChange = (event) => {
-    //     setType(event.target.value)
-    //     console.log(event.target.value)
-    // }
 
     return (
         <React.Fragment>

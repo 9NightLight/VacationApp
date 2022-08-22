@@ -6,10 +6,26 @@ import { signOut } from "firebase/auth";
 import { CalendarContext } from "../../Home";
 import AddMember from "./AddMember";
 import { ROLES } from "../SignIn";
+import {
+ref,
+getDownloadURL,
+} from "firebase/storage";
+import { storage } from "../../firebase";
 
 function TopNavBar() {
-    const { currUser, currUserPhoto } = React.useContext(CalendarContext)
+    const { currUser, currUserPhoto, setCurrUserPhoto } = React.useContext(CalendarContext)
     const [ showAddMember, setShowAddMember] = React.useState(false);
+
+    React.useEffect(() => {
+        if(currUser.uuid !== undefined)
+        {
+            getDownloadURL(ref(storage, `${currUser.uuid}`))
+            .then((url) => { 
+                setCurrUserPhoto(url)
+            })
+            .catch(res => console.log("Profile image not defined"))
+        }
+    }, [currUser]);
 
     const generateColor = () => 
     {
@@ -29,10 +45,11 @@ function TopNavBar() {
                         Hello, <div className="font-bold inline-block">{currUser.firstName}!</div>
                     </div>
                     <div className="w-72 max-w-lg min-w-fit h-full flex items-center justify-between">
-                        {currUser.role === ROLES.EMPLOYER
-                            ? <div className="w-18 mr-6"></div> : currUser.role === ROLES.HRMANAGER 
-                            ? <div className="mr-6 p-1 rounded-md bg-blue-600 text-white cursor-pointer" onClick={() => setShowAddMember(true)}>Add member</div>
-                            : <div></div>
+                        {currUser.role === ROLES.EMPLOYER ?
+                            <div className="w-18 mr-6"></div> 
+                        : currUser.role === ROLES.HRMANAGER || currUser.role === ROLES.ADMIN ?
+                            <div className="mr-6 p-1 rounded-md bg-blue-600 text-white cursor-pointer" onClick={() => setShowAddMember(true)}>Add member</div>
+                        : <div></div>
                         }
                         <div className="mr-6">Left: {currUser.vacationsNum} {currUser.vacationsNum !== 1 ? "days" : "day"}</div>
                         { currUserPhoto !== null ? 

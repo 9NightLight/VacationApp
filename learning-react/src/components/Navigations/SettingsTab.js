@@ -48,9 +48,9 @@ export default function SettingsTab() {
                             <div className={darkTheme ? 'w-1/2 h-full rounded-full bg-white' : 'w-1/2 h-full rounded-full bg-black'} onClick={() => setDarkTheme(!darkTheme)}></div>
                         </div>
                     </div>
-                    {currUser.role === ROLES.HRMANAGER ? 
+                    {currUser.role === ROLES.HRMANAGER || currUser.role === ROLES.ADMIN ? 
                         <div className='flex items-center justify-between w-full h-10 mt-2 font-bold text-white'>
-                            <div>Default number vacations</div>
+                            <div>Default number vacate days</div>
                             <input type="text" ref={vacationsNumRef} className="w-8 h-6 bg-gray-200 text-black/50 text-center" placeholder={defaultNumVacations} onBlur={handleChangeDefaultVacations}></input>
                         </div>
                         : <div></div>

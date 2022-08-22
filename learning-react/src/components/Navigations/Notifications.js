@@ -55,7 +55,7 @@ export default function Notifications({tab}) {
             })
           }
         </div>
-        {currUser.role !== ROLES.HRMANAGER ? "" :
+        {currUser.role === ROLES.HRMANAGER || currUser.role === ROLES.ADMIN ?
         <div>
           <div className='font-bold text-2xl mb-4'>Vacations</div>
             {
@@ -64,6 +64,7 @@ export default function Notifications({tab}) {
               })
             }
           </div>
+          : ""
         }     
       </div>
     )
