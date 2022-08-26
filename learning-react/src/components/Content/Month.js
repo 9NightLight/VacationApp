@@ -3,17 +3,18 @@ import Day from "./CalendarParts/Day";
 import UsersCalendar from "./UsersCalendar";
 import UserCell from "./UserCell";
 import { CalendarContext } from "../../Home";
-import { uid } from "uid";
 
 export default function Month({ month }) {
   const {roomUsers} = React.useContext(CalendarContext)
 
   return (
     <div className="w-fit h-fit grid grid-cols-35 ml-44"> {/* I can change {w, h} to set calendar sizes*/ }
-      <div className="absolute flex flex-col left-12 mt-34px">
+    
+      <div className="absolute flex flex-col left-12 mt-50px">
           <UsersCalendar/>
       </div>
-
+      
+      <div className="w-to-calendar overflow-x-auto h-fit flex">
       { month.map((day, idx) => (
           <React.Fragment key={idx}>
                 <div className="flex flex-col">
@@ -25,6 +26,7 @@ export default function Month({ month }) {
           </React.Fragment>
         ))
       }
+      </div>
     </div>
   );
 }

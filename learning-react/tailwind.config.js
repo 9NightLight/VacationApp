@@ -12,11 +12,13 @@ module.exports = {
           "192/7": "calc(192px*4/7)",
           "max--75": "calc(100vw - 75px)",
           "34px": "34px",
+          "to-calendar": "calc(100vw - 230px)"
         },
         height: {
           "192": "calc(192px*4)",
           "max--48": "calc(100vh - 48px)",
-          "120": "calc(120px*4)"
+          "120": "calc(120px*4)",
+          "34px": "34px",
         },
         textColor: {
           "grid-gray-180-17": "rgba(180, 180, 180, 0.17)",
@@ -43,6 +45,7 @@ module.exports = {
         },
         spacing: {
           "34px": "34px",
+          "50px": "50px",
         }
       },
     },

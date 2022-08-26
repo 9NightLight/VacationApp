@@ -142,7 +142,7 @@ export default function SignIn() {
                                     </div>
                                 </div>
                                 <div className="w-full h-40 flex flex-col justify-center items-center">
-                                    <button type={allow ? 'submit' : 'button' } className="w-24 h-10 bg-green-apple rounded-xl">Create</button>
+                                    <button type={allow ? 'submit' : 'button' } className="w-24 h-10 bg-green-apple rounded-xl">Sign In/Up</button>
                                     {showInvalidData ? <div className='text-red-400 text-sm'>Invalid data</div> : ""}
                                 </div>
                             </form>
@@ -161,7 +161,7 @@ export default function SignIn() {
                                 </div>
                                 {showSend ? <div className='text-green-500 text-sm text-center'>Confirmation sended on email</div> : ""}
                                 <div className="w-full h-40 flex flex-col justify-center items-center">
-                                    <button type='submit' className="w-24 h-10 bg-green-apple rounded-xl">Create</button>
+                                    <button type='submit' className="w-24 h-10 bg-green-apple rounded-xl">Sign In/Up</button>
                                     {showInvalidData ? <div className='text-red-400 text-sm'>Invalid data</div> : ""}
                                     
                                 </div>

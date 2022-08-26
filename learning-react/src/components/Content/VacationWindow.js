@@ -103,22 +103,24 @@ export default function VacationWindow({show, date, setShow}) {
                         eventUID: _uid,
                     })
                     update(ref(db, `rooms/${currUser.room}/members/${currUser.uuid}/`), { vacationsNum: currUser.vacationsNum - d})
-                    update(ref(db, `users/${currUser.uuid}/`), { vacationsNum: currUser.vacationsNum - d})
                     .then(
-                        roomUsers.map(u => {
-                            if(u.role === ROLES.HRMANAGER || u.role === ROLES.ADMIN)
-                            {
-                                emailjs.send("service_1gemy04", 
-                                    "template_5i2gmrf", 
-                                    {   from_firstName: currUser.firstName, 
-                                        from_lastName: currUser.lastName, 
-                                        to_name: u.firstName, 
-                                        to_email: u.email
-                                    }, 
-                                    "2qQ8h0nKPbPlCbXhx"
-                                )
-                            }
-                        })
+                        update(ref(db, `users/${currUser.uuid}/`), { vacationsNum: currUser.vacationsNum - d})
+                        .then(
+                            roomUsers.map(u => {
+                                if(u.role === ROLES.HRMANAGER || u.role === ROLES.ADMIN)
+                                {
+                                    // emailjs.send("service_1gemy04", 
+                                    //     "template_5i2gmrf", 
+                                    //     {   from_firstName: currUser.firstName, 
+                                    //         from_lastName: currUser.lastName, 
+                                    //         to_name: u.firstName, 
+                                    //         to_email: u.email
+                                    //     }, 
+                                    //     "2qQ8h0nKPbPlCbXhx"
+                                    // )
+                                }
+                            })
+                        )
                     )
                 }
             }

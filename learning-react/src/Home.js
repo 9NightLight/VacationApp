@@ -4,7 +4,6 @@ import GlobalSideBar from "./components/Navigations/GlobalSideBar";
 import { getMonth } from "./util";
 import CalendarHeader from "./components/Content/CalendarParts/CalendarHeader";
 import Month from "./components/Content/Month";
-import DayNames from "./components/Content/CalendarParts/DayNames";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "./firebase";
 import UsersSettings from "./components/Navigations/UsersSettings";
@@ -66,7 +65,6 @@ export default function Home() {
                         { tab === 0 ?
                             <div className="flex flex-1 flex-col">
                                 <CalendarHeader month={monthIndex}/>
-                                <DayNames />
                                 <Month month={currentCalendar} />
                             </div>
                         : tab === 1 ?

@@ -2,13 +2,14 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { auth, db } from '../../firebase';
-import { ref, remove, set, update } from 'firebase/database';
+import { onValue, ref, remove, set, update } from 'firebase/database';
 import { CalendarContext } from '../../Home';
 
 export default function VacationsAsk({vacation, setVacations, vacations}) {
     const [vacationOwner, setVacationOwner] = React.useState(new Array([]))
     const [vacationOwnerName, setVacationOwnerName] = React.useState("")
-    const {currUser, roomUsers} = React.useContext(CalendarContext)
+    const [blockRefuse, setBlockRefuse] = React.useState(false)
+    const {currUser, roomUsers, setRoomUsers} = React.useContext(CalendarContext)
 
     const countDelta = () => {
         const sD = new Date(vacation.startDate);
@@ -24,16 +25,27 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
             if(dd.getDay() !== 6 && dd.getDay() !== 0) counter++
             a = 1
         } while(dd.getTime() !== eD.getTime())
-        return counter
-    }
 
-    // const minusVacationNum = () => {
-    //     const sD = new Date(vacation.startDate);
-    //     sD.setHours(0, 0, 0, 0);
-    //     const eD = new Date(vacation.endDate);
-    //     eD.setHours(0, 0, 0, 0);
-    //     return vacationOwner.vacationsNum + (Math.ceil((sD - eD) / (1000 * 3600 * 24)) - 1)
-    // }
+        let oUser = null;
+        onValue(ref(db, `/rooms/${currUser.room}/members`), (snapshot) => {
+            let rUsers = new Array();
+            const data = snapshot.val()
+            if(data !== null)
+            {
+                Object.values(data).map((val)=> {
+                    rUsers = [...rUsers, val]
+                })
+                rUsers.sort(((a, b) => {
+                    let fa = a.firstName.toLowerCase() + a.lastName.toLowerCase(),
+                        fb = b.firstName.toLowerCase() + b.lastName.toLowerCase();
+                    return fa < fb ? -1 : fa > fb ? 1 : 0;
+                }));
+                setRoomUsers(rUsers);
+                oUser = rUsers.find(val => {return val.uuid === vacation.uuid})
+            }
+        })
+        return oUser !== null ? oUser.vacationsNum + counter : null;
+    }
 
     React.useEffect(() => {
         auth.onAuthStateChanged(user => {
@@ -43,7 +55,7 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
             }
         })
         
-    }, [])
+    }, [ , roomUsers])
 
     React.useEffect(() => {
         auth.onAuthStateChanged(user => {
@@ -89,14 +101,26 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
         auth.onAuthStateChanged(user => {
             if(user)
             {
-                update(ref(db, `rooms/${currUser.room}/members/${vacationOwner.uuid}`), {vacationsNum: vacationOwner.vacationsNum + countDelta()})
-                update(ref(db, `users/${vacationOwner.uuid}/`), {vacationsNum: vacationOwner.vacationsNum + countDelta()})
-                remove(ref(db, `rooms/${currUser.room}/events/pending/${vacation.eventUID}`))
-                let arr = new Array()
-                vacations.map(val => {
-                    if(val.eventUID !== vacation.eventUID) {arr = [...arr, val]}
-                })
-                setVacations(arr)
+                setBlockRefuse(true)
+                const k = countDelta()
+                update(ref(db, `rooms/${currUser.room}/members/${vacationOwner.uuid}`), {vacationsNum: k}) 
+                .then(
+                    update(ref(db, `users/${vacationOwner.uuid}/`), {vacationsNum: k}) 
+                    .then(
+                        remove(ref(db, `rooms/${currUser.room}/events/pending/${vacation.eventUID}`))
+                        .then(() => {
+                            let arr = new Array()
+                            vacations.map(val => {
+                                if(val.eventUID !== vacation.eventUID) {arr = [...arr, val]}
+                            })
+                            setVacations(arr)
+                            }
+                        )
+                        .then(() => {
+                            const time = setTimeout(setBlockRefuse(false), 1000);
+                        })
+                    )
+                )
             }
         })
     }
@@ -123,7 +147,7 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
                     </button>
                 </form>
                 <form onSubmit={onEventRefuse}>
-                    <button type='submit'>
+                    <button type={blockRefuse ? "button" : !blockRefuse ? 'submit' : "err"}>
                     <FontAwesomeIcon className='text-3xl text-red-500' icon={faCircleXmark} />
                     </button>
                 </form>
