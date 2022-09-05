@@ -5,14 +5,14 @@ import { getMonth } from "./util";
 import CalendarHeader from "./components/Content/CalendarParts/CalendarHeader";
 import Month from "./components/Content/Month";
 import { useNavigate } from "react-router-dom";
-import { auth, db } from "./firebase";
+import { auth } from "./firebase";
 import UsersSettings from "./components/Navigations/UsersSettings";
 import Notifications from "./components/Navigations/Notifications";
 import UserSettings from "./components/Navigations/UserSettings";
 import SettingsTab from "./components/Navigations/SettingsTab";
 import dayjs from "dayjs";
-///
 
+///
 
 export const CalendarContext = React.createContext();
 

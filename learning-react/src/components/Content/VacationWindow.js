@@ -6,11 +6,11 @@ import VacationDescription from "./VacationWindowComponents/VacationDescription"
 import CalendarMini from "./VacationWindowComponents/CalendarMini";
 import TransitionComponent from "../TransitionComponent";
 import { onValue, ref, set, update } from 'firebase/database';
-import { auth, db } from '../../firebase.js';
+import { auth, db, functions } from '../../firebase.js';
 import { uid } from 'uid';
 import { CalendarContext } from "../../Home";
-import emailjs from "@emailjs/browser";
 import { ROLES } from "../SignIn";
+import { httpsCallable } from "firebase/functions";
 
 export default function VacationWindow({show, date, setShow}) {
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(show);
@@ -109,15 +109,13 @@ export default function VacationWindow({show, date, setShow}) {
                             roomUsers.map(u => {
                                 if(u.role === ROLES.HRMANAGER || u.role === ROLES.ADMIN)
                                 {
-                                    // emailjs.send("service_1gemy04", 
-                                    //     "template_5i2gmrf", 
-                                    //     {   from_firstName: currUser.firstName, 
-                                    //         from_lastName: currUser.lastName, 
-                                    //         to_name: u.firstName, 
-                                    //         to_email: u.email
-                                    //     }, 
-                                    //     "2qQ8h0nKPbPlCbXhx"
-                                    // )
+                                    const addMessage = httpsCallable(functions, 'vacationRequest');
+                                    addMessage({name: u.firstName, to_email: u.email, from_firstName: currUser.firstName, from_lastName: currUser.lastName})
+                                    .then((result) => {
+                                        console.log(result.data);
+                                    }).catch((error) => {
+                                        console.log(`error: ${JSON.stringify(error)}`);
+                                    });
                                 }
                             })
                         )

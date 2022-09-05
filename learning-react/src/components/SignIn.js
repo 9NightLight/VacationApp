@@ -43,7 +43,7 @@ export default function SignIn() {
             });
         } else {
             sendSignInLinkToEmail(auth, email, {
-                url: DEV_PATH.WEB,
+                url: DEV_PATH.TEST,
                 handleCodeInApp: true,
             })
             .then(() => {
@@ -91,7 +91,6 @@ export default function SignIn() {
     }, [])
 
     const writeUsers = () => {
-        debugger;
         const saved_email = window.localStorage.getItem("emailForSignIn");
         auth.onAuthStateChanged(user => {
             console.log(user)

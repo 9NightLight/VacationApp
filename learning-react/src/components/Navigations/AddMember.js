@@ -1,8 +1,8 @@
 import React from 'react';
-import { db, auth } from '../../firebase';
+import { db, auth, functions } from '../../firebase';
 import { ref, set, onValue } from 'firebase/database';
 import { CalendarContext } from '../../Home';
-import emailjs from "@emailjs/browser";
+import { httpsCallable } from 'firebase/functions';
 
 // export const STATE = {
 //     UNCONFIRMED: "Unconfirmed",
@@ -39,10 +39,21 @@ export default function AddMember({setShow}) {
                         set(ref(db, `/rooms/${currUser.room}/pending/`), {
                             emailArray: pendingArr
                         })
-                        /// ...
-                        .then(emailjs.send("service_1gemy04", "template_bu9uf03", {from_name: currUser.firstName, to_email: EmailRef.current.value}, "2qQ8h0nKPbPlCbXhx"))
-                        .then(EmailRef.current.value = "")
-                        .then(setExistError(false))
+                        .then(() => {
+                            const addMessage = httpsCallable(functions, 'addMember')
+                            console.log(EmailRef.current.value)
+                            addMessage({to_email: EmailRef.current.value, from_firstName: currUser.firstName, from_lastName: currUser.lastName})
+                            .then((result) => {
+                                console.log(result.data);
+                            })
+                            .then(EmailRef.current.value = "")
+                            .then(setExistError(false))
+                            .catch((error) => {
+                                console.log(`error: ${JSON.stringify(error)}`);
+                            });
+                            }
+                        )
+                        
                     }
                     else 
                     {
