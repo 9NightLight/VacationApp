@@ -18,7 +18,7 @@ export default function GlobalSideBar() {
                 <FontAwesomeIcon onClick={()=>setTab(2)} className={tab === 2 ? "w-8 h-12 pr-2 pl-3 border-r-2 border-blue-apple text-main-gray" :"w-8 h-12 pr-2 pl-3"} icon={faUser} />
                 <FontAwesomeIcon onClick={()=>setTab(3)} className={tab === 3 ? "w-8 h-12 pr-2 pl-3 border-r-2 border-indigo-apple text-main-gray" : "w-8 h-12 pr-2 pl-3"} icon={faEnvelope} />
             </div>
-            <div className="mb-3 flex flex-col items-center justify-center">
+            <div className="relative mb-3 flex flex-col items-center justify-center">
                 <FontAwesomeIcon onClick={()=>setTab(4)} className={tab === 4 ? "w-8 h-12 pr-2 pl-3 border-r-2 border-red-apple text-main-gray" : "w-8 h-12 pr-2 pl-3"} icon={faGear} />
             </div>
         </aside>
