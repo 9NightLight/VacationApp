@@ -12,7 +12,7 @@ module.exports = {
           "192/7": "calc(192px*4/7)",
           "max--75": "calc(100vw - 75px)",
           "34px": "34px",
-          "to-calendar": "calc(100vw - 230px)"
+          "to-calendar": "calc(100vw - 230px)",
         },
         height: {
           "192": "calc(192px*4)",

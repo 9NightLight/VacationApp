@@ -50,9 +50,8 @@ export default function CalendarHeader({month}) {
   return (
       <div className="flex items-center pt-2 pb-2">
         <div className="w-fit flex sm:ml-0 lg:ml-44 justify-start">
-          <div className="text-xl font-bold w-48 flex justify-between">
-            <div>{Monthes[month]}</div>
-            <div>{year}</div>
+          <div className="text-xl font-bold w-fit flex justify-between">
+            <div>{Monthes[month]} {year}</div>
           </div>
           <div className="ml-4 w-40 flex justify-between">
             <FontAwesomeIcon onClick={handlePrevMonth} className="w-8 h-8 text-orange-apple cursor-pointer" icon={faCircleChevronLeft}/>

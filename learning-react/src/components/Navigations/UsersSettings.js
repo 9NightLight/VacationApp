@@ -80,6 +80,7 @@ export default function UsersSettings() {
                     })
                 }
             </table>
+            <RefreshWindow show={showRefreshConfirm} setShow={SetShowRefreshConfirm} />
         </React.Fragment>
     )
 }

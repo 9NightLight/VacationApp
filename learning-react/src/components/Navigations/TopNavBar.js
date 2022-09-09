@@ -51,13 +51,13 @@ function TopNavBar() {
                             <div className="w-24 min-w-fit flex justify-center items-center h-7 sm:text-xs lg:text-base mr-6 p-1 rounded-md bg-blue-600 text-white cursor-pointer" onClick={() => setShowAddMember(true)}>Add member</div>
                         : <div></div>
                         }
-                        <div className="lg:mr-6 w-24 min-w-fit sm:text-xs lg:text-base">Left: {currUser.vacationsNum} {currUser.vacationsNum !== 1 ? "days" : "day"}</div>
+                        <div className="lg:mr-6 sm:mr-0 w-24 min-w-fit sm:text-xs lg:text-base">Left: {currUser.vacationsNum} {currUser.vacationsNum !== 1 ? "days" : "day"}</div>
                         { currUserPhoto !== null ? 
                             <img className="mr-6 w-8 h-8 rounded-full" src={currUserPhoto} />
                         :
                             <div className="mr-6 w-8 h-8 flex justify-center items-center rounded-full text-white bg-orange-400">{String(currUser.firstName)[0]}</div>
                         }
-                        <FontAwesomeIcon onClick={handleSignOut} icon={faArrowRightFromBracket} className="ls:mr-6 cursor-pointer"/>
+                        <FontAwesomeIcon onClick={handleSignOut} icon={faArrowRightFromBracket} className="ls:mr-6 sm:mr-0 cursor-pointer"/>
                     </div>
             </div>
             {
