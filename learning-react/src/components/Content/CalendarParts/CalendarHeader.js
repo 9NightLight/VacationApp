@@ -48,8 +48,8 @@ export default function CalendarHeader({month}) {
   )
 
   return (
-      <div className="flex items-center pt-2 pb-2">
-        <div className="w-fit flex sm:ml-0 lg:ml-44 justify-start">
+      <div className="flex items-center pt-2 pb-2 ml-2">
+        <div className="w-fit flex ml-0 sm:ml-44 justify-start">
           <div className="text-xl font-bold w-fit flex justify-between">
             <div>{Monthes[month]} {year}</div>
           </div>

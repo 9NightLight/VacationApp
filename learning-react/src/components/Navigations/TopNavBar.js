@@ -39,8 +39,8 @@ function TopNavBar() {
     }
 
     return (
-        <div className="w-full h-12 border-b-2 sm:text-sm lg:text-base">
-            <div className="relative w-max--75 h-full lg:left-12 sm:left-0 flex justify-between items-center ">
+        <div className="w-full h-12 border-b-2 text-sm sm:text-base ">
+            <div className="relative w-max--75 h-full left-0 sm:left-12 flex justify-between items-center ">
                     <div className="min-w-fit">
                         Hello, <div className="font-bold inline-block">{currUser.firstName}!</div>
                     </div>
@@ -48,16 +48,16 @@ function TopNavBar() {
                         {currUser.role === ROLES.EMPLOYER ?
                             <div className="w-18 lg:mr-6"></div> 
                         : currUser.role === ROLES.HRMANAGER || currUser.role === ROLES.ADMIN ?
-                            <div className="w-24 min-w-fit flex justify-center items-center h-7 sm:text-xs lg:text-base mr-6 p-1 rounded-md bg-blue-600 text-white cursor-pointer" onClick={() => setShowAddMember(true)}>Add member</div>
+                            <div className="w-24 min-w-fit flex justify-center items-center h-7 mr-6 p-1 rounded-md bg-blue-600 text-white cursor-pointer" onClick={() => setShowAddMember(true)}>Add member</div>
                         : <div></div>
                         }
-                        <div className="lg:mr-6 sm:mr-0 w-24 min-w-fit sm:text-xs lg:text-base">Left: {currUser.vacationsNum} {currUser.vacationsNum !== 1 ? "days" : "day"}</div>
+                        <div className="lg:mr-6 md:mr-6 sm:mr-6 w-24 min-w-fit">Left: {currUser.vacationsNum} {currUser.vacationsNum !== 1 ? "days" : "day"}</div>
                         { currUserPhoto !== null ? 
                             <img className="mr-6 w-8 h-8 rounded-full" src={currUserPhoto} />
                         :
                             <div className="mr-6 w-8 h-8 flex justify-center items-center rounded-full text-white bg-orange-400">{String(currUser.firstName)[0]}</div>
                         }
-                        <FontAwesomeIcon onClick={handleSignOut} icon={faArrowRightFromBracket} className="ls:mr-6 sm:mr-0 cursor-pointer"/>
+                        <FontAwesomeIcon onClick={handleSignOut} icon={faArrowRightFromBracket} className="sm:mr-6 mr-0 cursor-pointer"/>
                     </div>
             </div>
             {

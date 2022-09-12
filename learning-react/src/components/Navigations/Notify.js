@@ -120,7 +120,7 @@ export default function Notify({uuid, setInvites, invites}) {
   }
 
   return (
-    <div className='w-96 h-8 flex justify-between items-center mb-1'>
+    <div className='sm:w-120 w-80 h-8 flex justify-between items-center mb-1'>
         <div className='flex'>
           <div className='font-bold'>{ owner.lastName + ", " + owner.firstName }</div>
           <div className='ml-2'> invites you!</div>

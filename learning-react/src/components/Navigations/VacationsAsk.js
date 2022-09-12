@@ -128,7 +128,7 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
 
     return (
         <div>
-            <div className='w-120 h-8 flex justify-between items-center mb-1'>
+            <div className='sm:w-120 w-80 h-8 flex justify-between items-center mb-1'>
                 <div className='flex justify-between w-full pr-4'>
                 <div className='font-bold'>{vacationOwnerName}</div>
                     {

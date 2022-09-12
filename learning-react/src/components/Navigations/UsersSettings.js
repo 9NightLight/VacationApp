@@ -39,7 +39,8 @@ export default function UsersSettings() {
 
     return (
         <React.Fragment>
-            <table className='w-192 h-0 bg-main-gray text-gray-100'>
+            <div className='flex justify-start w-192 ml-2'>
+            <table className='flex-1 h-0 bg-main-gray text-gray-100'>
                 <tr className='h-10 text-center border-b'>
                     <td className='w-2/5 text-start'>User</td>
                     <td className='w-1/5'>Role</td>
@@ -81,6 +82,7 @@ export default function UsersSettings() {
                 }
             </table>
             <RefreshWindow show={showRefreshConfirm} setShow={SetShowRefreshConfirm} />
+            </div>
         </React.Fragment>
     )
 }
