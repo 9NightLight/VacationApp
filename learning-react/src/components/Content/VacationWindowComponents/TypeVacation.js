@@ -1,4 +1,5 @@
 import React from "react";
+import { VACATION_TYPE } from "../VacationWindow";
 
 export default function TypeVacation({setType}) {
 
@@ -7,9 +8,9 @@ export default function TypeVacation({setType}) {
             <div>
                 <p className="text-base font-bold">Choose type vacation</p>
                 <select onChange={(event) => setType(event.target.value)} defaultValue={"Unpayed"} className="w-80 h-8 flex justify-center items-center bg-gray-200">
-                    <option value="Vacation">Vacation</option>
-                    <option value="Unpayed" >Unpayed</option>
-                    <option value="Sick leave">Sick leave</option>
+                    <option value={VACATION_TYPE.VACATION}>Vacation</option>
+                    <option value={VACATION_TYPE.UNPAID} >Unpayed</option>
+                    <option value={VACATION_TYPE.SICK_LEAVE}>Sick leave</option>
                 </select>
             </div>
         </React.Fragment>

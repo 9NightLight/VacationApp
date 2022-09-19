@@ -19,8 +19,11 @@ export default function CalendarMini({clickedDate, setDates}) {
         <React.Fragment>
             <div className="relative w-full h-full text-2xl font-bold flex items-center justify-between cursor-default" onClick={() => setShowCalendar(!ShowCalendar)}>
                 <div>Date:</div>
-                <div className="w-1/3 h-4/6 text-base bg-gray-200 text-gray-500 rounded-sm flex justify-center items-center border-2 border-gray-300">{GetStringDate(dayRange[0])}</div>
-                <div className="w-1/3 h-4/6 text-base bg-gray-200 text-gray-500 rounded-sm flex justify-center items-center border-2 border-gray-300">{GetStringDate(dayRange[1])}</div>
+                { GetStringDate(dayRange[0]) === GetStringDate(dayRange[1]) ? 
+                    <div className="w-2/3 h-4/6 text-base bg-gray-200 text-gray-500 rounded-sm flex justify-center items-center border-2 border-gray-300">{GetStringDate(dayRange[0])}</div>
+                    :
+                    <div className="w-fit h-4/6 text-base bg-gray-200 text-gray-500 rounded-sm flex justify-center items-center border-2 border-gray-300">{"from " + GetStringDate(dayRange[0]) + " to " + GetStringDate(dayRange[1])}</div>
+                }
             </div>
             {ShowCalendar === false ? "" 
             :

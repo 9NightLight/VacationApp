@@ -12,10 +12,16 @@ import { CalendarContext } from "../../Home";
 import { ROLES } from "../SignIn";
 import { httpsCallable } from "firebase/functions";
 
+export const VACATION_TYPE = {
+    UNPAID: "Unpayed",
+    VACATION: "Vacation",
+    SICK_LEAVE: "Sick leave",
+}
+
 export default function VacationWindow({show, date, setShow}) {
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(show);
     const {currUser, roomUsers} = React.useContext(CalendarContext)
-    const [Type, SetType] = React.useState("Unpayed")
+    const [type, SetType] = React.useState(VACATION_TYPE.UNPAID)
     const [Description, SetDescription] = React.useState("")
     const [Dates, SetDates] = React.useState(new Array(new Date(), new Date()))
     const [deltaDates, setDeltaDates] = React.useState(1)
@@ -95,16 +101,22 @@ export default function VacationWindow({show, date, setShow}) {
                     const eD = new Date(Dates[1].toString());
                     eD.setHours(0, 0, 0, 0);
                     set(ref(db, `/rooms/${currUser.room}/events/pending/${_uid}`), {
-                        type: Type,
+                        type: type,
                         description: Description,
                         startDate: sD.toString(),
                         endDate: eD.toString(),
                         uuid: currUser.uuid,
                         eventUID: _uid,
                     })
-                    update(ref(db, `rooms/${currUser.room}/members/${currUser.uuid}/`), { vacationsNum: currUser.vacationsNum - d})
+                    update(ref(db, `rooms/${currUser.room}/members/${currUser.uuid}/`), {   vacationsNum: type === VACATION_TYPE.VACATION ? currUser.vacationsNum - d : currUser.vacationsNum,
+                                                                                            unpaidVacationDays: type === VACATION_TYPE.UNPAID ? currUser.unpaidVacationDays + d : currUser.unpaidVacationDays,
+                                                                                            sickLeaves: type === VACATION_TYPE.SICK_LEAVE ? currUser.sickLeaves + d : currUser.sickLeaves,
+                                                                                        }) 
                     .then(
-                        update(ref(db, `users/${currUser.uuid}/`), { vacationsNum: currUser.vacationsNum - d})
+                        update(ref(db, `users/${currUser.uuid}/`), {    vacationsNum: type === VACATION_TYPE.VACATION ? currUser.vacationsNum - d : currUser.vacationsNum,
+                                                                        unpaidVacationDays: type === VACATION_TYPE.UNPAID ? currUser.unpaidVacationDays + d : currUser.unpaidVacationDays,
+                                                                        sickLeaves: type === VACATION_TYPE.SICK_LEAVE ? currUser.sickLeaves + d : currUser.sickLeaves,
+                                                                    }) 
                         .then(
                             roomUsers.map(u => {
                                 if(u.role === ROLES.HRMANAGER || u.role === ROLES.ADMIN)
@@ -135,7 +147,7 @@ export default function VacationWindow({show, date, setShow}) {
     React.useEffect(() => {
         setShowVacationWindow(show)
         if(show == false) {
-        SetType("Unpayed")
+        SetType(VACATION_TYPE.UNPAID)
         SetDescription("")
         SetDates(new Array(new Date(), new Date()))
         }
@@ -147,7 +159,7 @@ export default function VacationWindow({show, date, setShow}) {
                 <div className="z-20 w-96 h-120 bg-white flex flex-col justify-around rounded-xl shadow-xl">
                     <form onSubmit={onSubmit}>
                         <div className="w-full h-20 flex justify-center items-center">
-                            <Header delta={deltaDates}/>
+                            <Header delta={deltaDates} type={type}/>
                         </div>
                         <div className="w-full h-32 flex justify-center items-center">
                             <TypeVacation setType={SetType}/>

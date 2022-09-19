@@ -2,7 +2,7 @@ import React from 'react';
 import { onValue, ref } from 'firebase/database';
 import { auth, db } from '../../firebase.js';
 import { CalendarContext } from '../../Home.js';
-import VacationWindow from './VacationWindow.js';
+import VacationWindow, { VACATION_TYPE } from './VacationWindow.js';
 
 export default function UserCell({day, _user}) {
     const [savedEvents, setSavedEvents] = React.useState(new Array()); // previous - new Array([])
@@ -52,11 +52,11 @@ export default function UserCell({day, _user}) {
                             const D = new Date(day);
                             sD.setHours(0, 0, 0, 0);
 
-                            return sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === "Vacation" 
+                            return sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.VACATION 
                             ? <div className='absolute w-4 h-4 bg-green-500 rounded-full'></div>
-                            : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === "Unpayed" 
+                            : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.UNPAID 
                             ? <div className='absolute w-4 h-4 bg-red-500 rounded-full'></div>
-                            : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === "Sick leave" 
+                            : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.SICK_LEAVE 
                             ? <div className='absolute w-4 h-4 bg-orange-500 rounded-full'></div>
                             : null
                         })
@@ -70,11 +70,11 @@ export default function UserCell({day, _user}) {
                                 const D = new Date(day);
                                 usD.setHours(0, 0, 0, 0);
                                 
-                                return usD.getTime() <= D.getTime() && ueD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === "Vacation" 
+                                return usD.getTime() <= D.getTime() && ueD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.VACATION 
                                 ? <div className='absolute w-full h-full bg-green-200/50 flex justify-center items-center'><div className='absolute w-4 h-4 bg-green-500/30 rounded-full'></div></div>
-                                : usD.getTime() <= D.getTime() && ueD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === "Unpayed" 
+                                : usD.getTime() <= D.getTime() && ueD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.UNPAID 
                                 ? <div className='absolute w-full h-full bg-red-200/50 flex justify-center items-center'><div className='absolute w-4 h-4 bg-red-500/30 rounded-full'></div></div>
-                                : usD.getTime() <= D.getTime() && ueD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === "Sick leave" 
+                                : usD.getTime() <= D.getTime() && ueD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.SICK_LEAVE 
                                 ? <div className='absolute w-full h-full bg-orange-200/50 flex justify-center items-center'><div className='absolute w-4 h-4 bg-orange-500/30 rounded-full'></div></div>
                                 : <div></div>
                             })

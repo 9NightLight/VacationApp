@@ -102,6 +102,8 @@ export default function SignIn() {
                     firstName: String(FirstNameRef.current.value).trim(),
                     lastName: String(LastNameRef.current.value).trim(),
                     vacationsNum: 10,
+                    unpaidVacationDays: 0,
+                    sickLeaves: 0,
                     role: ROLES.ADMIN,
                     email: str.toLowerCase().trim(),
                     room: uuid,
@@ -110,6 +112,8 @@ export default function SignIn() {
                 .then(set(ref(db, `/rooms/${uuid}/members/${uuid}`), { firstName: String(FirstNameRef.current.value).trim(),
                                                                         lastName: String(LastNameRef.current.value).trim(),
                                                                         vacationsNum: 10,
+                                                                        unpaidVacationDays: 0,
+                                                                        sickLeaves: 0,
                                                                         role: ROLES.ADMIN,
                                                                         email: str.toLowerCase().trim(),
                                                                         uuid: uuid,}))

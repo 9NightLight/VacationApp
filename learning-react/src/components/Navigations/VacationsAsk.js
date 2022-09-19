@@ -4,11 +4,13 @@ import { faCircleXmark, faCircleCheck } from "@fortawesome/free-solid-svg-icons"
 import { auth, db } from '../../firebase';
 import { onValue, ref, remove, set, update } from 'firebase/database';
 import { CalendarContext } from '../../Home';
+import {VACATION_TYPE} from "../Content/VacationWindow"
 
 export default function VacationsAsk({vacation, setVacations, vacations}) {
     const [vacationOwner, setVacationOwner] = React.useState(new Array([]))
     const [vacationOwnerName, setVacationOwnerName] = React.useState("")
     const [blockRefuse, setBlockRefuse] = React.useState(false)
+    const [requestUser, setRequestUser] = React.useState(null)
     const {currUser, roomUsers, setRoomUsers} = React.useContext(CalendarContext)
 
     const countDelta = () => {
@@ -41,10 +43,10 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
                     return fa < fb ? -1 : fa > fb ? 1 : 0;
                 }));
                 setRoomUsers(rUsers);
-                oUser = rUsers.find(val => {return val.uuid === vacation.uuid})
+                setRequestUser(rUsers.find(val => {return val.uuid === vacation.uuid}))
             }
         })
-        return oUser !== null ? oUser.vacationsNum + counter : null;
+        return { delta: counter};
     }
 
     React.useEffect(() => {
@@ -52,9 +54,24 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
             if(user)
             {
                 setVacationOwner(roomUsers.find(val => {return val.uuid === vacation.uuid}))
+                onValue(ref(db, `/rooms/${currUser.room}/members`), (snapshot) => {
+                    let rUsers = new Array();
+                    const data = snapshot.val()
+                    if(data !== null)
+                    {
+                        Object.values(data).map((val)=> {
+                            rUsers = [...rUsers, val]
+                        })
+                        rUsers.sort(((a, b) => {
+                            let fa = a.firstName.toLowerCase() + a.lastName.toLowerCase(),
+                                fb = b.firstName.toLowerCase() + b.lastName.toLowerCase();
+                            return fa < fb ? -1 : fa > fb ? 1 : 0;
+                        }));
+                        setRequestUser(rUsers.find(val => {return val.uuid === vacation.uuid}))
+                    }
+                })
             }
         })
-        
     }, [ , roomUsers])
 
     React.useEffect(() => {
@@ -102,10 +119,18 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
             if(user)
             {
                 setBlockRefuse(true)
-                const k = countDelta()
-                update(ref(db, `rooms/${currUser.room}/members/${vacationOwner.uuid}`), {vacationsNum: k}) 
+                const delta = countDelta()
+                update(ref(db, `rooms/${currUser.room}/members/${vacationOwner.uuid}`), {
+                                                                                            vacationsNum:       vacation.type === VACATION_TYPE.VACATION ? vacationOwner.vacationsNum + delta.delta : vacationOwner.vacationsNum,
+                                                                                            unpaidVacationDays: vacation.type === VACATION_TYPE.UNPAID ? vacationOwner.unpaidVacationDays - delta.delta : vacationOwner.unpaidVacationDays,
+                                                                                            sickLeaves:         vacation.type === VACATION_TYPE.SICK_LEAVE ? vacationOwner.sickLeaves - delta.delta : vacationOwner.sickLeaves,
+                                                                                        }) 
                 .then(
-                    update(ref(db, `users/${vacationOwner.uuid}/`), {vacationsNum: k}) 
+                    update(ref(db, `users/${vacationOwner.uuid}/`), {
+                                                                        vacationsNum:       vacation.type === VACATION_TYPE.VACATION ? vacationOwner.vacationsNum + delta.delta : vacationOwner.vacationsNum,
+                                                                        unpaidVacationDays: vacation.type === VACATION_TYPE.UNPAID ? vacationOwner.unpaidVacationDays - delta.delta : vacationOwner.unpaidVacationDays,
+                                                                        sickLeaves:         vacation.type === VACATION_TYPE.SICK_LEAVE ? vacationOwner.sickLeaves - delta.delta : vacationOwner.sickLeaves,
+                                                                    }) 
                     .then(
                         remove(ref(db, `rooms/${currUser.room}/events/pending/${vacation.eventUID}`))
                         .then(() => {
