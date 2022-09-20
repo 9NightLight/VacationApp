@@ -57,19 +57,20 @@ export default function VacationWindow({show, date, setShow}) {
         })
         if(
             arrUserEvents.find(e => {
-                if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) || eD >= new Date(e.startDate) && eD <= new Date(e.endDate))
+                if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) || eD >= new Date(e.startDate) && eD <= new Date(e.endDate) || sD <= new Date(e.startDate) && eD >= new Date(e.endDate) )
                 {
                     return true
                 }
             })
             || 
             arrUserEventsNotConfirmed.find(e => {
-                if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) || eD >= new Date(e.startDate) && eD <= new Date(e.endDate))
+                if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) || eD >= new Date(e.startDate) && eD <= new Date(e.endDate) || sD <= new Date(e.startDate) && eD >= new Date(e.endDate) )
                 {
                     return true
                 }
             })
         ) {
+            console.log("-1")
             setDeltaDates(-1)
             return -1
         }
@@ -142,6 +143,7 @@ export default function VacationWindow({show, date, setShow}) {
 
     React.useEffect(()=> {
         countDelta()
+        console.log(countDelta())
     }, [Dates])
 
     React.useEffect(() => {
@@ -172,7 +174,7 @@ export default function VacationWindow({show, date, setShow}) {
                         </div>
                         <div className="w-full h-20 flex justify-center items-center"
                              >
-                            <Submit delta={deltaDates}/>
+                            <Submit delta={deltaDates} type={type}/>
                         </div>
                     </form>
                     </div>

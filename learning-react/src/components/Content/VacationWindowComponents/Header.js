@@ -11,7 +11,7 @@ export default function Header({delta, type}) {
             <div className="flex flex-col items-end">
                 <div>Left: { currUser.vacationsNum } {currUser.vacationsNum !== 1 ? "days" : "day"}</div>
                 <div className="text-red-500">{type === VACATION_TYPE.VACATION ? delta === -1 ? "" : delta === 1 ? `-${delta} day` : delta !== 1 ? `-${delta} days` : delta === 0 ? delta : "" : ""}</div>
-                <div className="text-xs text-red-500">{delta > currUser.vacationsNum ? "You don't have enough vacations!" : ""}</div>
+                <div className="text-xs text-red-500">{type === VACATION_TYPE.VACATION ? delta > currUser.vacationsNum ? "You don't have enough vacations!" : "" : ""}</div>
                 <div className="text-xs text-red-500">{delta === -1 ? "You have vacations on this dates" : delta === 0 ? "Weekends to enjoy!" : ""}</div>
             </div>
         </div>
