@@ -3,8 +3,8 @@ import { auth, db } from "../../firebase";
 import { onValue, ref } from 'firebase/database';
 import { CalendarContext } from '../../Home';
 
-export default function UsersCalendar() {
-    const {users, setUsers, currUser, setCurrUser, roomUsers, setRoomUsers} = React.useContext(CalendarContext);
+export default function UsersCalendar({setOnHoldUser}) {
+    const {users, setUsers, currUser, setCurrUser, roomUsers, setRoomUsers, setDefaultNumVacations} = React.useContext(CalendarContext);
 
     React.useEffect(() => {
         auth.onAuthStateChanged((user) => {
@@ -73,6 +73,13 @@ export default function UsersCalendar() {
                         setRoomUsers(rUsers);
                     }
                 })
+                onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
+                    const data = snapshot.val()
+                    if(data !== null)
+                    {
+                        setDefaultNumVacations(data.defaultNumVacations)
+                    }
+                })
             }
         })
     }, [currUser])
@@ -86,7 +93,9 @@ export default function UsersCalendar() {
                     {
                         u = u.slice(0,20);
                     }
-                    return <div key={idx}>{u}</div>
+                    return  <div>
+                                <div className='cursor-default' onMouseEnter={() => setOnHoldUser(val)} onMouseOut={() => setOnHoldUser(null)} key={idx}>{u}</div>
+                            </div>
                 })
             }
         </div>

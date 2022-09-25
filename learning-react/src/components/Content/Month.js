@@ -3,30 +3,35 @@ import Day from "./CalendarParts/Day";
 import UsersCalendar from "./UsersCalendar";
 import UserCell from "./UserCell";
 import { CalendarContext } from "../../Home";
+import UserStats from "./Features/Calendar/Components/UserStats";
 
 export default function Month({ month }) {
   const {roomUsers} = React.useContext(CalendarContext)
+  const [onHoldUser, setOnHoldUser] = React.useState(null)
 
   return (
-    <div className="w-fit h-fit grid grid-cols-35 ml-44"> {/* I can change {w, h} to set calendar sizes*/ }
-    
-      <div className="absolute flex flex-col left-12 mt-50px">
-          <UsersCalendar/>
-      </div>
+    <div>
+      <div className="w-fit h-fit grid grid-cols-35 ml-44"> {/* I can change {w, h} to set calendar sizes*/ }
       
-      <div className="w-to-calendar overflow-x-auto h-fit flex">
-      { month.map((day, idx) => (
-          <React.Fragment key={idx}>
-                <div className="flex flex-col">
-                  <Day day={day} />
-                    {roomUsers.map((val, id) => {
-                      return <UserCell day={day} _user={id}/>
-                    })}
-                </div>
-          </React.Fragment>
-        ))
-      }
+        <div className="absolute z-10 flex flex-col left-12 mt-50px ">
+            <UsersCalendar setOnHoldUser={setOnHoldUser}/>
+        </div>
+        
+        <div className="w-to-calendar overflow-x-auto h-fit flex">
+        { month.map((day, idx) => (
+            <React.Fragment key={idx}>
+                  <div className="flex flex-col">
+                    <Day day={day} />
+                      {roomUsers.map((val, id) => {
+                        return <UserCell day={day} _user={id}/>
+                      })}
+                  </div>
+            </React.Fragment>
+          ))
+        }
+        </div>
       </div>
+      <UserStats show={onHoldUser} user={onHoldUser}/>
     </div>
   );
 }

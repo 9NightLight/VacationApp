@@ -19,11 +19,11 @@ export default function RefreshWindow({show, setShow}) {
             {show ? 
                 <div>
                     <div className='absolute w-full h-full left-0 top-0 flex justify-center items-center'>
-                        <div className='w-96 h-56 z-50 bg-white text-black rounded-xl flex flex-col items-center justify-between'>
-                            <div className=' text-2xl mt-4 font-semibold'>Refresh vacate days for everyone?</div>
+                        <div className=' w-192 h-80 z-50 bg-white text-black rounded-xl flex flex-col items-center justify-between'>
+                            <div className=' text-3xl mt-10 font-semibold'>Set vacation allowance to {defaultNumVacations} days for everyone?</div>
                             <div className='w-full flex justify-around mb-4'>
                                 <button onClick={() => setShow(false)} className='w-2/5 h-16 font-semibold  rounded-xl border-gray-500 border active:shadow-lg active:shadow-gray-400'>Cancel</button>
-                                <button onClick={onRefresh} className='w-2/5 h-16 font-semibold bg-red-500 rounded-xl text-white active:shadow-lg active:shadow-red-400'>Save</button>
+                                <button onClick={onRefresh} className='w-2/5 h-16 font-semibold bg-blue-500 rounded-xl text-white active:shadow-lg active:shadow-blue-400'>Continue</button>
                             </div>
                         </div>
                     </div>

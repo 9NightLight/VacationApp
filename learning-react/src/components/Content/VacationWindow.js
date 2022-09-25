@@ -143,7 +143,6 @@ export default function VacationWindow({show, date, setShow}) {
 
     React.useEffect(()=> {
         countDelta()
-        console.log(countDelta())
     }, [Dates])
 
     React.useEffect(() => {
