@@ -5,7 +5,7 @@ import { onValue, ref, set } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
 
 export const ROLES = {
-    EMPLOYER: "Employer",
+    EMPLOYER: "Employee",
     HRMANAGER: "HR Manager",
     ADMIN: "Admin"
 }

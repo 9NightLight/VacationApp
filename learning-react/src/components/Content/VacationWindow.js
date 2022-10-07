@@ -16,6 +16,7 @@ export const VACATION_TYPE = {
     UNPAID: "Unpayed",
     VACATION: "Vacation",
     SICK_LEAVE: "Sick leave",
+    HOLIDAY: "Holiday"
 }
 
 export default function VacationWindow({show, date, setShow}) {

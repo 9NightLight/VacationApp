@@ -67,10 +67,12 @@ export default function UsersSettings() {
                                 <td className='w-1/5'>{ROLES.ADMIN}</td>
                             : currUser.role === ROLES.ADMIN ?
                                 <td className='w-2/5'>
-                                    <select onChange={(event) => handleVacationNumChange(event, val)} defaultValue={val.role} className="w-fit h-5 flex justify-center text-black items-center bg-gray-200">
+                                    <div className='w-full flex justify-center'>
+                                    <select onChange={(event) => handleVacationNumChange(event, val)} defaultValue={val.role} className="w-fit l-4 h-5 flex justify-center text-black items-center bg-gray-200">
                                         <option value={ROLES.HRMANAGER}>{ROLES.HRMANAGER}</option>
                                         <option value={ROLES.EMPLOYER}>{ROLES.EMPLOYER}</option>
                                     </select>
+                                    </div>
                                 </td>
                             : "ERR"
                             }

@@ -4,10 +4,21 @@ import { auth, db } from '../../firebase.js';
 import { CalendarContext } from '../../Home.js';
 import VacationWindow, { VACATION_TYPE } from './VacationWindow.js';
 
+const axios = require("axios").default;
+
+const mykey = "AIzaSyC1NrF3Y0Ze7yMViWSLuP4ITmX7WYzlhec"
+
+const BASE_CALENDAR_URL = "https://www.googleapis.com/calendar/v3/calendars";
+const BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY = "holiday@group.v.calendar.google.com"; // Calendar Id. This is public but apparently not documented anywhere officialy.
+
+
+
+
+
 export default function UserCell({day, _user}) {
     const [savedEvents, setSavedEvents] = React.useState(new Array()); // previous - new Array([])
     const [unconfirmedEvents, setUnconfirmedEvents] = React.useState(new Array()); 
-    const { currUser, roomUsers } = React.useContext(CalendarContext);
+    const { currUser, roomUsers, countryAttribute } = React.useContext(CalendarContext);
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(false);
 
     React.useEffect(() => {
@@ -19,10 +30,30 @@ export default function UserCell({day, _user}) {
                     if (data !== null) {
                     Object.values(data).map((event) => {
                         confirmed = [...confirmed, event]
-                    });
-                    setSavedEvents(confirmed);
-                    }
+                    })
+                }})
+
+                const CALENDAR_REGION = `en.${countryAttribute.attr}`;
+                const calendar_url = `${BASE_CALENDAR_URL}/${CALENDAR_REGION}%23${BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY}/events?key=${mykey}`
+                console.log(calendar_url)
+                axios.get(calendar_url)
+                .then(res => {res.data.items.map(
+                                                val => {
+                                                    const sD = new Date(new Date(val.start.date).setHours(0, 0, 0, 0))
+                                                    const eD = new Date(new Date(val.end.date).setHours(0, 0, 0, 0))
+                                                    eD.setDate(eD.getDate() - 1)
+
+                                                    confirmed = [...confirmed, {startDate: sD,
+                                                                                    endDate: eD, 
+                                                                                    description: val.summary, 
+                                                                                    type: VACATION_TYPE.HOLIDAY}
+                                                    ]
+                                                }
+                                                )
+                    setSavedEvents(confirmed)
                 })
+                .catch(err => console.log(err))
+                
             let unconfirmed = new Array();
                 onValue(ref(db, `/rooms/${currUser.room}/events/pending/`), (snapshot) => {
                     const data = snapshot.val();
@@ -33,7 +64,6 @@ export default function UserCell({day, _user}) {
                     setUnconfirmedEvents(unconfirmed);
                     }
                 });
-
             } 
         });
     }, [])
@@ -50,7 +80,7 @@ export default function UserCell({day, _user}) {
                             const eD = new Date(e.endDate);
                             eD.setHours(0, 0, 0, 0);
                             const D = new Date(day);
-                            sD.setHours(0, 0, 0, 0);
+                            D.setHours(0, 0, 0, 0);
 
                             return sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.VACATION 
                             ? <div className='absolute w-4 h-4 bg-green-500 rounded-full'></div>
@@ -58,6 +88,8 @@ export default function UserCell({day, _user}) {
                             ? <div className='absolute w-4 h-4 bg-red-500 rounded-full'></div>
                             : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.SICK_LEAVE 
                             ? <div className='absolute w-4 h-4 bg-orange-500 rounded-full'></div>
+                            : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && e.type === VACATION_TYPE.HOLIDAY 
+                            ? <div className='absolute w-4 h-4 bg-blue-500 rounded-full'></div>
                             : null
                         })
                         }

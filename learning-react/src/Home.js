@@ -27,6 +27,7 @@ export default function Home() {
     const [roomUsers, setRoomUsers] = React.useState(new Array());
     const [darkTheme, setDarkTheme] = React.useState(false)
     const [defaultNumVacations, setDefaultNumVacations] = React.useState(0)
+    const [countryAttribute, setCountryAttribute] = React.useState(0)
 
     useEffect(() => {
         setCurrentCalendar(getMonth(year, monthIndex));
@@ -54,6 +55,7 @@ export default function Home() {
                                                 roomUsers, setRoomUsers,
                                                 darkTheme, setDarkTheme,
                                                 currUserPhoto, setCurrUserPhoto,
+                                                countryAttribute, setCountryAttribute,
                                                 defaultNumVacations, setDefaultNumVacations,
                                                 year, setYear,
                                                 monthIndex, setMonthIndex

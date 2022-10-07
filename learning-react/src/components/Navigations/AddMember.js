@@ -67,7 +67,7 @@ export default function AddMember({setShow}) {
 
     return (
         <React.Fragment>
-                <div className='absolute left-0 top-0 w-full h-full bg-blue-50 z-10 flex justify-center items-center'>
+                <div className='absolute left-0 top-0 w-full h-full bg-blue-50 z-20 flex justify-center items-center'>
                     <div className="relative z-50 w-96 h-72 bg-white flex flex-col justify-between rounded-xl shadow-xl">
                         <form onSubmit={handleSubmit}>
                             <div className='font-bold text-2xl ml-4'>Add member</div>
