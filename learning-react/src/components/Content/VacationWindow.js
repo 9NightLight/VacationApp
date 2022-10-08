@@ -12,13 +12,6 @@ import { CalendarContext } from "../../Home";
 import { ROLES } from "../SignIn";
 import { httpsCallable } from "firebase/functions";
 
-const axios = require("axios").default;
-
-const mykey = "AIzaSyC1NrF3Y0Ze7yMViWSLuP4ITmX7WYzlhec"
-
-const BASE_CALENDAR_URL = "https://www.googleapis.com/calendar/v3/calendars";
-const BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY = "holiday@group.v.calendar.google.com"; // Calendar Id. This is public but apparently not documented anywhere officialy.
-
 export const VACATION_TYPE = {
     UNPAID: "Unpayed",
     VACATION: "Vacation",
@@ -28,14 +21,14 @@ export const VACATION_TYPE = {
 
 export default function VacationWindow({show, date, setShow}) {
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(show);
-    const {currUser, roomUsers, countryAttribute} = React.useContext(CalendarContext)
+    const {currUser, roomUsers} = React.useContext(CalendarContext)
     const [type, SetType] = React.useState(VACATION_TYPE.UNPAID)
     const [Description, SetDescription] = React.useState("")
     const [Dates, SetDates] = React.useState(new Array(new Date(), new Date()))
     const [deltaDates, setDeltaDates] = React.useState(1)
     const _uid = uid(); // if on, occurs some problems with confirmed
 
-    const countDelta = async () => {
+    const countDelta = () => {
         const sD = new Date(Dates[0].toString());
         sD.setHours(0, 0, 0, 0);
         const eD = new Date(Dates[1].toString());
@@ -63,52 +56,38 @@ export default function VacationWindow({show, date, setShow}) {
                 }
             })
         })
-        
-        const CALENDAR_REGION = `en.${countryAttribute.attr}`;
-        const calendar_url = `${BASE_CALENDAR_URL}/${CALENDAR_REGION}%23${BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY}/events?key=${mykey}`
-        return axios.get(calendar_url)
-        .then(async res => {res.data.items.map(val => {
-                const sD = new Date(new Date(val.start.date).setHours(0, 0, 0, 0))
-                const eD = new Date(new Date(val.end.date).setHours(0, 0, 0, 0))
-                eD.setDate(eD.getDate() - 1)
-
-                arrUserEvents = [...arrUserEvents, {startDate: sD,
-                                                endDate: eD, 
-                                                description: val.summary, 
-                                                type: VACATION_TYPE.HOLIDAY}
-                ]
+        if(
+            arrUserEvents.find(e => {
+                if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) || eD >= new Date(e.startDate) && eD <= new Date(e.endDate) || sD <= new Date(e.startDate) && eD >= new Date(e.endDate) )
+                {
+                    return true
+                }
             })
-            if(
-                arrUserEvents.find(e => {
-                    if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) 
-                        || eD >= new Date(e.startDate) && eD <= new Date(e.endDate) 
-                        || sD <= new Date(e.startDate) && eD >= new Date(e.endDate)  ) return true
-                })
-                || 
-                arrUserEventsNotConfirmed.find(e => {
-                    if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) 
-                        || eD >= new Date(e.startDate) && eD <= new Date(e.endDate) 
-                        || sD <= new Date(e.startDate) && eD >= new Date(e.endDate)  ) return true
-                })
-            ) {
-                setDeltaDates(-1)
-                return -1
-            }
-            else
-            {
-                let a = 0;
-                let dd = sD
-                let counter = 0;
-                do {
-                    dd = new Date(dd.setDate((dd.getDate() + a)))
-                    if(dd.getDay() !== 6 && dd.getDay() !== 0) counter++
-                    a = 1
-                } while(dd.getTime() !== eD.getTime())
-                setDeltaDates(counter)
-                return counter
-            }
-        })
-        .catch(err => console.log(err))
+            || 
+            arrUserEventsNotConfirmed.find(e => {
+                if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) || eD >= new Date(e.startDate) && eD <= new Date(e.endDate) || sD <= new Date(e.startDate) && eD >= new Date(e.endDate) )
+                {
+                    return true
+                }
+            })
+        ) {
+            console.log("-1")
+            setDeltaDates(-1)
+            return -1
+        }
+        else
+        {
+            let a = 0;
+            let dd = sD
+            let counter = 0;
+            do {
+                dd = new Date(dd.setDate((dd.getDate() + a)))
+                if(dd.getDay() !== 6 && dd.getDay() !== 0) counter++
+                a = 1
+            } while(dd.getTime() !== eD.getTime())
+            setDeltaDates(counter)
+            return counter
+        }
     }
     
     const onSubmit = (e) => {
@@ -116,17 +95,13 @@ export default function VacationWindow({show, date, setShow}) {
         auth.onAuthStateChanged(user => {
             if(user && ShowVacationWindow === true)
             {
-                let delta = countDelta()
-                delta.then(result => {
-                let d = result
-                
+                let d = countDelta()
                 if(d !== 0)
                 {
                     const sD = new Date(Dates[0].toString());
                     sD.setHours(0, 0, 0, 0);
                     const eD = new Date(Dates[1].toString());
                     eD.setHours(0, 0, 0, 0);
-                    
                     set(ref(db, `/rooms/${currUser.room}/events/pending/${_uid}`), {
                         type: type,
                         description: Description,
@@ -135,14 +110,14 @@ export default function VacationWindow({show, date, setShow}) {
                         uuid: currUser.uuid,
                         eventUID: _uid,
                     })
-                    update(ref(db, `rooms/${currUser.room}/members/${currUser.uuid}/`), {   vacationsNum: type === VACATION_TYPE.VACATION ? Number(currUser.vacationsNum) - d : currUser.vacationsNum,
-                                                                                            unpaidVacationDays: type === VACATION_TYPE.UNPAID ? Number(currUser.unpaidVacationDays) + d : currUser.unpaidVacationDays,
-                                                                                            sickLeaves: type === VACATION_TYPE.SICK_LEAVE ? Number(currUser.sickLeaves) + d : currUser.sickLeaves,
+                    update(ref(db, `rooms/${currUser.room}/members/${currUser.uuid}/`), {   vacationsNum: type === VACATION_TYPE.VACATION ? currUser.vacationsNum - d : currUser.vacationsNum,
+                                                                                            unpaidVacationDays: type === VACATION_TYPE.UNPAID ? currUser.unpaidVacationDays + d : currUser.unpaidVacationDays,
+                                                                                            sickLeaves: type === VACATION_TYPE.SICK_LEAVE ? currUser.sickLeaves + d : currUser.sickLeaves,
                                                                                         }) 
                     .then(
-                        update(ref(db, `users/${currUser.uuid}/`), {    vacationsNum: type === VACATION_TYPE.VACATION ? Number(currUser.vacationsNum) - d : currUser.vacationsNum,
-                                                                        unpaidVacationDays: type === VACATION_TYPE.UNPAID ? Number(currUser.unpaidVacationDays) + d : currUser.unpaidVacationDays,
-                                                                        sickLeaves: type === VACATION_TYPE.SICK_LEAVE ? Number(currUser.sickLeaves) + d : currUser.sickLeaves,
+                        update(ref(db, `users/${currUser.uuid}/`), {    vacationsNum: type === VACATION_TYPE.VACATION ? currUser.vacationsNum - d : currUser.vacationsNum,
+                                                                        unpaidVacationDays: type === VACATION_TYPE.UNPAID ? currUser.unpaidVacationDays + d : currUser.unpaidVacationDays,
+                                                                        sickLeaves: type === VACATION_TYPE.SICK_LEAVE ? currUser.sickLeaves + d : currUser.sickLeaves,
                                                                     }) 
                         .then(
                             roomUsers.map(u => {
@@ -159,12 +134,14 @@ export default function VacationWindow({show, date, setShow}) {
                             })
                         )
                     )
-                }})
+                }
             }
         })
         setShowVacationWindow(false)
     }
     
+    
+
     React.useEffect(()=> {
         countDelta()
     }, [Dates])

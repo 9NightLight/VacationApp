@@ -7,7 +7,7 @@ export default function CalendarMini({clickedDate, setDates}) {
     const [ShowCalendar, setShowCalendar] = React.useState(false)
     
     const GetStringDate = (date = new Date()) => { // Make Vacation display 
-        return (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + "-" + (date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1)) + "-" + date.getFullYear()
+        return (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + "-" + (date.getMonth() < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1)) + "-" + date.getFullYear()
     }
 
     React.useEffect(() => {

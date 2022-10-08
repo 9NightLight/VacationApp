@@ -11,8 +11,6 @@ import Notifications from "./components/Navigations/Notifications";
 import UserSettings from "./components/Navigations/UserSettings";
 import SettingsTab from "./components/Navigations/SettingsTab";
 import dayjs from "dayjs";
-import LoadingScreen from "./components/AwaitComponents/LoadingScreen";
-
 
 ///
 
@@ -29,8 +27,7 @@ export default function Home() {
     const [roomUsers, setRoomUsers] = React.useState(new Array());
     const [darkTheme, setDarkTheme] = React.useState(false)
     const [defaultNumVacations, setDefaultNumVacations] = React.useState(0)
-    const [countryAttribute, setCountryAttribute] = React.useState(null)
-    const [showLoadingScreen, setShowLoadingScreen] = React.useState(true)
+    const [countryAttribute, setCountryAttribute] = React.useState(0)
 
     useEffect(() => {
         setCurrentCalendar(getMonth(year, monthIndex));
@@ -48,16 +45,6 @@ export default function Home() {
         })
     }, [])
 
-
-
-    React.useEffect(() => {
-        countryAttribute && roomUsers ? 
-        setTimeout(() => {
-            setShowLoadingScreen(false)
-        }, 1000)
-        : setShowLoadingScreen(true)
-    }, [countryAttribute])
-
     return (
         <React.Fragment>
             <CalendarContext.Provider value={{  
@@ -69,10 +56,9 @@ export default function Home() {
                                                 darkTheme, setDarkTheme,
                                                 currUserPhoto, setCurrUserPhoto,
                                                 countryAttribute, setCountryAttribute,
-                                                showLoadingScreen, setShowLoadingScreen,
                                                 defaultNumVacations, setDefaultNumVacations,
                                                 year, setYear,
-                                                monthIndex, setMonthIndex,
+                                                monthIndex, setMonthIndex
                                                 }}>
                     <TopNavBar />
                     <div className="h-max--48 flex flex-1">
@@ -93,7 +79,6 @@ export default function Home() {
                         : <div></div>
                         }
                     </div>
-                    <LoadingScreen show={showLoadingScreen}/>
             </CalendarContext.Provider>
         </React.Fragment>
     )
