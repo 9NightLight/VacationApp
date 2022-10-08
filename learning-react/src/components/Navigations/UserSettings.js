@@ -1,6 +1,6 @@
 import React from 'react';
 import { CalendarContext } from '../../Home';
-import PersonPNG from "../../PersonPNG.png";
+import PersonPNG from "../../images/PersonPNG.png";
 import { faPencil, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import EditPhotoPopUp from './EditPhotoPopUp';
