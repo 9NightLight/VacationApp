@@ -4,6 +4,7 @@ import { auth, db } from '../../firebase.js';
 import { CalendarContext } from '../../Home.js';
 import VacationWindow, { VACATION_TYPE } from './VacationWindow.js';
 
+
 const axios = require("axios").default;
 
 const mykey = "AIzaSyC1NrF3Y0Ze7yMViWSLuP4ITmX7WYzlhec"
@@ -11,14 +12,10 @@ const mykey = "AIzaSyC1NrF3Y0Ze7yMViWSLuP4ITmX7WYzlhec"
 const BASE_CALENDAR_URL = "https://www.googleapis.com/calendar/v3/calendars";
 const BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY = "holiday@group.v.calendar.google.com"; // Calendar Id. This is public but apparently not documented anywhere officialy.
 
-
-
-
-
 export default function UserCell({day, _user}) {
     const [savedEvents, setSavedEvents] = React.useState(new Array()); // previous - new Array([])
     const [unconfirmedEvents, setUnconfirmedEvents] = React.useState(new Array()); 
-    const { currUser, roomUsers, countryAttribute } = React.useContext(CalendarContext);
+    const { currUser, roomUsers, countryAttribute, showLoadingScreen} = React.useContext(CalendarContext);
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(false);
 
     React.useEffect(() => {
@@ -35,7 +32,6 @@ export default function UserCell({day, _user}) {
 
                 const CALENDAR_REGION = `en.${countryAttribute.attr}`;
                 const calendar_url = `${BASE_CALENDAR_URL}/${CALENDAR_REGION}%23${BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY}/events?key=${mykey}`
-                console.log(calendar_url)
                 axios.get(calendar_url)
                 .then(res => {res.data.items.map(
                                                 val => {
@@ -66,7 +62,7 @@ export default function UserCell({day, _user}) {
                 });
             } 
         });
-    }, [])
+    }, [showLoadingScreen])
 
     return (
         <div>

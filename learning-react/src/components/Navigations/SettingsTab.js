@@ -3,7 +3,7 @@ import { CalendarContext } from '../../Home'
 import { auth, db } from '../../firebase.js';
 import { onValue, ref, update } from 'firebase/database';
 import { ROLES } from '../SignIn';
-import { iso_to_gcal_description } from '../../utils/GCalendarInTest';
+import { iso_to_gcal_description } from '../../utils/GoogleCalendar';
 
 export default function SettingsTab() {
     const {darkTheme, setDarkTheme, currUser, defaultNumVacations, setDefaultNumVacations, setCountryAttribute, countryAttribute} = React.useContext(CalendarContext)

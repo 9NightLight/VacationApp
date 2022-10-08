@@ -4,11 +4,12 @@ import { onValue, ref } from 'firebase/database';
 import { CalendarContext } from '../../Home';
 
 export default function UsersCalendar({setOnHoldUser}) {
-    const {setUsers, currUser, setCurrUser, roomUsers, setRoomUsers, setDefaultNumVacations, setCountryAttribute} = React.useContext(CalendarContext);
+    const {setUsers, currUser, setCurrUser, roomUsers, setRoomUsers, setDefaultNumVacations, countryAttribute, setCountryAttribute, setShowLoadingScreen} = React.useContext(CalendarContext);
 
     React.useEffect(() => {
         auth.onAuthStateChanged((user) => {
           if (user) {
+            setShowLoadingScreen(true)
             onValue(ref(db, `/users`), (snapshot) => {
                 let sArray = new Array();
                 const data = snapshot.val();
