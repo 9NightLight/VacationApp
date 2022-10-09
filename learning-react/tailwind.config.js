@@ -72,7 +72,10 @@ module.exports = {
           "330": "330deg",
           "345": "345deg",
           "360": "360deg",
-        }
+        },
+        screens: {
+          "screen-840": "840px"
+        },
       },
     },
     plugins: [],

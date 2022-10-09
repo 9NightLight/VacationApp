@@ -17,6 +17,29 @@ export default function UserCell({day, _user}) {
     const [unconfirmedEvents, setUnconfirmedEvents] = React.useState(new Array()); 
     const { currUser, roomUsers, countryAttribute, showLoadingScreen} = React.useContext(CalendarContext);
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(false);
+    const [nationHolidays, setNationHolidays] = React.useState(new Array()); 
+
+    React.useEffect(() => {
+        const CALENDAR_REGION = `en.${countryAttribute.attr}`;
+        const calendar_url = `${BASE_CALENDAR_URL}/${CALENDAR_REGION}%23${BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY}/events?key=${mykey}`
+        let holidaysArray = new Array()
+
+        axios.get(calendar_url)
+        .then(res => {res.data.items.map(val => {
+                const sD = new Date(new Date(val.start.date).setHours(0, 0, 0, 0))
+                const eD = new Date(new Date(val.end.date).setHours(0, 0, 0, 0))
+                eD.setDate(eD.getDate() - 1)
+
+                holidaysArray = [...holidaysArray, {startDate: sD,
+                                                endDate: eD, 
+                                                description: val.summary, 
+                                                type: VACATION_TYPE.HOLIDAY}
+                ]
+            })
+            setNationHolidays(holidaysArray)
+        })
+        .catch(err => console.log(err))
+    }, [countryAttribute])
 
     React.useEffect(() => {
         auth.onAuthStateChanged((user) => {
@@ -29,28 +52,10 @@ export default function UserCell({day, _user}) {
                         confirmed = [...confirmed, event]
                     })
                 }})
-
-                const CALENDAR_REGION = `en.${countryAttribute.attr}`;
-                const calendar_url = `${BASE_CALENDAR_URL}/${CALENDAR_REGION}%23${BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY}/events?key=${mykey}`
-                axios.get(calendar_url)
-                .then(res => {res.data.items.map(
-                                                val => {
-                                                    const sD = new Date(new Date(val.start.date).setHours(0, 0, 0, 0))
-                                                    const eD = new Date(new Date(val.end.date).setHours(0, 0, 0, 0))
-                                                    eD.setDate(eD.getDate() - 1)
-
-                                                    confirmed = [...confirmed, {startDate: sD,
-                                                                                    endDate: eD, 
-                                                                                    description: val.summary, 
-                                                                                    type: VACATION_TYPE.HOLIDAY}
-                                                    ]
-                                                }
-                                                )
-                    setSavedEvents(confirmed)
-                })
-                .catch(err => console.log(err))
+                nationHolidays.map(val => confirmed = [...confirmed, val])
+                setSavedEvents(confirmed)
                 
-            let unconfirmed = new Array();
+                let unconfirmed = new Array();
                 onValue(ref(db, `/rooms/${currUser.room}/events/pending/`), (snapshot) => {
                     const data = snapshot.val();
                     if (data !== null) {
@@ -62,7 +67,7 @@ export default function UserCell({day, _user}) {
                 });
             } 
         });
-    }, [showLoadingScreen])
+    }, [nationHolidays])
 
     return (
         <div>
