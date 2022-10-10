@@ -31,6 +31,8 @@ export default function Home() {
     const [defaultNumVacations, setDefaultNumVacations] = React.useState(0)
     const [countryAttribute, setCountryAttribute] = React.useState(null)
     const [showLoadingScreen, setShowLoadingScreen] = React.useState(true)
+    const [savedEvents, setSavedEvents] = React.useState(new Array());
+    const [downloaded, setDownloaded] = React.useState(false);
 
     useEffect(() => {
         setCurrentCalendar(getMonth(year, monthIndex));
@@ -49,12 +51,12 @@ export default function Home() {
     }, [])
 
     React.useEffect(() => {
-        countryAttribute && roomUsers ? 
+        downloaded ? 
         setTimeout(() => {
             setShowLoadingScreen(false)
         }, 1000)
         : setShowLoadingScreen(true)
-    }, [countryAttribute])
+    }, [downloaded])
 
     return (
         <React.Fragment>
@@ -65,6 +67,8 @@ export default function Home() {
                                                 currUser, setCurrUser, 
                                                 roomUsers, setRoomUsers,
                                                 darkTheme, setDarkTheme,
+                                                downloaded, setDownloaded,
+                                                savedEvents, setSavedEvents,
                                                 currUserPhoto, setCurrUserPhoto,
                                                 countryAttribute, setCountryAttribute,
                                                 showLoadingScreen, setShowLoadingScreen,

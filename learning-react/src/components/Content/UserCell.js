@@ -13,13 +13,13 @@ const BASE_CALENDAR_URL = "https://www.googleapis.com/calendar/v3/calendars";
 const BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY = "holiday@group.v.calendar.google.com"; // Calendar Id. This is public but apparently not documented anywhere officialy.
 
 export default function UserCell({day, _user}) {
-    const [savedEvents, setSavedEvents] = React.useState(new Array()); // previous - new Array([])
     const [unconfirmedEvents, setUnconfirmedEvents] = React.useState(new Array()); 
-    const { currUser, roomUsers, countryAttribute, showLoadingScreen} = React.useContext(CalendarContext);
+    const { currUser, roomUsers, countryAttribute, savedEvents, setSavedEvents, downloaded, setDownloaded} = React.useContext(CalendarContext);
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(false);
     const [nationHolidays, setNationHolidays] = React.useState(new Array()); 
 
     React.useEffect(() => {
+        setDownloaded(false)
         const CALENDAR_REGION = `en.${countryAttribute.attr}`;
         const calendar_url = `${BASE_CALENDAR_URL}/${CALENDAR_REGION}%23${BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY}/events?key=${mykey}`
         let holidaysArray = new Array()
@@ -37,6 +37,7 @@ export default function UserCell({day, _user}) {
                 ]
             })
             setNationHolidays(holidaysArray)
+            setDownloaded(true)
         })
         .catch(err => console.log(err))
     }, [countryAttribute])
@@ -65,6 +66,7 @@ export default function UserCell({day, _user}) {
                     setUnconfirmedEvents(unconfirmed);
                     }
                 });
+                setDownloaded(true)
             } 
         });
     }, [nationHolidays])
