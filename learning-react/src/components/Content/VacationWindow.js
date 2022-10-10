@@ -28,7 +28,7 @@ export const VACATION_TYPE = {
 
 export default function VacationWindow({show, date, setShow}) {
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(show);
-    const {currUser, roomUsers, countryAttribute} = React.useContext(CalendarContext)
+    const {currUser, roomUsers, countryAttribute, unconfirmedEvents, savedEvents} = React.useContext(CalendarContext)
     const [type, SetType] = React.useState(VACATION_TYPE.UNPAID)
     const [Description, SetDescription] = React.useState("")
     const [Dates, SetDates] = React.useState(new Array(new Date(), new Date()))
@@ -40,75 +40,37 @@ export default function VacationWindow({show, date, setShow}) {
         sD.setHours(0, 0, 0, 0);
         const eD = new Date(Dates[1].toString());
         eD.setHours(0, 0, 0, 0);
-        let arrUserEvents = new Array()
-        let arrUserEventsNotConfirmed = new Array()
 
-        onValue(ref(db, `rooms/${currUser.room}/events/confirmed/`), (snapshot) => {
-            const data = snapshot.val();
-            if(data !== null)
-            Object.values(data).map(e => {
-                if(e.uuid === currUser.uuid)
-                {
-                    arrUserEvents = [...arrUserEvents, e]
-                }
-            })
-        })
-        onValue(ref(db, `rooms/${currUser.room}/events/pending/`), (snapshot) => {
-            const data = snapshot.val();
-            if(data !== null)
-            Object.values(data).map(e => {
-                if(e.uuid === currUser.uuid)
-                {
-                    arrUserEventsNotConfirmed = [...arrUserEvents, e]
-                }
-            })
-        })
-        
-        const CALENDAR_REGION = `en.${countryAttribute.attr}`;
-        const calendar_url = `${BASE_CALENDAR_URL}/${CALENDAR_REGION}%23${BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY}/events?key=${mykey}`
-        return axios.get(calendar_url)
-        .then(async res => {res.data.items.map(val => {
-                const sD = new Date(new Date(val.start.date).setHours(0, 0, 0, 0))
-                const eD = new Date(new Date(val.end.date).setHours(0, 0, 0, 0))
-                eD.setDate(eD.getDate() - 1)
 
-                arrUserEvents = [...arrUserEvents, {startDate: sD,
-                                                endDate: eD, 
-                                                description: val.summary, 
-                                                type: VACATION_TYPE.HOLIDAY}
-                ]
+        if(
+            savedEvents.find(e => {
+                if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) 
+                    || eD >= new Date(e.startDate) && eD <= new Date(e.endDate) 
+                    || sD <= new Date(e.startDate) && eD >= new Date(e.endDate)  ) return true
             })
-            if(
-                arrUserEvents.find(e => {
-                    if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) 
-                        || eD >= new Date(e.startDate) && eD <= new Date(e.endDate) 
-                        || sD <= new Date(e.startDate) && eD >= new Date(e.endDate)  ) return true
-                })
-                || 
-                arrUserEventsNotConfirmed.find(e => {
-                    if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) 
-                        || eD >= new Date(e.startDate) && eD <= new Date(e.endDate) 
-                        || sD <= new Date(e.startDate) && eD >= new Date(e.endDate)  ) return true
-                })
-            ) {
-                setDeltaDates(-1)
-                return -1
-            }
-            else
-            {
-                let a = 0;
-                let dd = sD
-                let counter = 0;
-                do {
-                    dd = new Date(dd.setDate((dd.getDate() + a)))
-                    if(dd.getDay() !== 6 && dd.getDay() !== 0) counter++
-                    a = 1
-                } while(dd.getTime() !== eD.getTime())
-                setDeltaDates(counter)
-                return counter
-            }
-        })
-        .catch(err => console.log(err))
+            || 
+            unconfirmedEvents.find(e => {
+                if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) 
+                    || eD >= new Date(e.startDate) && eD <= new Date(e.endDate) 
+                    || sD <= new Date(e.startDate) && eD >= new Date(e.endDate)  ) return true
+            })
+        ) {
+            setDeltaDates(-1)
+            return -1
+        }
+        else
+        {
+            let a = 0;
+            let dd = sD
+            let counter = 0;
+            do {
+                dd = new Date(dd.setDate((dd.getDate() + a)))
+                if(dd.getDay() !== 6 && dd.getDay() !== 0) counter++
+                a = 1
+            } while(dd.getTime() !== eD.getTime())
+            setDeltaDates(counter)
+            return counter
+        }
     }
     
     const onSubmit = (e) => {

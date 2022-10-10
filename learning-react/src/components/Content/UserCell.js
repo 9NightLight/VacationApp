@@ -13,8 +13,7 @@ const BASE_CALENDAR_URL = "https://www.googleapis.com/calendar/v3/calendars";
 const BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY = "holiday@group.v.calendar.google.com"; // Calendar Id. This is public but apparently not documented anywhere officialy.
 
 export default function UserCell({day, _user}) {
-    const [unconfirmedEvents, setUnconfirmedEvents] = React.useState(new Array()); 
-    const { currUser, roomUsers, countryAttribute, savedEvents, setSavedEvents, downloaded, setDownloaded} = React.useContext(CalendarContext);
+    const { currUser, roomUsers, countryAttribute, savedEvents, setSavedEvents, setDownloaded, unconfirmedEvents, setUnconfirmedEvents} = React.useContext(CalendarContext);
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(false);
     const [nationHolidays, setNationHolidays] = React.useState(new Array()); 
 

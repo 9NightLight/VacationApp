@@ -32,6 +32,7 @@ export default function Home() {
     const [countryAttribute, setCountryAttribute] = React.useState(null)
     const [showLoadingScreen, setShowLoadingScreen] = React.useState(true)
     const [savedEvents, setSavedEvents] = React.useState(new Array());
+    const [unconfirmedEvents, setUnconfirmedEvents] = React.useState(new Array()); 
     const [downloaded, setDownloaded] = React.useState(false);
 
     useEffect(() => {
@@ -63,7 +64,7 @@ export default function Home() {
             <CalendarContext.Provider value={{  
                                                 currentCalendar, setCurrentCalendar, 
                                                 tab, setTab, 
-                                                users, setUsers, 
+                                                users, setUsers,
                                                 currUser, setCurrUser, 
                                                 roomUsers, setRoomUsers,
                                                 darkTheme, setDarkTheme,
@@ -71,6 +72,7 @@ export default function Home() {
                                                 savedEvents, setSavedEvents,
                                                 currUserPhoto, setCurrUserPhoto,
                                                 countryAttribute, setCountryAttribute,
+                                                unconfirmedEvents, setUnconfirmedEvents,
                                                 showLoadingScreen, setShowLoadingScreen,
                                                 defaultNumVacations, setDefaultNumVacations,
                                                 year, setYear,
