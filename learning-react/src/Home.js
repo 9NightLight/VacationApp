@@ -30,7 +30,6 @@ export default function Home() {
     const [darkTheme, setDarkTheme] = React.useState(false)
     const [defaultNumVacations, setDefaultNumVacations] = React.useState(0)
     const [countryAttribute, setCountryAttribute] = React.useState(null)
-    const [showLoadingScreen, setShowLoadingScreen] = React.useState(true)
     const [savedEvents, setSavedEvents] = React.useState(new Array());
     const [unconfirmedEvents, setUnconfirmedEvents] = React.useState(new Array()); 
     const [downloaded, setDownloaded] = React.useState(false);
@@ -42,22 +41,10 @@ export default function Home() {
     const navigate = useNavigate();
     React.useEffect(() => {
         auth.onAuthStateChanged(user => {
-            if(user) {
-                navigate("/")
-            }
-            else if(!user){
-                navigate("/auth");
-            }
+            if (user) navigate("/")
+            else if (!user) navigate("/auth")
         })
     }, [])
-
-    React.useEffect(() => {
-        downloaded ? 
-        setTimeout(() => {
-            setShowLoadingScreen(false)
-        }, 1000)
-        : setShowLoadingScreen(true)
-    }, [downloaded])
 
     return (
         <React.Fragment>
@@ -73,7 +60,7 @@ export default function Home() {
                                                 currUserPhoto, setCurrUserPhoto,
                                                 countryAttribute, setCountryAttribute,
                                                 unconfirmedEvents, setUnconfirmedEvents,
-                                                showLoadingScreen, setShowLoadingScreen,
+                                                downloaded, setDownloaded,
                                                 defaultNumVacations, setDefaultNumVacations,
                                                 year, setYear,
                                                 monthIndex, setMonthIndex,
@@ -97,7 +84,7 @@ export default function Home() {
                         : <div></div>
                         }
                     </div>
-                    <LoadingScreen show={showLoadingScreen}/>
+                    {downloaded ? "" : <LoadingScreen/>}
             </CalendarContext.Provider>
         </React.Fragment>
     )

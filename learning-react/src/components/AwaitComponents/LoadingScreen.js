@@ -1,9 +1,7 @@
-import React from 'react'
 import LoadScreenSVG from "../../images/Loading/LoadingSign.svg"
 import { useSpring, animated } from 'react-spring';
 
-export default function LoadingScreen({show}) {
-
+export default function LoadingScreen() {
     function Animation() {
         const styles = useSpring({
             loop: true,
@@ -25,12 +23,9 @@ export default function LoadingScreen({show}) {
 
     return (
         <div>
-            {show ? 
-                <div className='absolute w-full h-full top-0 left-0 bg-white z-40 flex justify-center items-center'>
-                    {Animation()}
-                </div>
-                : ""
-            }
+            <div className='absolute w-full h-full top-0 left-0 bg-white z-40 flex justify-center items-center'>
+                {Animation()}
+            </div>
         </div>
     )
 }

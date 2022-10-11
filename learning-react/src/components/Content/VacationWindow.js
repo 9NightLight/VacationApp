@@ -12,13 +12,6 @@ import { CalendarContext } from "../../Home";
 import { ROLES } from "../SignIn";
 import { httpsCallable } from "firebase/functions";
 
-const axios = require("axios").default;
-
-const mykey = "AIzaSyC1NrF3Y0Ze7yMViWSLuP4ITmX7WYzlhec"
-
-const BASE_CALENDAR_URL = "https://www.googleapis.com/calendar/v3/calendars";
-const BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY = "holiday@group.v.calendar.google.com"; // Calendar Id. This is public but apparently not documented anywhere officialy.
-
 export const VACATION_TYPE = {
     UNPAID: "Unpayed",
     VACATION: "Vacation",
@@ -28,7 +21,7 @@ export const VACATION_TYPE = {
 
 export default function VacationWindow({show, date, setShow}) {
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(show);
-    const {currUser, roomUsers, countryAttribute, unconfirmedEvents, savedEvents} = React.useContext(CalendarContext)
+    const {currUser, roomUsers, unconfirmedEvents, savedEvents} = React.useContext(CalendarContext)
     const [type, SetType] = React.useState(VACATION_TYPE.UNPAID)
     const [Description, SetDescription] = React.useState("")
     const [Dates, SetDates] = React.useState(new Array(new Date(), new Date()))

@@ -19,32 +19,37 @@ export default function UserCell({day, _user}) {
 
     React.useEffect(() => {
         setDownloaded(false)
+        if(countryAttribute) {
         const CALENDAR_REGION = `en.${countryAttribute.attr}`;
         const calendar_url = `${BASE_CALENDAR_URL}/${CALENDAR_REGION}%23${BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY}/events?key=${mykey}`
         let holidaysArray = new Array()
 
         axios.get(calendar_url)
-        .then(res => {res.data.items.map(val => {
-                const sD = new Date(new Date(val.start.date).setHours(0, 0, 0, 0))
-                const eD = new Date(new Date(val.end.date).setHours(0, 0, 0, 0))
-                eD.setDate(eD.getDate() - 1)
+        .then(res => {
+            if(res) { res.data.items.map(val => {
+                    const sD = new Date(new Date(val.start.date).setHours(0, 0, 0, 0))
+                    const eD = new Date(new Date(val.end.date).setHours(0, 0, 0, 0))
+                    eD.setDate(eD.getDate() - 1)
 
-                holidaysArray = [...holidaysArray, {startDate: sD,
-                                                endDate: eD, 
-                                                description: val.summary, 
-                                                type: VACATION_TYPE.HOLIDAY}
-                ]
-            })
-            setNationHolidays(holidaysArray)
-            setDownloaded(true)
+                    holidaysArray = [...holidaysArray, {startDate: sD,
+                                                    endDate: eD, 
+                                                    description: val.summary, 
+                                                    type: VACATION_TYPE.HOLIDAY}
+                    ]
+                })
+                setNationHolidays(holidaysArray)
+                setDownloaded(true) 
+            }
         })
         .catch(err => console.log(err))
+        }
+        setDownloaded(true) 
     }, [countryAttribute])
 
     React.useEffect(() => {
         auth.onAuthStateChanged((user) => {
-            let confirmed = new Array();
             if (user) {
+                let confirmed = new Array();
                 onValue(ref(db, `/rooms/${currUser.room}/events/confirmed/`), (snapshot) => {
                     const data = snapshot.val();
                     if (data !== null) {
@@ -69,6 +74,10 @@ export default function UserCell({day, _user}) {
             } 
         });
     }, [nationHolidays])
+
+    React.useEffect(() => {
+        console.log(savedEvents)
+    }, [savedEvents])
 
     return (
         <div>
