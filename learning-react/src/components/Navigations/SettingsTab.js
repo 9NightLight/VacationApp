@@ -39,7 +39,7 @@ export default function SettingsTab() {
         })
     }
 
-    const handleVacationNumChange = (event) => {
+    const handleCountryChange = (event) => {
         auth.onAuthStateChanged(user => {
             if(user)
             {
@@ -73,7 +73,7 @@ export default function SettingsTab() {
                             </div>
                             <div className='flex justify-between'>
                                 <div className='font-bold text-white'>Coutry: </div>
-                                <select onChange={(event) => handleVacationNumChange(event)} defaultValue={countryAttribute.attr} className="w-2/5 l-4 h-5 flex justify-center text-black items-center bg-gray-200">
+                                <select onChange={(event) => handleCountryChange(event)} defaultValue={countryAttribute.attr} className="w-2/5 l-4 h-5 flex justify-center text-black items-center bg-gray-200">
                                     {
                                         Object.values(iso_to_gcal_description).map(val => {return <option value={val.attr}>{val.country}</option>})
                                     }

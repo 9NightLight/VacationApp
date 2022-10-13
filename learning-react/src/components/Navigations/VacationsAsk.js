@@ -11,7 +11,7 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
     const [vacationOwnerName, setVacationOwnerName] = React.useState("")
     const [blockRefuse, setBlockRefuse] = React.useState(false)
     const [requestUser, setRequestUser] = React.useState(null)
-    const {currUser, roomUsers, setRoomUsers} = React.useContext(CalendarContext)
+    const {currUser, roomUsers, setRoomUsers, setUnconfirmedEvents} = React.useContext(CalendarContext)
 
     const countDelta = () => {
         const sD = new Date(vacation.startDate);
@@ -85,7 +85,7 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
     }, [vacationOwner])
 
     const getFormatedDate = (date) => {
-        return (new Date(date).getDate() < 10 ? "0" + new Date(date).getDate() : new Date(date).getDate()) + "-" + (new Date(date).getMonth() < 10 ? "0" + (new Date(date).getMonth() + 1) : (new Date(date).getMonth() + 1)) + "-" + new Date(date).getFullYear()
+        return (new Date(date).getDate() < 10 ? "0" + new Date(date).getDate() : new Date(date).getDate()) + "-" + ((new Date(date).getMonth() + 1) < 10 ? "0" + (new Date(date).getMonth() + 1) : (new Date(date).getMonth() + 1)) + "-" + new Date(date).getFullYear()
     }
 
     const onEventConfirm = (e) => {
@@ -139,8 +139,19 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
                                 if(val.eventUID !== vacation.eventUID) {arr = [...arr, val]}
                             })
                             setVacations(arr)
-                            }
-                        )
+                            setUnconfirmedEvents(new Array());
+                            let unconfirmed = new Array();
+                            onValue(ref(db, `/rooms/${currUser.room}/events/pending/`), (snapshot) => {
+                                const data = snapshot.val();
+                                if (data !== null) {
+                                Object.values(data).map((event) => {
+                                    unconfirmed = [...unconfirmed, event]
+                                });
+                                setUnconfirmedEvents(unconfirmed);
+                                }
+                                return true
+                            })
+                        })
                         .then(() => {
                             const time = setTimeout(setBlockRefuse(false), 1000);
                         })

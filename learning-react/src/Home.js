@@ -33,6 +33,7 @@ export default function Home() {
     const [savedEvents, setSavedEvents] = React.useState(new Array());
     const [unconfirmedEvents, setUnconfirmedEvents] = React.useState(new Array()); 
     const [downloaded, setDownloaded] = React.useState(false);
+    const [nationHolidays, setNationHolidays] = React.useState(new Array()); 
 
     useEffect(() => {
         setCurrentCalendar(getMonth(year, monthIndex));
@@ -58,6 +59,7 @@ export default function Home() {
                                                 downloaded, setDownloaded,
                                                 savedEvents, setSavedEvents,
                                                 currUserPhoto, setCurrUserPhoto,
+                                                nationHolidays, setNationHolidays,
                                                 countryAttribute, setCountryAttribute,
                                                 unconfirmedEvents, setUnconfirmedEvents,
                                                 downloaded, setDownloaded,

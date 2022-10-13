@@ -136,21 +136,26 @@ export default function VacationWindow({show, date, setShow}) {
     return (
         <React.Fragment>
             <TransitionComponent content={<div className="z-10 absolute left-0 top-0 w-full h-full flex justify-center items-center">
-                <div className="z-20 w-96 h-120 bg-white flex flex-col justify-around rounded-xl shadow-xl">
+                <div className="z-20 w-96 h-96 bg-white flex flex-col justify-start rounded-xl shadow-xl">
                     <form onSubmit={onSubmit}>
-                        <div className="w-full h-20 flex justify-center items-center">
+                        <div className="w-full h-20 flex justify-center items-start">
                             <Header delta={deltaDates} type={type}/>
                         </div>
                         <div className="w-full h-32 flex justify-center items-center">
                             <TypeVacation setType={SetType}/>
                         </div>
-                        <div className="w-full h-20 flex justify-center items-center">
+                        {/* <div className="w-full h-20 flex justify-center items-center">
                             <VacationDescription setDescription={SetDescription}/>
+                        </div> */}
+                        <div className="static w-full h-20 p-4 flex flex-col justify-center items-center">
+                            <div className="w-full h-10"><CalendarMini clickedDate={date} setDates={SetDates}/></div>
+                            <div className="font-bold">
+                                <div className="text-green-700">{ deltaDates === -1 ? "" : deltaDates === 1 ? `${deltaDates} work day` : deltaDates !== 1 ? `${deltaDates} work days` : deltaDates === 0 ? deltaDates : "" }</div>
+                                <div className="text-xs text-red-500">{type === VACATION_TYPE.VACATION ? deltaDates > currUser.vacationsNum ? "You don't have enough vacations!" : "" : ""}</div>
+                                <div className="text-xs text-red-500">{deltaDates === -1 ? "You have vacation on this dates" : deltaDates === 0 ? "Weekends to enjoy!" : ""}</div>
+                            </div>
                         </div>
-                        <div className="static w-full h-20 p-4 flex justify-center items-center">
-                            <CalendarMini clickedDate={date} setDates={SetDates}/>
-                        </div>
-                        <div className="w-full h-20 flex justify-center items-center"
+                        <div className="w-full h-20 flex justify-center items-end"
                              >
                             <Submit delta={deltaDates} type={type}/>
                         </div>

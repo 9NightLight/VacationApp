@@ -3,6 +3,7 @@ import { isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink } fro
 import { auth, db } from '../firebase.js';
 import { onValue, ref, set } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
+import { iso_to_gcal_description } from '../utils/GoogleCalendar.js';
 
 export const ROLES = {
     EMPLOYER: "Employee",
@@ -18,6 +19,7 @@ const DEV_PATH = {
 export default function SignIn() {
     const FirstNameRef = React.useRef();
     const LastNameRef = React.useRef();
+    const [country, setCountry] = React.useState("ad");
     const [showInvalidData, setShowInvalidData] = React.useState(false);
     const [showSend, setShowSend] = React.useState(false);
     const [allow, setAllow] = React.useState()
@@ -98,6 +100,9 @@ export default function SignIn() {
             {
                 const uuid = user.uid;
                 let str = saved_email;
+                const a = Object.values(iso_to_gcal_description).find(val => {
+                    if(val.attr === country) return true
+                })
                 set(ref(db, `/users/${uuid}`), {
                     firstName: String(FirstNameRef.current.value).trim(),
                     lastName: String(LastNameRef.current.value).trim(),
@@ -118,15 +123,23 @@ export default function SignIn() {
                                                                         email: str.toLowerCase().trim(),
                                                                         uuid: uuid,}))
                 .then(set(ref(db, `rooms/${uuid}/settings`), {defaultNumVacations: 10}))
+                .then(set(ref(db, `rooms/${uuid}/settings/country`), {
+                                                                        attr: a.attr,
+                                                                        country: a.country
+                }))
             }
         })
     } 
+
+    const handleCountryChange = (event) => {
+        setCountry(event.target.value)
+    }
 
     return (
         <React.Fragment>
             {
             <div className='absolute left-0 top-0 w-full h-full bg-blue-200 z-10 flex justify-center items-center'>
-                <div className="z-20 w-96 h-fit bg-white flex flex-col rounded-xl shadow-xl">
+                <div className="z-20 w-96 h-80 bg-white flex flex-col rounded-xl shadow-xl">
                 {isSignInWithEmailLink(auth, window.location.href) && !!email ? 
                     <React.Fragment>
                         <div className="w-full h-20 flex items-center justify-start ml-2 text-2xl font-bold">
@@ -134,7 +147,7 @@ export default function SignIn() {
                         </div>
                         <div className='relative w-5/6 h-fit ml-10'>
                             <form onSubmit={completeSignIn} autoComplete="on">
-                                <div className="w-full h-20 flex justify-around flex-col">
+                                <div className="w-full h-32 flex justify-around flex-col">
                                     <div>
                                         <label className='font-bold'>First name</label>
                                         <input type="text" autoComplete='given-name' name='firstname' ref={FirstNameRef} required placeholder="Daniel Grey" className='absolute right-0 border-2'></input>       
@@ -143,8 +156,16 @@ export default function SignIn() {
                                         <label className='font-bold'>Last name</label>
                                         <input type="text" autoComplete='family-name' name='firstname' ref={LastNameRef} required placeholder="Daniel Grey" className='absolute right-0 border-2'></input>                                         
                                     </div>
-                                </div>
-                                <div className="w-full h-40 flex flex-col justify-center items-center">
+                                    <div className='flex justify-between'>
+                                        <div className='font-bold'>Coutry: </div>
+                                        <select onChange={(event) => handleCountryChange(event)} defaultValue={country} className="w-3/5 l-4 h-5 flex justify-center text-black items-center bg-gray-200">
+                                            {
+                                                Object.values(iso_to_gcal_description).map(val => {return <option value={val.attr}>{val.country}</option>})
+                                            }
+                                        </select>
+                                        </div>
+                                    </div>
+                                <div className="w-full h-20 flex flex-col justify-end items-center">
                                     <button type={allow ? 'submit' : 'button' } className="w-24 h-10 bg-green-apple rounded-xl">Sign In/Up</button>
                                     {showInvalidData ? <div className='text-red-400 text-sm'>Invalid data</div> : ""}
                                 </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { auth, db } from "../../firebase";
-import { onValue, ref } from 'firebase/database';
+import { onValue, ref, set } from 'firebase/database';
 import { CalendarContext } from '../../Home';
 
 export default function UsersCalendar({setOnHoldUser}) {
@@ -86,9 +86,6 @@ export default function UsersCalendar({setOnHoldUser}) {
                     if(data !== null)
                     {
                         setCountryAttribute({attr: data.attr, country: data.country})
-                    }
-                    else {
-                        setCountryAttribute({attr: "usa", country: "USA"})
                     }
                 })
             }
