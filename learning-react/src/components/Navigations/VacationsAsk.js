@@ -11,6 +11,7 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
     const [vacationOwnerName, setVacationOwnerName] = React.useState("")
     const [blockRefuse, setBlockRefuse] = React.useState(false)
     const [requestUser, setRequestUser] = React.useState(null)
+    const [delta, setDelta] = React.useState(0)
     const {currUser, roomUsers, setRoomUsers, setUnconfirmedEvents} = React.useContext(CalendarContext)
 
     const countDelta = () => {
@@ -50,6 +51,10 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
     }
 
     React.useEffect(() => {
+        setDelta(countDelta())
+    }, [])
+
+    React.useEffect(() => {
         auth.onAuthStateChanged(user => {
             if(user)
             {
@@ -83,6 +88,10 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
             }
         })
     }, [vacationOwner])
+
+    React.useEffect(() => {
+        setDelta(countDelta())
+    }, [vacations])
 
     const getFormatedDate = (date) => {
         return (new Date(date).getDate() < 10 ? "0" + new Date(date).getDate() : new Date(date).getDate()) + "-" + ((new Date(date).getMonth() + 1) < 10 ? "0" + (new Date(date).getMonth() + 1) : (new Date(date).getMonth() + 1)) + "-" + new Date(date).getFullYear()
@@ -120,6 +129,7 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
             {
                 setBlockRefuse(true)
                 const delta = countDelta()
+
                 update(ref(db, `rooms/${currUser.room}/members/${vacationOwner.uuid}`), {
                                                                                             vacationsNum:       vacation.type === VACATION_TYPE.VACATION ? vacationOwner.vacationsNum + delta.delta : vacationOwner.vacationsNum,
                                                                                             unpaidVacationDays: vacation.type === VACATION_TYPE.UNPAID ? vacationOwner.unpaidVacationDays - delta.delta : vacationOwner.unpaidVacationDays,
@@ -153,6 +163,7 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
                             })
                         })
                         .then(() => {
+                            
                             const time = setTimeout(setBlockRefuse(false), 1000);
                         })
                     )
@@ -161,33 +172,56 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
         })
     }
 
-
     return (
-        <div>
+        <div className='bg-gray-200 mb-1 rounded-md sm:w-120 w-80 screen-840:text-base text-xs'>
             <div className='sm:w-120 w-80 h-8 flex justify-between items-center mb-1'>
-                <div className='flex justify-between w-full pr-4'>
-                <div className='font-bold'>{vacationOwnerName}</div>
-                    {
-                        vacation.startDate === vacation.endDate ? <div className='font-bold'>{`\t${getFormatedDate(vacation.startDate)}`}</div> : 
-                        <div className='flex'>
-                            <div className='font-bold'>{`\t${getFormatedDate(vacation.startDate)}`}</div>
-                            <div className='mr-2 ml-2'>to</div>
-                            <div className='font-bold'>{`${getFormatedDate(vacation.endDate)}`}</div>
-                        </div>
-                    }
+                <div className='flex justify-between w-full pr-1'>
+                    <div className='font-bold'>{vacationOwnerName}</div>
+                        {
+                            <div className='font-bold flex justify-center items-center'>
+                                <div>
+                                    {vacation.type === VACATION_TYPE.VACATION ? "Vacation" 
+                                    :
+                                    vacation.type === VACATION_TYPE.UNPAID ? "Unpaid"
+                                    : vacation.type === VACATION_TYPE.SICK_LEAVE ? "Sick"
+                                    : ""}
+                                </div>
+                                <div className={
+                                    vacation.type === VACATION_TYPE.VACATION ? "ml-1 mr-1 w-4 h-4 bg-green-500 rounded-full" 
+                                    :
+                                    vacation.type === VACATION_TYPE.UNPAID ? "ml-1 mr-1 w-4 h-4 bg-red-500 rounded-full"
+                                    : vacation.type === VACATION_TYPE.SICK_LEAVE ? "ml-1 mr-1 w-4 h-4 bg-orange-500 rounded-full"
+                                    : ""
+                                }> 
+                                </div>
+                                <div>
+                                    {delta.delta} work {delta.delta % 10 === 1 && delta.delta !== 11 ? "day" : "days"} 
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div className='w-20 flex justify-between'>
+                    <form onSubmit={onEventConfirm}>
+                        <button type="submit">
+                        <FontAwesomeIcon className='text-3xl text-green-apple' icon={faCircleCheck} />
+                        </button>
+                    </form>
+                    <form onSubmit={onEventRefuse}>
+                        <button type={blockRefuse ? "button" : !blockRefuse ? 'submit' : "err"}>
+                        <FontAwesomeIcon className='text-3xl text-red-500' icon={faCircleXmark} />
+                        </button>
+                    </form>
                 </div>
-                <div className='w-20 flex justify-between'>
-                <form onSubmit={onEventConfirm}>
-                    <button type="submit">
-                    <FontAwesomeIcon className='text-3xl text-green-apple' icon={faCircleCheck} />
-                    </button>
-                </form>
-                <form onSubmit={onEventRefuse}>
-                    <button type={blockRefuse ? "button" : !blockRefuse ? 'submit' : "err"}>
-                    <FontAwesomeIcon className='text-3xl text-red-500' icon={faCircleXmark} />
-                    </button>
-                </form>
-                </div>
+            </div>
+            <div>
+                {
+                    vacation.startDate === vacation.endDate ? <div className=''>{`\t${getFormatedDate(vacation.startDate)}`}</div> : 
+                    <div className='flex'>
+                        <div className=''>{`\t${getFormatedDate(vacation.startDate)}`}</div>
+                        <div className='mr-2 ml-2'>to</div>
+                        <div className=''>{`${getFormatedDate(vacation.endDate)}`}</div>
+                    </div>
+                }
             </div>
         </div>
     )
