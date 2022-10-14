@@ -150,7 +150,7 @@ export default function VacationWindow({show, date, setShow}) {
                         <div className="static w-full h-20 p-4 flex flex-col justify-center items-center">
                             <div className="w-full h-10"><CalendarMini clickedDate={date} setDates={SetDates}/></div>
                             <div className="font-bold">
-                                <div className="text-green-700">{ deltaDates === -1 ? "" : deltaDates === 1 ? `${deltaDates} work day` : deltaDates !== 1 ? `${deltaDates} work days` : deltaDates === 0 ? deltaDates : "" }</div>
+                                <div className="text-green-700">{ deltaDates === -1 ? "" : deltaDates !== 0 ? deltaDates === 1 ? `${deltaDates} work day` : deltaDates !== 1 ? `${deltaDates} work days` : deltaDates === 0 ? deltaDates : "" : ""}</div>
                                 <div className="text-xs text-red-500">{type === VACATION_TYPE.VACATION ? deltaDates > currUser.vacationsNum ? "You don't have enough vacations!" : "" : ""}</div>
                                 <div className="text-xs text-red-500">{deltaDates === -1 ? "You have vacation on this dates" : deltaDates === 0 ? "Weekends to enjoy!" : ""}</div>
                             </div>
