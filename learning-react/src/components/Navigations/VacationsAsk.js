@@ -195,7 +195,7 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
                                 }> 
                                 </div>
                                 <div>
-                                    {delta.delta} work {delta.delta % 10 === 1 && delta.delta !== 11 ? "day" : "days"} 
+                                    {delta.delta} {delta.delta % 10 === 1 && delta.delta !== 11 ? "day" : "days"} 
                                 </div>
                             </div>
                         }
