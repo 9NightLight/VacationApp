@@ -17,9 +17,9 @@ import { CheckoutForm } from "./components/StripeComponents/CheckoutForm";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
-const PUBLIC_KEY = "YOUR_PUBLIC_TEST";
+const PUBLIC_KEY = "pk_test_51LvIkhFlIMqx6x2711SpIi218jZPjopxmA7Gr4WoexWk5TGkipcEFkUp5cEifIBt5dFhIrcI9xpEws2vje2di0LM00tgt9W5pB"
 
-const stripeTestPromise = loadStripe("pk_test_51LvIkhFlIMqx6x2711SpIi218jZPjopxmA7Gr4WoexWk5TGkipcEFkUp5cEifIBt5dFhIrcI9xpEws2vje2di0LM00tgt9W5pB");
+const stripeTestPromise = loadStripe(PUBLIC_KEY);
 
 ///
 
@@ -81,9 +81,9 @@ export default function Home() {
                             <div className="flex flex-1 flex-col">
                                 <CalendarHeader month={monthIndex}/>
                                 <Month month={currentCalendar} />
-                                <Elements stripe={stripeTestPromise}>
+                                {/* <Elements stripe={stripeTestPromise}>
                                     <CheckoutForm />
-                                </Elements>
+                                </Elements> */}
                             </div>
                         : tab === 1 ?
                             <UsersSettings />

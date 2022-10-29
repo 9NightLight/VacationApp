@@ -20,8 +20,12 @@ export const CheckoutForm = () => {
         const addMessage = httpsCallable(functions, 'procceedPayment');
 
         const { id } = paymentMethod;
-        const response = await addMessage({amount: 999, id: id})
-        console.log(response)
+        // const response = await addMessage({amount: 999, id: id})
+        // console.log(response)
+        addMessage({amount: 999, id: id})
+        .then(res => console.log("26 CheckoutForm Response | ", res))
+        .catch(err => console.log("27 CheckoutForm Error | ", err))
+
         // addMessage({amount: 999, id: id})
         // .then(res => console.log("CheckoutForm.js 25 | response", res))
         // .catch(err => console.log("CheckoutForm.js 26 | err", err))
