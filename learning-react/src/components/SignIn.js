@@ -45,7 +45,7 @@ export default function SignIn() {
             });
         } else {
             sendSignInLinkToEmail(auth, email, {
-                url: DEV_PATH.WEB,
+                url: DEV_PATH.TEST,
                 handleCodeInApp: true,
             })
             .then(() => {
@@ -138,8 +138,8 @@ export default function SignIn() {
     return (
         <React.Fragment>
             {
-            <div className='absolute left-0 top-0 w-full h-full bg-blue-200 z-10 flex justify-center items-center'>
-                <div className="z-20 w-96 h-80 bg-white flex flex-col rounded-xl shadow-xl">
+            <div className='absolute left-0 top-0 w-full h-full bg-zinc-300 bg-cover z-10 flex justify-end items-center'>
+                <div className="z-20 w-120 h-5/6 bg-white flex flex-col rounded-xl shadow-xl mr-10">
                 {isSignInWithEmailLink(auth, window.location.href) && !!email ? 
                     <React.Fragment>
                         <div className="w-full h-20 flex items-center justify-start ml-2 text-2xl font-bold">
@@ -165,9 +165,10 @@ export default function SignIn() {
                                         </select>
                                         </div>
                                     </div>
+                                    {showInvalidData ? <div className='text-red-400 text-center text-sm'>Oops... Searching the instruments!</div> : ""}
                                 <div className="w-full h-20 flex flex-col justify-end items-center">
                                     <button type={allow ? 'submit' : 'button' } className="w-24 h-10 bg-green-apple rounded-xl">Sign In/Up</button>
-                                    {showInvalidData ? <div className='text-red-400 text-sm'>Invalid data</div> : ""}
+                                    
                                 </div>
                             </form>
                         </div>
@@ -184,9 +185,10 @@ export default function SignIn() {
                                     <input type="email" autoComplete='email' name='email' value={email} onChange={updateEmail} placeholder="example.example.com" className='absolute right-0 border-2'></input>
                                 </div>
                                 {showSend ? <div className='text-green-500 text-sm text-center'>Confirmation sended on email</div> : ""}
+                                {showInvalidData ? <div className='text-red-400 text-center text-sm'>Please enter your email in format example@example.com</div> : ""}
                                 <div className="w-full h-40 flex flex-col justify-center items-center">
                                     <button type='submit' className="w-24 h-10 bg-green-apple rounded-xl">Sign In/Up</button>
-                                    {showInvalidData ? <div className='text-red-400 text-sm'>Invalid data</div> : ""}
+                                    
                                     
                                 </div>
                             </form>

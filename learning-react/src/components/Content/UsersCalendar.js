@@ -9,6 +9,7 @@ export default function UsersCalendar({setOnHoldUser}) {
     React.useEffect(() => {
         auth.onAuthStateChanged((user) => {
           if (user) {
+            
             setDownloaded(false)
             onValue(ref(db, `/users`), (snapshot) => {
                 let sArray = new Array();

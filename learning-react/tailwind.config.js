@@ -32,6 +32,9 @@ module.exports = {
           "gray-light": "#A0A0A0",
           "green-apple": "#62C554",
         },
+        backgroundImage: {
+          'christmas-pattern': "url('/src/images/SignIn/ChristmasPattern.jpg')",
+        },
         borderColor: {
           "grid-gray-180-17": "rgba(180, 180, 180, 0.17)",
           "green-apple": "#62C554",
