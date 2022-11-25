@@ -20,6 +20,7 @@ import { createCheckoutSession } from "./components/StripeComponents/StripeCusto
 import { doc, onSnapshot } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 import { onValue, ref } from "firebase/database";
+import { ROLES } from "./components/SignIn";
 
 
 const PUBLIC_KEY = "pk_test_51LvIkhFlIMqx6x2711SpIi218jZPjopxmA7Gr4WoexWk5TGkipcEFkUp5cEifIBt5dFhIrcI9xpEws2vje2di0LM00tgt9W5pB"
@@ -28,10 +29,6 @@ const stripeTestPromise = loadStripe(PUBLIC_KEY);
 ///
 
 export const CalendarContext = React.createContext();
-
-// async function isPremium() {
-//     return await isUserPremium();
-// }
 
 export default function Home() {
     const [year, setYear] = useState(dayjs().year());
@@ -49,6 +46,9 @@ export default function Home() {
     const [unconfirmedEvents, setUnconfirmedEvents] = React.useState(new Array()); 
     const [downloaded, setDownloaded] = React.useState(false);
     const [nationHolidays, setNationHolidays] = React.useState(new Array()); 
+    const [invites, setInvites] = React.useState(new Array())
+    const [vacations, setVacations] = React.useState(new Array())
+    const [notificationNumber, setNotificationNumber] = React.useState(0)
     const [prem, setPrem] = React.useState(false)
 
     useEffect(() => {
@@ -62,12 +62,6 @@ export default function Home() {
             else if (!user) navigate("/auth")
         })
     }, [])
-
-    // React.useEffect(() => {
-    //     auth.onAuthStateChanged(user => {
-    //         isPremium().then(res => setPrem(res))
-    //     })
-    // }, [])
 
     React.useEffect(() => {
         auth.onAuthStateChanged(user => {
@@ -83,6 +77,48 @@ export default function Home() {
         })
     }, [currUser])
 
+    React.useEffect(() => {
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            let arr = new Array()
+            users.find((_user) => {
+              onValue(ref(db, `/rooms/${_user.uuid}/pending/emailArray`), (snapshot) => {
+                const data = snapshot.val();
+                if(data !== null)
+                {
+                  Object.values(data).map((val) => {
+                    if(val === currUser.email)
+                    {
+                      arr = [...arr, _user.uuid]
+                    }
+                  })
+                  setInvites(arr);
+                }
+              })
+            });
+            if(currUser.role === ROLES.ADMIN || currUser.role === ROLES.HRMANAGER) {
+                onValue(ref(db, `/rooms/${currUser.room}/events/pending`), (snapshot) => {
+                const data = snapshot.val();
+                let arr = new Array()
+                if(data !== null)
+                {
+                    Object.values(data).map((val) => {
+                    arr = [...arr, val]
+                    })
+                    setVacations(arr)
+                }
+                })
+            }
+          }
+        });
+    }, [currUser]);
+
+    React.useEffect(() => {
+        if(invites && vacations) setNotificationNumber(invites.length + vacations.length)
+
+        console.log("number: ", invites.length + vacations.length)
+    }, [invites, vacations])
+
     const AddUserTest = () => {
         auth.onAuthStateChanged(user => {
             if(user && currUser.room) {
@@ -96,11 +132,6 @@ export default function Home() {
 
                         onValue(ref(db, `rooms/${currUser.room}/members`), (snapshot) => {
                             const data = snapshot.val()
-                            let userNumber = 0
-                            Object.values(data).map(user => {
-                                userNumber++
-                            })
-                            console.log(userNumber)
                         })
 
                         // const updateSubscription = httpsCallable(functions, "updateSubscription")
@@ -120,7 +151,9 @@ export default function Home() {
                                                 currentCalendar, setCurrentCalendar, 
                                                 tab, setTab, 
                                                 users, setUsers,
+                                                invites, setInvites,
                                                 currUser, setCurrUser, 
+                                                vacations, setVacations,
                                                 roomUsers, setRoomUsers,
                                                 darkTheme, setDarkTheme,
                                                 downloaded, setDownloaded,
@@ -129,6 +162,7 @@ export default function Home() {
                                                 nationHolidays, setNationHolidays,
                                                 countryAttribute, setCountryAttribute,
                                                 unconfirmedEvents, setUnconfirmedEvents,
+                                                notificationNumber, setNotificationNumber,
                                                 downloaded, setDownloaded,
                                                 defaultNumVacations, setDefaultNumVacations,
                                                 year, setYear,

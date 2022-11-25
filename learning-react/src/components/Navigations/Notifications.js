@@ -7,43 +7,41 @@ import VacationsAsk from './VacationsAsk';
 import { ROLES } from '../SignIn';
 
 export default function Notifications({tab}) {
-    const {users, currUser, roomUsers} = React.useContext(CalendarContext)
-    const [invites, setInvites] = React.useState(new Array())
-    const [vacations, setVacations] = React.useState(new Array())
+    const {users, currUser, roomUsers, invites, setInvites, vacations, setVacations} = React.useContext(CalendarContext)
 
-    React.useEffect(() => {
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          let arr = new Array()
-          users.find((_user) => {
-            onValue(ref(db, `/rooms/${_user.uuid}/pending/emailArray`), (snapshot) => {
-              const data = snapshot.val();
-              if(data !== null)
-              {
-                Object.values(data).map((val) => {
-                  if(val === currUser.email)
-                  {
-                    arr = [...arr, _user.uuid]
-                  }
-                })
-                setInvites(arr);
-              }
-            })
-          });
-          onValue(ref(db, `/rooms/${currUser.room}/events/pending`), (snapshot) => {
-            const data = snapshot.val();
-            let arr = new Array()
-            if(data !== null)
-            {
-              Object.values(data).map((val) => {
-                arr = [...arr, val]
-              })
-              setVacations(arr)
-            }
-          })
-        }
-      });
-    }, [tab]);
+    // React.useEffect(() => {
+    //   auth.onAuthStateChanged((user) => {
+    //     if (user) {
+    //       let arr = new Array()
+    //       users.find((_user) => {
+    //         onValue(ref(db, `/rooms/${_user.uuid}/pending/emailArray`), (snapshot) => {
+    //           const data = snapshot.val();
+    //           if(data !== null)
+    //           {
+    //             Object.values(data).map((val) => {
+    //               if(val === currUser.email)
+    //               {
+    //                 arr = [...arr, _user.uuid]
+    //               }
+    //             })
+    //             setInvites(arr);
+    //           }
+    //         })
+    //       });
+    //       onValue(ref(db, `/rooms/${currUser.room}/events/pending`), (snapshot) => {
+    //         const data = snapshot.val();
+    //         let arr = new Array()
+    //         if(data !== null)
+    //         {
+    //           Object.values(data).map((val) => {
+    //             arr = [...arr, val]
+    //           })
+    //           setVacations(arr)
+    //         }
+    //       })
+    //     }
+    //   });
+    // }, [tab]);
 
     return (
       <div className='ml-4 flex flex-col w-192 h-full'>

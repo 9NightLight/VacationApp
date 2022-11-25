@@ -74,7 +74,7 @@ export default function AddMember({setShow}) {
                             <div className='absolute flex flex-col justify-around items-center h-5/6 w-full'>
                                 <div className='relative w-full flex flex-col items-center'>
                                     <input className='w-5/6 h-10 border-2' type="email" ref={EmailRef} placeholder="example@example.com"></input>
-                                    {existError === false ? "" : <div className='text-red-400 text-sm'>Email already on pending</div> }
+                                    {existError === false ? "" : <div className='text-red-400 text-sm'>Email is on pending or user is already in your room</div> }
                                 </div>
 
                                 <button type='submit' className='w-1/2 h-fit p-4 bg-blue-300 rounded-xl font-semibold'>Add member</button>
