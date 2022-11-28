@@ -16,7 +16,7 @@ import LoadingScreen from "./components/AwaitComponents/LoadingScreen";
 
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js"
-import { createCheckoutSession } from "./components/StripeComponents/StripeCustomFunctions";
+import { calcSubscription, createCheckoutSession } from "./components/StripeComponents/StripeCustomFunctions";
 import { doc, onSnapshot } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 import { onValue, ref } from "firebase/database";
@@ -26,7 +26,6 @@ import { ROLES } from "./components/SignIn";
 const PUBLIC_KEY = "pk_test_51LvIkhFlIMqx6x2711SpIi218jZPjopxmA7Gr4WoexWk5TGkipcEFkUp5cEifIBt5dFhIrcI9xpEws2vje2di0LM00tgt9W5pB"
 
 const stripeTestPromise = loadStripe(PUBLIC_KEY);
-///
 
 export const CalendarContext = React.createContext();
 
@@ -56,6 +55,7 @@ export default function Home() {
     }, [monthIndex]);
 
     const navigate = useNavigate();
+
     React.useEffect(() => {
         auth.onAuthStateChanged(user => {
             if (user) navigate("/")
@@ -115,35 +115,7 @@ export default function Home() {
 
     React.useEffect(() => {
         if(invites && vacations) setNotificationNumber(invites.length + vacations.length)
-
-        console.log("number: ", invites.length + vacations.length)
     }, [invites, vacations])
-
-    const AddUserTest = () => {
-        auth.onAuthStateChanged(user => {
-            if(user && currUser.room) {
-                onSnapshot(doc(firestore, "customers", `${currUser.room}`), (snap) => {
-                    const leadStripeId = snap.data().stripeId
-
-                    const getList = httpsCallable(functions, "getSubscriptions");
-                    getList({customerId: leadStripeId})
-                    .then(res => { 
-                        const subscriptionId = res.data.data[0].id 
-
-                        onValue(ref(db, `rooms/${currUser.room}/members`), (snapshot) => {
-                            const data = snapshot.val()
-                        })
-
-                        // const updateSubscription = httpsCallable(functions, "updateSubscription")
-                        // updateSubscription({subscriptionId: subscriptionId})
-                        // .then(res => console.log(res))
-                        // .catch(e => console.log(e))
-                    })
-                    .catch(e => console.log(e))
-                })
-            }
-        })
-    }
 
     return (
         <React.Fragment>
@@ -199,7 +171,7 @@ export default function Home() {
                                             </button>
                                         </div>
                                         <div className="w-56 h-10 ml-44 mt-10 bg-orange-400 flex justify-center items-center rounded-xl font-semibold active:shadow-xl">
-                                            <button onClick={() => AddUserTest()}>
+                                            <button onClick={() => calcSubscription(currUser)}>
                                                 Add 2nd Member
                                             </button>
                                         </div>
