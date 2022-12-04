@@ -28,7 +28,7 @@ export async function createCheckoutSession(uid) {
   });
 }
 
-export async function calcSubscription(currUser, userLeave = false) {
+export async function calcSubscription(currUser, userLeave = false, cancelSubscription = false) {
   auth.onAuthStateChanged(user => {
       if(user && currUser.room) {
         onSnapshot(doc(firestore, "customers", `${currUser.room}`), (snap) => {
@@ -39,15 +39,21 @@ export async function calcSubscription(currUser, userLeave = false) {
             .then(res => { 
                 const subscriptionId = res.data.data[0].id 
 
-                onValue(ref(db, `rooms/${currUser.room}/members`), (snapshot) => {
-                    const data = snapshot.val()
-                    const usersNumber = Object.values(data).length - userLeave
+                if(!cancelSubscription) {
+                  onValue(ref(db, `rooms/${currUser.room}/members`), (snapshot) => {
+                      const data = snapshot.val()
+                      const usersNumber = Object.values(data).length - userLeave
 
-                    const updateSubscription = httpsCallable(functions, "updateSubscription")
-                    updateSubscription({subscriptionId: subscriptionId, usersNumber: usersNumber})
-                    .then(res => console.log(res))
-                    .catch(e => console.log(e))
-                })
+                      const updateSubscription = httpsCallable(functions, "updateSubscription")
+                      updateSubscription({subscriptionId: subscriptionId, usersNumber: usersNumber})
+                      .then(res => console.log(res))
+                      .catch(e => console.log(e))
+                  })
+                } 
+                else if(cancelSubscription) {
+                  console.log("Subscription canceled!")
+                }
+                else console.log("Can't cancel the subscription!")
             })
             .catch(e => console.log(e))
         })

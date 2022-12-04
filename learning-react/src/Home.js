@@ -22,6 +22,9 @@ import { httpsCallable } from "firebase/functions";
 import { onValue, ref } from "firebase/database";
 import { ROLES } from "./components/SignIn";
 
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 
 const PUBLIC_KEY = "pk_test_51LvIkhFlIMqx6x2711SpIi218jZPjopxmA7Gr4WoexWk5TGkipcEFkUp5cEifIBt5dFhIrcI9xpEws2vje2di0LM00tgt9W5pB"
 
@@ -48,7 +51,8 @@ export default function Home() {
     const [invites, setInvites] = React.useState(new Array())
     const [vacations, setVacations] = React.useState(new Array())
     const [notificationNumber, setNotificationNumber] = React.useState(0)
-    const [prem, setPrem] = React.useState(false)
+    const [isRoomActive, setIsRoomActive] = React.useState(false)
+    const [prem, setPrem] = React.useState(true)
 
     useEffect(() => {
         setCurrentCalendar(getMonth(year, monthIndex));
@@ -77,6 +81,35 @@ export default function Home() {
         })
     }, [currUser])
 
+    React.useEffect(() => {
+        auth.onAuthStateChanged(user => {
+            onValue(ref(db, `/users`), (snapshot) => {
+                let sArray = new Array();
+                const data = snapshot.val();
+                if(data !== null)
+                {
+                    Object.values(data).map((_user) => {
+                        if(user.uid === _user.uuid)
+                        {
+                            setCurrUser({
+                                firstName: _user.firstName,
+                                lastName: _user.lastName,
+                                vacationsNum: _user.vacationsNum, 
+                                unpaidVacationDays: _user.unpaidVacationDays,
+                                sickLeaves: _user.sickLeaves,
+                                role: _user.role,
+                                email: _user.email,
+                                room: _user.room,
+                                uuid:_user.uuid
+                            })
+                        }
+                    })
+                }
+                else console.log("Can't find user")
+            })
+        })
+    }, [])
+    
     React.useEffect(() => {
         auth.onAuthStateChanged((user) => {
           if (user) {
@@ -109,8 +142,21 @@ export default function Home() {
                 }
                 })
             }
+
+            onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
+                const data = snapshot.val()
+                if(data !== null)
+                {
+                    setIsRoomActive(data.isRoomActive)
+                }
+            })
           }
         });
+        if(currUser) 
+        setTimeout(() => {
+            setDownloaded(true) 
+        }, 1000)
+        else console.log()
     }, [currUser]);
 
     React.useEffect(() => {
@@ -130,6 +176,7 @@ export default function Home() {
                                                 darkTheme, setDarkTheme,
                                                 downloaded, setDownloaded,
                                                 savedEvents, setSavedEvents,
+                                                isRoomActive, setIsRoomActive,
                                                 currUserPhoto, setCurrUserPhoto,
                                                 nationHolidays, setNationHolidays,
                                                 countryAttribute, setCountryAttribute,
@@ -143,42 +190,56 @@ export default function Home() {
                     <TopNavBar />
                     <div className="h-max--48 flex flex-1">
                         <GlobalSideBar />
-                        { tab === 0 ?
-                            <div className="flex flex-1 flex-col">
-                                <CalendarHeader month={monthIndex}/>
-                                <Month month={currentCalendar} />
-                                <Elements stripe={stripeTestPromise}>
-                                    { 
-                                    !prem ? 
-                                    <div className="w-56 h-10 ml-44 mt-10 bg-yellow-400 flex justify-center items-center rounded-xl font-semibold active:shadow-xl">
-                                        <button onClick={() => {
-                                                                setDownloaded(false)
-                                                                createCheckoutSession(currUser.uuid)
-                                                                .catch(e => {
-                                                                    setDownloaded(true)
-                                                                    console.log(e)
-                                                                })
-                                                                
-                                                                }}>
-                                            Upgrade to premium!
-                                        </button>
+                        { tab  === 0 ?
+                            isRoomActive === true ? 
+                                <div className="flex flex-1 flex-col">
+                                    <CalendarHeader month={monthIndex}/>
+                                    <Month month={currentCalendar} />
+                                    <Elements stripe={stripeTestPromise}>
+                                        { 
+                                        !prem ? 
+                                        <div className="w-56 h-10 ml-44 mt-10 bg-yellow-400 flex justify-center items-center rounded-xl font-semibold active:shadow-xl">
+                                            <button onClick={() => {
+                                                                    setDownloaded(false)
+                                                                    createCheckoutSession(currUser.uuid)
+                                                                    .catch(e => {
+                                                                        setDownloaded(true)
+                                                                        console.log(e)
+                                                                    })
+                                                                    
+                                                                    }}>
+                                                Upgrade to premium!
+                                            </button>
+                                        </div>
+                                        : 
+                                        <React.Fragment>
+                                            <div className="w-56 h-10 ml-44 mt-10 bg-blue-400 flex justify-center items-center rounded-xl font-semibold active:shadow-xl">
+                                                <button onClick={() => setDownloaded(false)}>
+                                                    <a href="https://billing.stripe.com/p/login/test_bIYg197rkeYL61a6oo">Manage Subsription!</a>
+                                                </button>
+                                            </div>
+                                            <div className="w-56 h-10 ml-44 mt-10 bg-orange-400 flex justify-center items-center rounded-xl font-semibold active:shadow-xl">
+                                                <button onClick={() => calcSubscription(currUser)}>
+                                                    Add 2nd Member
+                                                </button>
+                                            </div>
+                                        </React.Fragment>
+                                        }
+                                    </Elements>
+                                </div>
+                            : isRoomActive === false ? 
+                                <div className="w-full h-full bg-gray-200 flex justify-center items-center">
+                                    <div className="w-120 h-96 rounded-md p-2 bg-white">
+                                        <div className="font-semibold text-center text-3xl mb-10">The leader of this group leaved</div>
+                                        <div className="font-semibold text-lg mb-6">You can go into Notifications tab to:</div>
+                                        <div className="font-semibold text-lg">• accept someone invite</div>
+                                        <div className="font-semibold text-lg">• leave to your own group</div>
+                                        <div className="w-full h-2/5 flex justify-center items-center">
+                                            <FontAwesomeIcon onClick={()=>setTab(3)} className={"w-15 h-20 pr-2 pl-3 hover:text-main-gray"} icon={faEnvelope} />
+                                        </div>
                                     </div>
-                                    : 
-                                    <React.Fragment>
-                                        <div className="w-56 h-10 ml-44 mt-10 bg-blue-400 flex justify-center items-center rounded-xl font-semibold active:shadow-xl">
-                                            <button onClick={() => setDownloaded(false)}>
-                                                <a href="https://billing.stripe.com/p/login/test_bIYg197rkeYL61a6oo">Manage Subsription!</a>
-                                            </button>
-                                        </div>
-                                        <div className="w-56 h-10 ml-44 mt-10 bg-orange-400 flex justify-center items-center rounded-xl font-semibold active:shadow-xl">
-                                            <button onClick={() => calcSubscription(currUser)}>
-                                                Add 2nd Member
-                                            </button>
-                                        </div>
-                                    </React.Fragment>
-                                    }
-                                </Elements>
-                            </div>
+                                </div>
+                            : ""
                         : tab === 1 ?
                             <UsersSettings />
                         : tab === 2 ?

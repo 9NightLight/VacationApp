@@ -4,7 +4,7 @@ import { onValue, ref, set } from 'firebase/database';
 import { CalendarContext } from '../../Home';
 
 export default function UsersCalendar({setOnHoldUser}) {
-    const {setUsers, currUser, setCurrUser, roomUsers, setRoomUsers, setDefaultNumVacations, setCountryAttribute, setDownloaded} = React.useContext(CalendarContext);
+    const {setUsers, currUser, setCurrUser, roomUsers, setRoomUsers, setDefaultNumVacations, setCountryAttribute, setDownloaded, setIsRoomActive} = React.useContext(CalendarContext);
 
     React.useEffect(() => {
         auth.onAuthStateChanged((user) => {
@@ -82,6 +82,13 @@ export default function UsersCalendar({setOnHoldUser}) {
                         setDefaultNumVacations(data.defaultNumVacations)
                     }
                 })
+                // onValue(ref(db, `rooms/${currUser.room}/settings/`), (snapshot) => {
+                //     const data = snapshot.val()
+                //     if(data !== null)
+                //     {
+                //         setIsRoomActive(data.isRoomActive)
+                //     }
+                // })
                 onValue(ref(db, `rooms/${currUser.room}/settings/country`), (snapshot) => {
                     const data = snapshot.val()
                     if(data !== null)

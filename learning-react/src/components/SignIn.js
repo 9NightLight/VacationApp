@@ -122,7 +122,7 @@ export default function SignIn() {
                                                                         role: ROLES.ADMIN,
                                                                         email: str.toLowerCase().trim(),
                                                                         uuid: uuid,}))
-                .then(set(ref(db, `rooms/${uuid}/settings`), {defaultNumVacations: 10}))
+                .then(set(ref(db, `rooms/${uuid}/settings`), {defaultNumVacations: 10, isRoomActive: true}))
                 .then(set(ref(db, `rooms/${uuid}/settings/country`), {
                                                                         attr: a.attr,
                                                                         country: a.country

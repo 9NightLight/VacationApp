@@ -34,66 +34,151 @@ export default function Notify({uuid, setInvites, invites}) {
     auth.onAuthStateChanged(user => {
       if (user && currUser !== undefined && owner)
       {
-        calcSubscription(currUser, true)
+        if(currUser.uuid !== owner.uuid) {
+          calcSubscription(currUser, true)
+        }
+        else if(currUser.uuid === owner.uuid) {
+          // Attempt to create distribution every user on lead leave
 
-        // update(ref(db, `/users/${currUser.uuid}`), { room: owner.uuid, role: ROLES.EMPLOYER, vacationsNum: ownerDefaultVacateDays }) // Here problem with reupdating
+          // onValue(ref(db, `rooms/${currUser.room}/settings/country`), (snapshot) => {
+          //   const countryObject = snapshot.val() // .attr, .country
+            
+            
 
-        // if(currUser.room === currUser.uuid)
-        // {
-        //   // remove user from current room if that exist
-        //   remove(ref(db, `/rooms/${currUser.uuid}`))
-        // }
-        // else if(currUser.room !== currUser.uuid)
-        // {
-        //   remove(ref(db, `/rooms/${currUser.room}/members/${currUser.uuid}`))
-        // }
+          //   onValue(ref(db, `rooms/${currUser.room}/members`), (snapshot) => {
+          //     const users = snapshot.val()
+  
+          //     Object.values(users).map(user => {
+          //       set(ref(db, `/users/${user.uuid}`), {
+          //         firstName: user.firstName,
+          //         lastName: user.lastName,
+          //         vacationsNum: 10,
+          //         unpaidVacationDays: 0,
+          //         sickLeaves: 0,
+          //         role: ROLES.ADMIN,
+          //         email: user.email,
+          //         room: user.uuid,
+          //         uuid: user.uuid,
+          //       })
+          //       .then(set(ref(db, `/rooms/${uuid}/members/${uuid}`), { firstName: user.firstName,
+          //                                                               lastName: user.lastName,
+          //                                                               vacationsNum: 10,
+          //                                                               unpaidVacationDays: 0,
+          //                                                               sickLeaves: 0,
+          //                                                               role: ROLES.ADMIN,
+          //                                                               email: user.email,
+          //                                                               uuid: user.uuid,
+          //       }))
+          //       .then(set(ref(db, `rooms/${uuid}/settings`), {defaultNumVacations: 10}))
+          //       .then(set(ref(db, `rooms/${uuid}/settings/country`), {
+          //                                                               attr: countryObject.attr,
+          //                                                               country: countryObject.country
+          //       }))
+          //     })
+          //   })
 
-        // // remove user from pending requests
-        // onValue(ref(db, `/rooms/${owner.uuid}/pending/`), (snapshot) => {
-        //   const data = snapshot.val()
-        //   if(data !== null)
-        //   {
-        //     Object.values(data).map((val, i) => val.map((v, idx) => {
-        //       if(v === currUser.email)
-        //       {
-        //         remove(ref(db, `/rooms/${owner.uuid}/pending/emailArray/${idx}`))
-        //       }
-        //     }))
-        //   }
-        // })
+          //   calcSubscription(currUser, false, true)
+          // })
+          
+          // onValue(ref(db, `rooms/${currUser.room}/members`), (snapshot) => {
+          //   const data = snapshot.val()
 
-        // onValue(ref(db, `/rooms/${owner.uuid}/pending/emailArray`), (snapshot) => {
-        //   let arr = new Array()
-        //   const data = snapshot.val();
-        //   if(data !== null)
-        //   {
-        //     Object.values(data).map((val) => {
-        //       if(val === currUser.email)
-        //       {
-        //         arr = [...arr, owner.uuid]
-        //       }
-        //     })
-        //     setInvites(arr);
-        //   }
-        // })
+          //   Object.values(data).map(user => {
+          //     console.log(user.firstName)
+          //   })
 
-        // // Adding new member to owner room 
-        // set(ref(db, `/rooms/${owner.uuid}/members/${currUser.uuid}/`), { firstName: currUser.lastName,
-        //                                                                 lastName: currUser.firstName,
-        //                                                                 vacationsNum: ownerDefaultVacateDays,
-        //                                                                 role: ROLES.EMPLOYER,
-        //                                                                 email: currUser.email,
-        //                                                                 uuid: currUser.uuid, })
+          //   set(ref(db, `/users/${user.uuid}`), {
+          //     firstName: user.firstName,
+          //     lastName: user.lastName,
+          //     vacationsNum: 10,
+          //     unpaidVacationDays: 0,
+          //     sickLeaves: 0,
+          //     role: ROLES.ADMIN,
+          //     email: user.email,
+          //     room: user.uuid,
+          //     uuid: user.uuid,
+          //   })
+          //   .then(set(ref(db, `/rooms/${uuid}/members/${uuid}`), { firstName: user.firstName,
+          //                                                           lastName: user.lastName,
+          //                                                           vacationsNum: 10,
+          //                                                           unpaidVacationDays: 0,
+          //                                                           sickLeaves: 0,
+          //                                                           role: ROLES.ADMIN,
+          //                                                           email: user.email,
+          //                                                           uuid: user.uuid,
+          //   }))
+          //   .then(set(ref(db, `rooms/${uuid}/settings`), {defaultNumVacations: 10}))
+          //   .then(set(ref(db, `rooms/${uuid}/settings/country`), {
+          //                                                           attr: a.attr,
+          //                                                           country: a.country
+          //   }))
+          // })
 
-        // remove(ref(db, `/rooms/${currUser.uuid}`))
+          // mark old room as non-active
 
-        // auth.onAuthStateChanged(user => {
-        //   if(user)
-        //   {
-        //     nav("/auth");
-        //   }
-        // })
+          set(ref(db, `rooms/${currUser.uuid}/settings`), { isRoomActive: false })
+        } 
+        else {
+          console.log("Can't find user!")
+        }
 
+        update(ref(db, `/users/${currUser.uuid}`), { room: owner.uuid, role: ROLES.EMPLOYER, vacationsNum: ownerDefaultVacateDays }) // Here problem with reupdating
+
+          if(currUser.room === currUser.uuid)
+          {
+            // remove user from current room if that exist
+            remove(ref(db, `/rooms/${currUser.uuid}`))
+          }
+          else if(currUser.room !== currUser.uuid)
+          {
+            remove(ref(db, `/rooms/${currUser.room}/members/${currUser.uuid}`))
+          }
+
+          // remove user from pending requests
+          onValue(ref(db, `/rooms/${owner.uuid}/pending/`), (snapshot) => {
+            const data = snapshot.val()
+            if(data !== null)
+            {
+              Object.values(data).map((val, i) => val.map((v, idx) => {
+                if(v === currUser.email)
+                {
+                  remove(ref(db, `/rooms/${owner.uuid}/pending/emailArray/${idx}`))
+                }
+              }))
+            }
+          })
+
+          onValue(ref(db, `/rooms/${owner.uuid}/pending/emailArray`), (snapshot) => {
+            let arr = new Array()
+            const data = snapshot.val();
+            if(data !== null)
+            {
+              Object.values(data).map((val) => {
+                if(val === currUser.email)
+                {
+                  arr = [...arr, owner.uuid]
+                }
+              })
+              setInvites(arr);
+            }
+          })
+
+          // Adding new member to owner room 
+          set(ref(db, `/rooms/${owner.uuid}/members/${currUser.uuid}/`), { firstName: currUser.lastName,
+                                                                          lastName: currUser.firstName,
+                                                                          vacationsNum: ownerDefaultVacateDays,
+                                                                          role: ROLES.EMPLOYER,
+                                                                          email: currUser.email,
+                                                                          uuid: currUser.uuid, })
+
+          remove(ref(db, `/rooms/${currUser.uuid}`))
+
+          auth.onAuthStateChanged(user => {
+            if(user)
+            {
+              nav("/auth");
+            }
+          })
       }
     })
   }
