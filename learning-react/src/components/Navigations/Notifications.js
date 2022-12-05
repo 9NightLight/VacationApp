@@ -75,7 +75,7 @@ export default function Notifications({tab}) {
           : ""
         }     
         {
-        !isRoomActive ? ""
+        isRoomActive ? ""
         : 
         <button onClick={() => setShow(true)} className='w-32 h-10 bg-red-500 text-white flex justify-center items-center font-semibold rounded-xl'>Leave group</button>
         }

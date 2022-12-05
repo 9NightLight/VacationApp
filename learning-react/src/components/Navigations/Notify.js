@@ -117,6 +117,9 @@ export default function Notify({uuid, setInvites, invites}) {
           // mark old room as non-active
 
           set(ref(db, `rooms/${currUser.uuid}/settings`), { isRoomActive: false })
+
+          // canceling subscription
+          calcSubscription(currUser, true, true)
         } 
         else {
           console.log("Can't find user!")
@@ -127,7 +130,10 @@ export default function Notify({uuid, setInvites, invites}) {
           if(currUser.room === currUser.uuid)
           {
             // remove user from current room if that exist
-            remove(ref(db, `/rooms/${currUser.uuid}`))
+            // remove(ref(db, `/rooms/${currUser.uuid}`))
+
+            // mark old room as non-active
+            set(ref(db, `rooms/${currUser.uuid}/settings`), { isRoomActive: false })
           }
           else if(currUser.room !== currUser.uuid)
           {
@@ -171,7 +177,7 @@ export default function Notify({uuid, setInvites, invites}) {
                                                                           email: currUser.email,
                                                                           uuid: currUser.uuid, })
 
-          remove(ref(db, `/rooms/${currUser.uuid}`))
+          // remove(ref(db, `/rooms/${currUser.uuid}`))
 
           auth.onAuthStateChanged(user => {
             if(user)

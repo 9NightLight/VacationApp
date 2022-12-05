@@ -52,7 +52,7 @@ export default function Home() {
     const [vacations, setVacations] = React.useState(new Array())
     const [notificationNumber, setNotificationNumber] = React.useState(0)
     const [isRoomActive, setIsRoomActive] = React.useState(false)
-    const [prem, setPrem] = React.useState(true)
+    const [prem, setPrem] = React.useState(false)
 
     useEffect(() => {
         setCurrentCalendar(getMonth(year, monthIndex));
@@ -73,6 +73,7 @@ export default function Home() {
                 onSnapshot(doc(firestore, "customers", `${currUser.room}`), (snap) => {
                     const leadId = snap.data().stripeId
                     const getList = httpsCallable(functions, "getSubscriptions");
+                    
                     getList({customerId: leadId})
                     .then(res => setPrem(res.data.data[0].plan.active))
                     .catch(e => console.log(e, "no sub"))
@@ -201,7 +202,7 @@ export default function Home() {
                                         <div className="w-56 h-10 ml-44 mt-10 bg-yellow-400 flex justify-center items-center rounded-xl font-semibold active:shadow-xl">
                                             <button onClick={() => {
                                                                     setDownloaded(false)
-                                                                    createCheckoutSession(currUser.uuid)
+                                                                    createCheckoutSession(currUser.uuid, currUser)
                                                                     .catch(e => {
                                                                         setDownloaded(true)
                                                                         console.log(e)
