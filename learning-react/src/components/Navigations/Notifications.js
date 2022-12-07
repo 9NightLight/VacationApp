@@ -8,7 +8,7 @@ import { auth, db } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
 
 export default function Notifications({tab}) {
-    const {currUser, invites, setInvites, vacations, setVacations, isRoomActive} = React.useContext(CalendarContext)
+    const {currUser, invites, setInvites, vacations, setVacations, isRoomActive, countryAttribute} = React.useContext(CalendarContext)
     const [show, setShow] = React.useState(false)
     const nav = useNavigate()
 
@@ -16,11 +16,12 @@ export default function Notifications({tab}) {
       auth.onAuthStateChanged(user => {
         if(user)
         {
+          debugger
             const uuid = user.uid;
             
-            onValue(ref(db, `rooms/${currUser.room}/settings/country`), (snapshot) => {
-              const country = snapshot.val()
-
+            // onValue(ref(db, `rooms/${currUser.room}/settings/country`), (snapshot) => {
+            //   const country = snapshot.val()
+              
               set(ref(db, `/users/${uuid}`), {
                 firstName: currUser.firstName,
                 lastName: currUser.lastName,
@@ -42,13 +43,14 @@ export default function Notifications({tab}) {
                                                                       uuid: uuid,}))
               .then(set(ref(db, `rooms/${uuid}/settings`), {defaultNumVacations: 10, isRoomActive: true}))
               .then(set(ref(db, `rooms/${uuid}/settings/country`), {
-                                                                      attr: country.attr,
-                                                                      country: country.country
+                                                                      attr: countryAttribute.attr,
+                                                                      country: countryAttribute.country
               }))
               .finally(remove(ref(db, `rooms/${currUser.room}/members/${currUser.uuid}`)))
               
+              
               nav("/auth");
-            })
+            // })
           }
         })
     }
@@ -75,7 +77,7 @@ export default function Notifications({tab}) {
           : ""
         }     
         {
-        isRoomActive ? ""
+        !isRoomActive ? ""
         : 
         <button onClick={() => setShow(true)} className='w-32 h-10 bg-red-500 text-white flex justify-center items-center font-semibold rounded-xl'>Leave group</button>
         }

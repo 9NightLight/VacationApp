@@ -153,7 +153,7 @@ export default function Home() {
             })
           }
         });
-        if(currUser) 
+        if(currUser && vacations) 
         setTimeout(() => {
             setDownloaded(true) 
         }, 1000)
@@ -214,6 +214,7 @@ export default function Home() {
                                         </div>
                                         : 
                                         <React.Fragment>
+                                            <div className="text-3xl font-semibold ml-44 mt-10">Test buttons for group Admin!!!</div>
                                             <div className="w-56 h-10 ml-44 mt-10 bg-blue-400 flex justify-center items-center rounded-xl font-semibold active:shadow-xl">
                                                 <button onClick={() => setDownloaded(false)}>
                                                     <a href="https://billing.stripe.com/p/login/test_bIYg197rkeYL61a6oo">Manage Subsription!</a>
@@ -221,7 +222,12 @@ export default function Home() {
                                             </div>
                                             <div className="w-56 h-10 ml-44 mt-10 bg-orange-400 flex justify-center items-center rounded-xl font-semibold active:shadow-xl">
                                                 <button onClick={() => calcSubscription(currUser)}>
-                                                    Add 2nd Member
+                                                    Recount Subsciption
+                                                </button>
+                                            </div>
+                                            <div className="w-56 h-10 ml-44 mt-10 bg-green-400 flex justify-center items-center rounded-xl font-semibold active:shadow-xl">
+                                                <button onClick={() => calcSubscription(currUser, false, true).then(res => console.log(res)).catch(e => console.log(e))}>
+                                                    Cancel Subsciption
                                                 </button>
                                             </div>
                                         </React.Fragment>
