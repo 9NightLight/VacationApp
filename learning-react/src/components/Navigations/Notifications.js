@@ -16,7 +16,6 @@ export default function Notifications({tab}) {
       auth.onAuthStateChanged(user => {
         if(user)
         {
-          debugger
             const uuid = user.uid;
             
             // onValue(ref(db, `rooms/${currUser.room}/settings/country`), (snapshot) => {

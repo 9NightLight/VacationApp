@@ -103,8 +103,6 @@ export default function SignIn() {
                 const a = Object.values(iso_to_gcal_description).find(val => {
                     if(val.attr === country) return true
                 })
-
-                console.log(a)
                 set(ref(db, `/users/${uuid}`), {
                     firstName: String(FirstNameRef.current.value).trim(),
                     lastName: String(LastNameRef.current.value).trim(),

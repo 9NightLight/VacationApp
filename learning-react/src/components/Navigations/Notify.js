@@ -74,23 +74,24 @@ export default function Notify({uuid, setInvites, invites}) {
 
     // remove(ref(db, `/rooms/${currUser.uuid}`))
 
-    auth.onAuthStateChanged(user => {
-      if(user)
-      {
-        nav("/auth");
-      }
-    })
+    
   }
 
   const handleAccept = (e) => {
     auth.onAuthStateChanged(user => {
       if (user && currUser !== undefined && owner)
       {
+        
         if(currUser.uuid !== currUser.room) {
-          console.log("1")
-          debugger
           calcSubscription(currUser, true)
           redirectUserToRoom()
+          .then(auth.onAuthStateChanged(user => {
+              if(user)
+              {
+                nav("/auth");
+              }
+            }
+          ))
         }
         else if(currUser.uuid === currUser.room) {
           // Attempt to create distribution every user on lead leave
@@ -173,18 +174,31 @@ export default function Notify({uuid, setInvites, invites}) {
 
           // update(ref(db, `rooms/${currUser.uuid}/settings`), { isRoomActive: false })
 
-          console.log("2")
-          debugger
-
-            set(ref(db, `rooms/${currUser.uuid}/settings`), {defaultNumVacations: 10, isRoomActive: false})
-            .then(set(ref(db, `rooms/${currUser.uuid}/settings/country`), {
-                                                                    attr: countryAttribute.attr,
-                                                                    country: countryAttribute.country
-            }))
+            // set(ref(db, `rooms/${currUser.uuid}/settings`), {defaultNumVacations: 10, isRoomActive: false})
+            // .then(set(ref(db, `rooms/${currUser.uuid}/settings/country`), {
+            //                                                         attr: countryAttribute.attr,
+            //                                                         country: countryAttribute.country
+            // }))
 
             calcSubscription(currUser, false, true)
-            .then(redirectUserToRoom())
+            .then(res => {
+                set(ref(db, `rooms/${currUser.uuid}/settings`), {defaultNumVacations: 10, isRoomActive: false})
+                .then(set(ref(db, `rooms/${currUser.uuid}/settings/country`), {
+                                                                        attr: countryAttribute.attr,
+                                                                        country: countryAttribute.country
+                }))
+
+                redirectUserToRoom()
+                .then(auth.onAuthStateChanged(user => {
+                  // this should happens after cenceling subscription!!! LOOK HERE!
+                  if(user)
+                  {
+                    nav("/auth");
+                  }
+                }))
+            })
             
+            .catch(e => console.log(e))
         } 
         else {
           console.log("Can't find user!")
