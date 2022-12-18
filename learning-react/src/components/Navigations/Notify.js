@@ -6,7 +6,7 @@ import { onValue, ref, remove, set, update } from 'firebase/database';
 import { auth, db } from '../../firebase';
 import { ROLES } from '../SignIn';
 import { useNavigate } from 'react-router-dom';
-import { calcSubscription } from '../StripeComponents/StripeCustomFunctions';
+import { calcSubscription, cancelSubscription } from '../StripeComponents/StripeCustomFunctions';
 
 export default function Notify({uuid, setInvites, invites}) {
   const { users, currUser, countryAttribute } = React.useContext(CalendarContext)
@@ -30,7 +30,7 @@ export default function Notify({uuid, setInvites, invites}) {
     })
   }, [owner])
 
-  const redirectUserToRoom = () => {
+  const transferUserDataToRoom = async () => {
     update(ref(db, `/users/${currUser.uuid}`), { room: owner.uuid, role: ROLES.EMPLOYER, vacationsNum: ownerDefaultVacateDays }) // Here problem with reupdating
 
     remove(ref(db, `/rooms/${currUser.room}/members/${currUser.uuid}`))
@@ -77,128 +77,41 @@ export default function Notify({uuid, setInvites, invites}) {
     
   }
 
-  const handleAccept = (e) => {
-    auth.onAuthStateChanged(user => {
+  const handleAccept = async (e) => {
+    auth.onAuthStateChanged(async user => {
       if (user && currUser !== undefined && owner)
       {
+        const prev_currUser = currUser
         
         if(currUser.uuid !== currUser.room) {
           calcSubscription(currUser, true)
-          redirectUserToRoom()
-          .then(auth.onAuthStateChanged(user => {
-              if(user)
+          transferUserDataToRoom()
+          // .then(auth.onAuthStateChanged(user => {
+          //     if(user)
+          //     {
+          //       nav("/auth");
+          //     }
+          //   }
+          // ))
+        }
+        else if(currUser.uuid === currUser.room) {
+
+            console.log(await cancelSubscription(currUser))
+
+            set(ref(db, `rooms/${currUser.uuid}/settings`), {defaultNumVacations: 10, isRoomActive: false})
+            set(ref(db, `rooms/${currUser.uuid}/settings/country`), {
+                                                                    attr: countryAttribute.attr,
+                                                                    country: countryAttribute.country
+            })
+            transferUserDataToRoom()
+            .then(auth.onAuthStateChanged(user => {
+              // this should happens after cenceling subscription!!! LOOK HERE!
+              if(user )
               {
                 nav("/auth");
               }
-            }
-          ))
-        }
-        else if(currUser.uuid === currUser.room) {
-          // Attempt to create distribution every user on lead leave
-
-          // onValue(ref(db, `rooms/${currUser.room}/settings/country`), (snapshot) => {
-          //   const countryObject = snapshot.val() // .attr, .country
+            }))
             
-            
-
-          //   onValue(ref(db, `rooms/${currUser.room}/members`), (snapshot) => {
-          //     const users = snapshot.val()
-  
-          //     Object.values(users).map(user => {
-          //       set(ref(db, `/users/${user.uuid}`), {
-          //         firstName: user.firstName,
-          //         lastName: user.lastName,
-          //         vacationsNum: 10,
-          //         unpaidVacationDays: 0,
-          //         sickLeaves: 0,
-          //         role: ROLES.ADMIN,
-          //         email: user.email,
-          //         room: user.uuid,
-          //         uuid: user.uuid,
-          //       })
-          //       .then(set(ref(db, `/rooms/${uuid}/members/${uuid}`), { firstName: user.firstName,
-          //                                                               lastName: user.lastName,
-          //                                                               vacationsNum: 10,
-          //                                                               unpaidVacationDays: 0,
-          //                                                               sickLeaves: 0,
-          //                                                               role: ROLES.ADMIN,
-          //                                                               email: user.email,
-          //                                                               uuid: user.uuid,
-          //       }))
-          //       .then(set(ref(db, `rooms/${uuid}/settings`), {defaultNumVacations: 10}))
-          //       .then(set(ref(db, `rooms/${uuid}/settings/country`), {
-          //                                                               attr: countryObject.attr,
-          //                                                               country: countryObject.country
-          //       }))
-          //     })
-          //   })
-
-          //   calcSubscription(currUser, false, true)
-          // })
-          
-          // onValue(ref(db, `rooms/${currUser.room}/members`), (snapshot) => {
-          //   const data = snapshot.val()
-
-          //   Object.values(data).map(user => {
-          //     console.log(user.firstName)
-          //   })
-
-          //   set(ref(db, `/users/${user.uuid}`), {
-          //     firstName: user.firstName,
-          //     lastName: user.lastName,
-          //     vacationsNum: 10,
-          //     unpaidVacationDays: 0,
-          //     sickLeaves: 0,
-          //     role: ROLES.ADMIN,
-          //     email: user.email,
-          //     room: user.uuid,
-          //     uuid: user.uuid,
-          //   })
-          //   .then(set(ref(db, `/rooms/${uuid}/members/${uuid}`), { firstName: user.firstName,
-          //                                                           lastName: user.lastName,
-          //                                                           vacationsNum: 10,
-          //                                                           unpaidVacationDays: 0,
-          //                                                           sickLeaves: 0,
-          //                                                           role: ROLES.ADMIN,
-          //                                                           email: user.email,
-          //                                                           uuid: user.uuid,
-          //   }))
-          //   .then(set(ref(db, `rooms/${uuid}/settings`), {defaultNumVacations: 10}))
-          //   .then(set(ref(db, `rooms/${uuid}/settings/country`), {
-          //                                                           attr: a.attr,
-          //                                                           country: a.country
-          //   }))
-          // })
-
-          // mark old room as non-active
-
-          // update(ref(db, `rooms/${currUser.uuid}/settings`), { isRoomActive: false })
-
-            // set(ref(db, `rooms/${currUser.uuid}/settings`), {defaultNumVacations: 10, isRoomActive: false})
-            // .then(set(ref(db, `rooms/${currUser.uuid}/settings/country`), {
-            //                                                         attr: countryAttribute.attr,
-            //                                                         country: countryAttribute.country
-            // }))
-
-            calcSubscription(currUser, false, true)
-            .then(res => {
-                set(ref(db, `rooms/${currUser.uuid}/settings`), {defaultNumVacations: 10, isRoomActive: false})
-                .then(set(ref(db, `rooms/${currUser.uuid}/settings/country`), {
-                                                                        attr: countryAttribute.attr,
-                                                                        country: countryAttribute.country
-                }))
-
-                redirectUserToRoom()
-                .then(auth.onAuthStateChanged(user => {
-                  // this should happens after cenceling subscription!!! LOOK HERE!
-                  if(user)
-                  {
-                    nav("/auth");
-                  }
-                }))
-            })
-            
-            .catch(e => console.log(e))
         } 
         else {
           console.log("Can't find user!")

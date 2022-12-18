@@ -3,9 +3,10 @@ import { CalendarContext } from '../../Home';
 import Notify from './Notify';
 import VacationsAsk from './VacationsAsk';
 import { ROLES } from '../SignIn';
-import { onValue, ref, remove, set } from 'firebase/database';
+import { onValue, ref, remove, set, update } from 'firebase/database';
 import { auth, db } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
+import { iso_to_gcal_description } from '../../utils/GoogleCalendar';
 
 export default function Notifications({tab}) {
     const {currUser, invites, setInvites, vacations, setVacations, isRoomActive, countryAttribute} = React.useContext(CalendarContext)
@@ -17,39 +18,49 @@ export default function Notifications({tab}) {
         if(user)
         {
             const uuid = user.uid;
+
+            let countryName = null
+            let countryAttr = null
+
+              
+            if(countryAttribute) {
+              countryName = countryAttribute.country
+              countryAttr = countryAttribute.attr
+            }
+            else {
+              countryName = iso_to_gcal_description.ad.country
+              countryAttr = iso_to_gcal_description.ad.attr
+            }
+
+            set(ref(db, `/users/${uuid}`), {
+              firstName: currUser.firstName,
+              lastName: currUser.lastName,
+              vacationsNum: 10,
+              unpaidVacationDays: 0,
+              sickLeaves: 0,
+              role: ROLES.ADMIN,
+              email: currUser.email,
+              room: uuid,
+              uuid: uuid,
+            })
+            update(ref(db, `/rooms/${uuid}/members/${uuid}`), {  firstName: currUser.firstName,
+                                                                    lastName: currUser.lastName,
+                                                                    vacationsNum: 10,
+                                                                    unpaidVacationDays: 0,
+                                                                    sickLeaves: 0,
+                                                                    role: ROLES.ADMIN,
+                                                                    email: currUser.email,
+                                                                    uuid: uuid,})
+            update(ref(db, `rooms/${uuid}/settings`), {defaultNumVacations: 10, isRoomActive: true})
+            update(ref(db, `rooms/${uuid}/settings/country`), {
+                                                                    attr: countryAttr,
+                                                                    country: countryName
+            })
+            remove(ref(db, `rooms/${currUser.room}/members/${currUser.uuid}`))
             
-            // onValue(ref(db, `rooms/${currUser.room}/settings/country`), (snapshot) => {
-            //   const country = snapshot.val()
-              
-              set(ref(db, `/users/${uuid}`), {
-                firstName: currUser.firstName,
-                lastName: currUser.lastName,
-                vacationsNum: 10,
-                unpaidVacationDays: 0,
-                sickLeaves: 0,
-                role: ROLES.ADMIN,
-                email: currUser.email,
-                room: uuid,
-                uuid: uuid,
-              })
-              .then(set(ref(db, `/rooms/${uuid}/members/${uuid}`), {  firstName: currUser.firstName,
-                                                                      lastName: currUser.lastName,
-                                                                      vacationsNum: 10,
-                                                                      unpaidVacationDays: 0,
-                                                                      sickLeaves: 0,
-                                                                      role: ROLES.ADMIN,
-                                                                      email: currUser.email,
-                                                                      uuid: uuid,}))
-              .then(set(ref(db, `rooms/${uuid}/settings`), {defaultNumVacations: 10, isRoomActive: true}))
-              .then(set(ref(db, `rooms/${uuid}/settings/country`), {
-                                                                      attr: countryAttribute.attr,
-                                                                      country: countryAttribute.country
-              }))
-              .finally(remove(ref(db, `rooms/${currUser.room}/members/${currUser.uuid}`)))
-              
-              
-              nav("/auth");
-            // })
+            
+            nav("/auth");
+            
           }
         })
     }
@@ -76,7 +87,7 @@ export default function Notifications({tab}) {
           : ""
         }     
         {
-        !isRoomActive ? ""
+        isRoomActive ? ""
         : 
         <button onClick={() => setShow(true)} className='w-32 h-10 bg-red-500 text-white flex justify-center items-center font-semibold rounded-xl'>Leave group</button>
         }

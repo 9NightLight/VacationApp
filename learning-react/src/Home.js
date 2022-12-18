@@ -230,6 +230,7 @@ export default function Home() {
                                                     Cancel Subsciption
                                                 </button>
                                             </div>
+
                                         </React.Fragment>
                                         }
                                     </Elements>

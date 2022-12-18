@@ -1,5 +1,7 @@
+// @ts-check
+
 import { onValue, ref } from "firebase/database";
-import { addDoc, doc, onSnapshot, collection, setDoc } from "firebase/firestore"; 
+import { addDoc, doc, onSnapshot, collection, setDoc, getDoc } from "firebase/firestore"; 
 import { httpsCallable } from "firebase/functions";
 import { auth, db, firestore, functions } from "../../firebase";
 import { getStripe } from "./initializeStripe";
@@ -34,38 +36,66 @@ export async function createCheckoutSession(uid, currUser) {
   
 }
 
-export async function calcSubscription(currUser, userLeave = false, cancelSubscription = false) {
+export async function calcSubscription(currUser, userLeave = false) {
   auth.onAuthStateChanged(user => {
       if(user && currUser.room) {
-        onSnapshot(doc(firestore, "customers", `${currUser.room}`), (snap) => {
+        const prevCurrUserRoom = currUser.room
+
+        onSnapshot(doc(firestore, "customers", `${prevCurrUserRoom}`), (snap) => {
             const leadStripeId = snap.data().stripeId
 
             const getList = httpsCallable(functions, "getSubscriptions");
             getList({customerId: leadStripeId})
             .then(res => { 
               const subscriptionId = res.data.data[0].id 
-              onValue(ref(db, `rooms/${currUser.room}/members`), (snapshot) => {
+              onValue(ref(db, `rooms/${prevCurrUserRoom}/members`), async (snapshot) => {
                 const data = snapshot.val()
-                const usersNumber = Object.values(data).length - userLeave
-                if(!cancelSubscription) {
+                if(data)
+                {
+                  const usersNumber = Object.values(data).length - userLeave
 
                   const updateSubscription = httpsCallable(functions, "updateSubscription")
                   updateSubscription({subscriptionId: subscriptionId, usersNumber: usersNumber})
                   .then(res => console.log(res))
                   .catch(e => console.log(e))
-                  
-                } 
-                else if(cancelSubscription) {
-                  const updateSubscription = httpsCallable(functions, "updateSubscription")
-                  updateSubscription({subscriptionId: subscriptionId, cancelSubscription: true})
-                  .then(res => console.log(res))
-                  .catch(e => console.log(e))
                 }
-                else console.log("Can't cancel the subscription!")
+                else return null
               })
             })
             .catch(e => console.log(e))
         })
       }
   })
+}
+
+async function getsubscriptionId(leadStripeId) {
+  const getList = httpsCallable(functions, "getSubscriptions");
+
+  return await getList({customerId: leadStripeId})
+  .then(res => res.data.data[0].id )
+}
+
+export async function cancelSubscription(currUser) {
+
+      const userRoom = currUser.room
+      
+      const path = doc(firestore, "customers", `${userRoom}`)
+
+      const docSnap = await getDoc(path)
+
+      if (!docSnap.exists) {
+        console.log('No such document!');
+        return null
+      } else {
+
+        const leadStripeId = docSnap.data().stripeId
+
+        const subscriptionId = await getsubscriptionId(leadStripeId)
+
+        const updateSubscription = httpsCallable(functions, "updateSubscription")
+
+        console.log(leadStripeId, subscriptionId)
+        
+        return {"firebase backend": await updateSubscription({subscriptionId: subscriptionId, cancelSubscription: true})}
+      }
 }
