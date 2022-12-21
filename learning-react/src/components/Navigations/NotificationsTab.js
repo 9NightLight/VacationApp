@@ -1,14 +1,15 @@
 import React from 'react';
 import { CalendarContext } from '../../Home';
-import Notify from './Notify';
+import Invites from './Invites';
 import VacationsAsk from './VacationsAsk';
 import { ROLES } from '../SignIn';
 import { onValue, ref, remove, set, update } from 'firebase/database';
 import { auth, db } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
 import { iso_to_gcal_description } from '../../utils/GoogleCalendar';
+import PendingInvites from './PendingInvites';
 
-export default function Notifications({tab}) {
+export default function NotificationsTab({tab}) {
     const {currUser, invites, setInvites, vacations, setVacations, isRoomActive, countryAttribute} = React.useContext(CalendarContext)
     const [show, setShow] = React.useState(false)
     const nav = useNavigate()
@@ -71,7 +72,7 @@ export default function Notifications({tab}) {
           <div className='font-bold text-2xl mb-4'>Invites</div>
           {
             invites.map((val, idx) => {
-              return <Notify uuid={val} key={idx} invites={invites} setInvites={setInvites}/>
+              return <Invites uuid={val} key={idx} invites={invites} setInvites={setInvites}/>
             })
           }
         </div>
@@ -83,6 +84,7 @@ export default function Notifications({tab}) {
                 return <VacationsAsk vacation={val} key={idx} setVacations={setVacations} vacations={vacations}/>
               })
             }
+            <PendingInvites />
           </div>
           : ""
         }     

@@ -8,7 +8,7 @@ import Month from "./components/Content/Month";
 import { useNavigate } from "react-router-dom";
 import { auth, db, firestore, functions } from "./firebase";
 import UsersSettings from "./components/Navigations/UsersSettings";
-import Notifications from "./components/Navigations/Notifications";
+import NotificationsTab from "./components/Navigations/NotificationsTab";
 import UserSettings from "./components/Navigations/UserSettings";
 import SettingsTab from "./components/Navigations/SettingsTab";
 import dayjs from "dayjs";
@@ -253,7 +253,7 @@ export default function Home() {
                         : tab === 2 ?
                             <UserSettings />
                         : tab === 3 ?
-                            <Notifications tab={tab}/>
+                            <NotificationsTab tab={tab}/>
                         : tab === 4 ?
                             <SettingsTab />
                         : ""

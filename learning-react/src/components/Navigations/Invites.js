@@ -86,13 +86,13 @@ export default function Notify({uuid, setInvites, invites}) {
         if(currUser.uuid !== currUser.room) {
           calcSubscription(currUser, true)
           transferUserDataToRoom()
-          // .then(auth.onAuthStateChanged(user => {
-          //     if(user)
-          //     {
-          //       nav("/auth");
-          //     }
-          //   }
-          // ))
+          .then(auth.onAuthStateChanged(user => {
+              if(user)
+              {
+                nav("/auth");
+              }
+            }
+          ))
         }
         else if(currUser.uuid === currUser.room) {
 
@@ -105,7 +105,6 @@ export default function Notify({uuid, setInvites, invites}) {
             })
             transferUserDataToRoom()
             .then(auth.onAuthStateChanged(user => {
-              // this should happens after cenceling subscription!!! LOOK HERE!
               if(user )
               {
                 nav("/auth");

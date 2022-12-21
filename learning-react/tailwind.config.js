@@ -9,6 +9,7 @@ module.exports = {
           "18": "72px",
           "120": "calc(120px*4)",
           "192": "calc(192px*4)",
+          "273": "calc(273*4)",
           "192/7": "calc(192px*4/7)",
           "max--75": "calc(100vw - 75px)",
           "34px": "34px",
@@ -16,6 +17,7 @@ module.exports = {
         },
         height: {
           "192": "calc(192px*4)",
+          "273": "calc(273*4)",
           "max--48": "calc(100vh - 48px)",
           "120": "calc(120px*4)",
           "34px": "34px",
