@@ -83,17 +83,16 @@ export async function cancelSubscription(currUser) {
 
   const docSnap = await getDoc(path)
 
-  if (!docSnap.exists || !docSnap.data()) {
+  if (!docSnap.exists || docSnap.data() === undefined) {
     console.log('No such document!');
     return null
   } else {
-    const leadStripeId = docSnap.data()?.leadStripeId
+
+    const leadStripeId = docSnap.data()?.stripeId
 
     const subscriptionId = await getsubscriptionId(leadStripeId)
 
     const updateSubscription = httpsCallable(functions, "updateSubscription")
-
-    console.log(leadStripeId, subscriptionId)
     
     return {"firebase backend": await updateSubscription({subscriptionId: subscriptionId, cancelSubscription: true})}
 
