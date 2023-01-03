@@ -1,5 +1,5 @@
 import React from "react";
-import SignIn from "./components/SignIn";
+import SignIn from "./components/Registation/SignIn";
 import Home from "./Home.js";
 // import { auth } from './firebase.js';
 import { BrowserRouter as Router, Routes, Route, useNavigate} from 'react-router-dom';

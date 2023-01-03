@@ -1,26 +1,26 @@
 // @ts-check
 import React, { useState, useEffect } from "react";
-import TopNavBar from "./components/Navigations/TopNavBar";
-import GlobalSideBar from "./components/Navigations/GlobalSideBar";
-import { getMonth } from "./util";
-import CalendarHeader from "./components/Content/CalendarParts/CalendarHeader";
-import Month from "./components/Content/Month";
+import TopNavBar from "./components/General/TopNavBar/TopNavBar";
+import GlobalSideBar from "./components/General/SideBar/LeftSideBar";
+import { getMonth } from "./utils/Calendar/utils";
+import CalendarHeader from "./components/Calendar/CalendarParts/CalendarHeader/CalendarHeader";
+import Month from "./components/Calendar/CalendarParts/CalendarWindow/Calendar";
 import { useNavigate } from "react-router-dom";
-import { auth, db, firestore, functions } from "./firebase";
-import UsersSettings from "./components/Navigations/UsersSettings";
-import NotificationsTab from "./components/Navigations/NotificationsTab";
-import UserSettings from "./components/Navigations/UserSettings";
-import SettingsTab from "./components/Navigations/SettingsTab";
+import { auth, db, firestore, functions } from "./firebase/firebase";
+import UsersSettings from "./components/Members/Members";
+import NotificationsTab from "./components/Post/General/PostBox";
+import UserSettings from "./components/Profile/User";
+import SettingsTab from "./components/Settings/Settings";
 import dayjs from "dayjs";
-import LoadingScreen from "./components/AwaitComponents/LoadingScreen";
+import LoadingScreen from "./components/Loadings/LoadingScreen";
 
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js"
-import { calcSubscription, createCheckoutSession } from "./components/StripeComponents/StripeCustomFunctions";
+import { calcSubscription, createCheckoutSession } from "./utils/Stripe/StripeCustomFunctions";
 import { doc, onSnapshot } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 import { onValue, ref } from "firebase/database";
-import { ROLES } from "./components/SignIn";
+import { ROLES } from "./components/Registation/SignIn";
 
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -167,26 +167,25 @@ export default function Home() {
     return (
         <React.Fragment>
             <CalendarContext.Provider value={{  
-                                                currentCalendar, setCurrentCalendar, 
                                                 tab, setTab, 
+                                                year, setYear,
                                                 users, setUsers,
                                                 invites, setInvites,
                                                 currUser, setCurrUser, 
                                                 vacations, setVacations,
                                                 roomUsers, setRoomUsers,
                                                 darkTheme, setDarkTheme,
+                                                monthIndex, setMonthIndex,
                                                 downloaded, setDownloaded,
                                                 savedEvents, setSavedEvents,
                                                 isRoomActive, setIsRoomActive,
                                                 currUserPhoto, setCurrUserPhoto,
                                                 nationHolidays, setNationHolidays,
+                                                currentCalendar, setCurrentCalendar, 
                                                 countryAttribute, setCountryAttribute,
                                                 unconfirmedEvents, setUnconfirmedEvents,
                                                 notificationNumber, setNotificationNumber,
-                                                downloaded, setDownloaded,
                                                 defaultNumVacations, setDefaultNumVacations,
-                                                year, setYear,
-                                                monthIndex, setMonthIndex,
                                                 }}>
                     <TopNavBar />
                     <div className="h-max--48 flex flex-1">
