@@ -12,7 +12,7 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
     const [blockRefuse, setBlockRefuse] = React.useState(false)
     const [requestUser, setRequestUser] = React.useState(null)
     const [delta, setDelta] = React.useState(0)
-    const {currUser, roomUsers, setRoomUsers, setUnconfirmedEvents} = React.useContext(CalendarContext)
+    const {currUser, roomUsers, setRoomUsers, setUnconfirmedEvents, unconfirmedEvents} = React.useContext(CalendarContext)
 
     const countDelta = () => {
         const sD = new Date(vacation.startDate);
@@ -112,6 +112,17 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
                     })
 
                 remove(ref(db, `rooms/${currUser.room}/events/pending/${vacation.eventUID}`))
+
+                const a = new Array(unconfirmedEvents)
+                let newUnconfirmedEvents = new Array()
+                a.map(val => {
+                    val.map(nVal => {
+                        if(nVal.eventUID === vacation.eventUID) return
+                        else {newUnconfirmedEvents = [...newUnconfirmedEvents, nVal]}
+                    })
+                })
+
+                setUnconfirmedEvents(newUnconfirmedEvents)
 
                 let arr = new Array()
                 vacations.map(val => {

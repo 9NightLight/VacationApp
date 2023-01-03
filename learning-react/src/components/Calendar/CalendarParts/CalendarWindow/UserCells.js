@@ -13,8 +13,9 @@ const BASE_CALENDAR_URL = "https://www.googleapis.com/calendar/v3/calendars";
 const BASE_CALENDAR_ID_FOR_PUBLIC_HOLIDAY = "holiday@group.v.calendar.google.com"; // Calendar Id. This is public but apparently not documented anywhere officialy.
 
 export default function UserCell({day, _user}) {
-    const { currUser, roomUsers, countryAttribute, savedEvents, setSavedEvents, setDownloaded, unconfirmedEvents, setUnconfirmedEvents, nationHolidays, setNationHolidays} = React.useContext(CalendarContext);
+    const { currUser, roomUsers, countryAttribute, savedEvents, tab, vacations, setSavedEvents, setDownloaded, unconfirmedEvents, setUnconfirmedEvents, nationHolidays, setNationHolidays} = React.useContext(CalendarContext);
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(false);
+    const [onHoldHoliday, setOnHoldHoliday] = React.useState(false);
     
 
     React.useEffect(() => {
@@ -81,7 +82,7 @@ export default function UserCell({day, _user}) {
     return (
         <div>
             {new Date(day).getDay() !== 6 && new Date(day).getDay() !== 0 ? 
-                <div className="relative bg-blue-200 flex justify-center items-center w-34px h-6 border-gray-100 border-b border-r" 
+                <div className="relative bg-blue-200 flex justify-center items-center w-34px h-6 border-gray-100 border-b border-r"
                     onClick={() => setShowVacationWindow(true)}>
                         {
                         savedEvents.map(e => {
@@ -93,13 +94,29 @@ export default function UserCell({day, _user}) {
                             D.setHours(0, 0, 0, 0);
 
                             return sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.VACATION 
-                            ? <div className='absolute w-4 h-4 bg-green-500 rounded-full'></div>
+                            ? <div className='absolute w-4 h-4 bg-green-500 rounded-full flex justify-center items-center'
+                                onMouseEnter={() => setOnHoldHoliday(true)} 
+                                onMouseOut={() => setOnHoldHoliday(false)}>
+                                { onHoldHoliday ? <div className='absolute z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg bottom-5'>Vacation</div> : "" }
+                            </div>
                             : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.UNPAID 
-                            ? <div className='absolute w-4 h-4 bg-red-500 rounded-full'></div>
+                            ? <div className='absolute w-4 h-4 bg-red-500 rounded-full flex justify-center items-center'
+                                onMouseEnter={() => setOnHoldHoliday(true)} 
+                                onMouseOut={() => setOnHoldHoliday(false)}>
+                                { onHoldHoliday ? <div className='absolute z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg bottom-5'>Unpaid</div> : "" }
+                            </div>
                             : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.SICK_LEAVE 
-                            ? <div className='absolute w-4 h-4 bg-orange-500 rounded-full'></div>
+                            ? <div className='absolute w-4 h-4 bg-orange-500 rounded-full flex justify-center items-center'
+                                onMouseEnter={() => setOnHoldHoliday(true)} 
+                                onMouseOut={() => setOnHoldHoliday(false)}>
+                                { onHoldHoliday ? <div className='absolute z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg bottom-5'>Sick leave</div> : "" }
+                            </div>
                             : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && e.type === VACATION_TYPE.HOLIDAY 
-                            ? <div className='absolute w-4 h-4 bg-blue-500 rounded-full'></div>
+                            ? <div className='absolute w-4 h-4 bg-blue-500 rounded-full flex justify-center items-center'
+                                onMouseEnter={() => setOnHoldHoliday(true)} 
+                                onMouseOut={() => setOnHoldHoliday(false)}>
+                                { onHoldHoliday ? <div className='absolute z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg bottom-5'>{e.description}</div> : "" }
+                              </div>
                             : null
                         })
                         }
@@ -113,16 +130,34 @@ export default function UserCell({day, _user}) {
                                 usD.setHours(0, 0, 0, 0);
                                 
                                 return usD.getTime() <= D.getTime() && ueD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.VACATION 
-                                ? <div className='absolute w-full h-full bg-green-200/50 flex justify-center items-center'><div className='absolute w-4 h-4 bg-green-500/30 rounded-full'></div></div>
+                                ? <div className='absolute w-full h-full bg-green-200/50 flex justify-center items-center'>
+                                    <div className='absolute w-4 h-4 bg-green-500/30 rounded-full flex justify-center items-center'
+                                        onMouseEnter={() => setOnHoldHoliday(true)} 
+                                        onMouseOut={() => setOnHoldHoliday(false)}>
+                                        { onHoldHoliday ? <div className='absolute z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg bottom-5'>Vacation (not confirmed)</div> : "" }
+                                    </div>
+                                  </div>
                                 : usD.getTime() <= D.getTime() && ueD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.UNPAID 
-                                ? <div className='absolute w-full h-full bg-red-200/50 flex justify-center items-center'><div className='absolute w-4 h-4 bg-red-500/30 rounded-full'></div></div>
+                                ? <div className='absolute w-full h-full bg-red-200/50 flex justify-center items-center'>
+                                    <div className='absolute w-4 h-4 bg-red-500/30 rounded-full flex justify-center items-center'
+                                        onMouseEnter={() => setOnHoldHoliday(true)} 
+                                        onMouseOut={() => setOnHoldHoliday(false)}>
+                                        { onHoldHoliday ? <div className='absolute z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg bottom-5'>Unpaid (not confirmed)</div> : "" }
+                                    </div>
+                                  </div>
                                 : usD.getTime() <= D.getTime() && ueD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.SICK_LEAVE 
-                                ? <div className='absolute w-full h-full bg-orange-200/50 flex justify-center items-center'><div className='absolute w-4 h-4 bg-orange-500/30 rounded-full'></div></div>
+                                ? <div className='absolute w-full h-full bg-orange-200/50 flex justify-center items-center'>
+                                    <div className='absolute w-4 h-4 bg-orange-500/30 rounded-full flex justify-center items-center'
+                                        onMouseEnter={() => setOnHoldHoliday(true)} 
+                                        onMouseOut={() => setOnHoldHoliday(false)}>
+                                        { onHoldHoliday ? <div className='absolute z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg bottom-5'>Sick leave (not confirmed)</div> : "" }
+                                    </div>
+                                  </div>
                                 : <div></div>
                             })
                             
                         }
-                        </div>
+                </div>
             : 
                 <div className="relative bg-red-200 flex justify-center items-center w-34px h-6 border-gray-100 border-b border-r"
                 onClick={() => setShowVacationWindow(true)}></div>

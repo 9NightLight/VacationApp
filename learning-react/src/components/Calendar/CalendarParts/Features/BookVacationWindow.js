@@ -34,18 +34,18 @@ export default function VacationWindow({show, date, setShow}) {
         const eD = new Date(Dates[1].toString());
         eD.setHours(0, 0, 0, 0);
 
-
+        // Look if current user have any vacations on dates
         if(
             savedEvents.find(e => {
-                if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) 
+                if( (e.uuid === currUser.uuid) && (sD >= new Date(e.startDate) && sD <= new Date(e.endDate) 
                     || eD >= new Date(e.startDate) && eD <= new Date(e.endDate) 
-                    || sD <= new Date(e.startDate) && eD >= new Date(e.endDate)  ) return true
+                    || sD <= new Date(e.startDate) && eD >= new Date(e.endDate))  ) return true
             })
             || 
             unconfirmedEvents.find(e => {
-                if( sD >= new Date(e.startDate) && sD <= new Date(e.endDate) 
+                if( (e.uuid === currUser.uuid) && (sD >= new Date(e.startDate) && sD <= new Date(e.endDate) 
                     || eD >= new Date(e.startDate) && eD <= new Date(e.endDate) 
-                    || sD <= new Date(e.startDate) && eD >= new Date(e.endDate)  ) return true
+                    || sD <= new Date(e.startDate) && eD >= new Date(e.endDate))  ) return true
             })
         ) {
             setDeltaDates(-1)
