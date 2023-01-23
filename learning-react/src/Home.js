@@ -19,11 +19,12 @@ import { Elements } from "@stripe/react-stripe-js"
 import { calcSubscription, createCheckoutSession } from "./utils/Stripe/StripeCustomFunctions";
 import { doc, onSnapshot } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
-import { onValue, ref } from "firebase/database";
+import { onValue, ref, set } from "firebase/database";
 import { ROLES } from "./components/Registation/SignIn";
 
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { uid } from "uid";
 
 
 const PUBLIC_KEY = "pk_test_51LvIkhFlIMqx6x2711SpIi218jZPjopxmA7Gr4WoexWk5TGkipcEFkUp5cEifIBt5dFhIrcI9xpEws2vje2di0LM00tgt9W5pB"
@@ -164,6 +165,35 @@ export default function Home() {
         if(invites && vacations) setNotificationNumber(invites.length + vacations.length)
     }, [invites, vacations])
 
+    const addFakeUsers = () => {
+        
+        const uuid = uid()
+        set(ref(db, `/users/${uuid}`), {
+            firstName: "Test user",
+            lastName: "Test user",
+            vacationsNum: 10,
+            unpaidVacationDays: 0,
+            sickLeaves: 0,
+            role: ROLES.EMPLOYER,
+            email: "blabla",
+            room: currUser.room,
+            uuid: uuid,
+        })
+        .then(set(ref(db, `/rooms/${currUser.room}/members/${uuid}`), { firstName: "Test",
+                                                                lastName: "User",
+                                                                vacationsNum: 10,
+                                                                unpaidVacationDays: 0,
+                                                                sickLeaves: 0,
+                                                                role: ROLES.EMPLOYER,
+                                                                email: "email",
+                                                                uuid: uuid,}))
+        .then(set(ref(db, `rooms/${uuid}/settings`), {defaultNumVacations: 10, isRoomActive: true}))
+        .then(set(ref(db, `rooms/${uuid}/settings/country`), {
+                                                                attr: "ua",
+                                                                country: "ua"
+        }))
+    }
+
     return (
         <React.Fragment>
             <CalendarContext.Provider value={{  
@@ -195,7 +225,8 @@ export default function Home() {
                                 <div className="flex flex-1 flex-col">
                                     <CalendarHeader month={monthIndex}/>
                                     <Month month={currentCalendar} />
-                                    <Elements stripe={stripeTestPromise}>
+                                    <button className="w-40 h-12 bg-purple-700 ml-40 mt-20 text-white rounded-md" onClick={addFakeUsers}>add user</button>
+                                    {/* <Elements stripe={stripeTestPromise}>
                                         { 
                                         !prem ? 
                                         <div className="w-56 h-10 ml-44 mt-10 bg-yellow-400 flex justify-center items-center rounded-xl font-semibold active:shadow-xl">
@@ -232,7 +263,7 @@ export default function Home() {
 
                                         </React.Fragment>
                                         }
-                                    </Elements>
+                                    </Elements> */}
                                 </div>
                             : isRoomActive === false ? 
                                 <div className="w-full h-full bg-gray-200 flex justify-center items-center">

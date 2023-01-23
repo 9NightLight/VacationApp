@@ -13,7 +13,8 @@ module.exports = {
           "192/7": "calc(192px*4/7)",
           "max--75": "calc(100vw - 75px)",
           "34px": "34px",
-          "to-calendar": "calc(100vw - 230px)",
+          "to-calendar--230px": "calc(100vw - 230px)",
+          "to-calendar--90px": "calc(100vw - 75px)",
         },
         height: {
           "192": "calc(192px*4)",
@@ -79,7 +80,11 @@ module.exports = {
           "360": "360deg",
         },
         screens: {
-          "screen-840": "840px"
+          "screen-840": "840px",
+          "screen-320": "20em",
+          "screen-641": "40.0625em",
+          "screen-1025": "64.0625em",
+          
         },
       },
     },

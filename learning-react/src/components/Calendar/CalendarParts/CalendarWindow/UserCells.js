@@ -97,25 +97,25 @@ export default function UserCell({day, _user}) {
                             ? <div className='absolute w-4 h-4 bg-green-500 rounded-full flex justify-center items-center'
                                 onMouseEnter={() => setOnHoldHoliday(true)} 
                                 onMouseOut={() => setOnHoldHoliday(false)}>
-                                { onHoldHoliday ? <div className='absolute z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg bottom-5'>Vacation</div> : "" }
+                                { onHoldHoliday ? <div className='relative z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg mb-10'>Vacation</div> : "" }
                             </div>
                             : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.UNPAID 
                             ? <div className='absolute w-4 h-4 bg-red-500 rounded-full flex justify-center items-center'
                                 onMouseEnter={() => setOnHoldHoliday(true)} 
                                 onMouseOut={() => setOnHoldHoliday(false)}>
-                                { onHoldHoliday ? <div className='absolute z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg bottom-5'>Unpaid</div> : "" }
+                                { onHoldHoliday ? <div className='relative z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg mb-10'>Unpaid</div> : "" }
                             </div>
                             : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.SICK_LEAVE 
                             ? <div className='absolute w-4 h-4 bg-orange-500 rounded-full flex justify-center items-center'
                                 onMouseEnter={() => setOnHoldHoliday(true)} 
                                 onMouseOut={() => setOnHoldHoliday(false)}>
-                                { onHoldHoliday ? <div className='absolute z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg bottom-5'>Sick leave</div> : "" }
+                                { onHoldHoliday ? <div className='relative z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg mb-10'>Sick leave</div> : "" }
                             </div>
                             : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && e.type === VACATION_TYPE.HOLIDAY 
                             ? <div className='absolute w-4 h-4 bg-blue-500 rounded-full flex justify-center items-center'
                                 onMouseEnter={() => setOnHoldHoliday(true)} 
                                 onMouseOut={() => setOnHoldHoliday(false)}>
-                                { onHoldHoliday ? <div className='absolute z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg bottom-5'>{e.description}</div> : "" }
+                                { onHoldHoliday ? <div className='relative z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg mb-10'>{e.description}</div> : "" }
                               </div>
                             : null
                         })
@@ -134,7 +134,7 @@ export default function UserCell({day, _user}) {
                                     <div className='absolute w-4 h-4 bg-green-500/30 rounded-full flex justify-center items-center'
                                         onMouseEnter={() => setOnHoldHoliday(true)} 
                                         onMouseOut={() => setOnHoldHoliday(false)}>
-                                        { onHoldHoliday ? <div className='absolute z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg bottom-5'>Vacation (not confirmed)</div> : "" }
+                                        { onHoldHoliday ? <div className='relative z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg mb-10'>Vacation (not confirmed)</div> : "" }
                                     </div>
                                   </div>
                                 : usD.getTime() <= D.getTime() && ueD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.UNPAID 
@@ -142,7 +142,7 @@ export default function UserCell({day, _user}) {
                                     <div className='absolute w-4 h-4 bg-red-500/30 rounded-full flex justify-center items-center'
                                         onMouseEnter={() => setOnHoldHoliday(true)} 
                                         onMouseOut={() => setOnHoldHoliday(false)}>
-                                        { onHoldHoliday ? <div className='absolute z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg bottom-5'>Unpaid (not confirmed)</div> : "" }
+                                        { onHoldHoliday ? <div className='relative z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg mb-10'>Unpaid (not confirmed)</div> : "" }
                                     </div>
                                   </div>
                                 : usD.getTime() <= D.getTime() && ueD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.SICK_LEAVE 
@@ -150,7 +150,7 @@ export default function UserCell({day, _user}) {
                                     <div className='absolute w-4 h-4 bg-orange-500/30 rounded-full flex justify-center items-center'
                                         onMouseEnter={() => setOnHoldHoliday(true)} 
                                         onMouseOut={() => setOnHoldHoliday(false)}>
-                                        { onHoldHoliday ? <div className='absolute z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg bottom-5'>Sick leave (not confirmed)</div> : "" }
+                                        { onHoldHoliday ? <div className='relative z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg mb-10'>Sick leave (not confirmed)</div> : "" }
                                     </div>
                                   </div>
                                 : <div></div>

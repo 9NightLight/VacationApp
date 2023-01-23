@@ -29,8 +29,8 @@ export default function Day({day}) {
 
     return (
     <div>
-        <div className="flex justify-center w-34px text-xs">{NameDay[new Date(day).getDay()]}</div>
-        <div onClick={() => setShowVacationWindow(!ShowVacationWindow)} className="relative w-34 h-34 flex items-center justify-center border-grey-100 border-r-2 border-b-2 bg-main-gray border-grid-gray-180-17 cursor-default">
+        <div className=" flex justify-center w-34px text-xs">{NameDay[new Date(day).getDay()]}</div>
+        <div onClick={() => setShowVacationWindow(!ShowVacationWindow)} className="w-34 h-34 flex items-center justify-center border-grey-100 border-r-2 border-b-2 bg-main-gray border-grid-gray-180-17 cursor-default">
             { GetCurrentDay() }
         </div>
         <VacationWindow show={ShowVacationWindow} setShow={setShowVacationWindow} date={day}/>

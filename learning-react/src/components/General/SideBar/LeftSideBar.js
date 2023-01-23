@@ -11,7 +11,7 @@ export default function GlobalSideBar() {
     const { tab, setTab, notificationNumber, isRoomActive} = React.useContext(CalendarContext)
 
     return (
-        <div className="h-max--48 w-12 flex">
+        <div className=" min-h-screen w-12 flex">
             <aside className="flex-col border-r-2 text-gray-300">
                 {isRoomActive ?
                     <div>

@@ -37,7 +37,7 @@ export default function UserVacateDays({user}) {
             currUser.role === ROLES.EMPLOYER ? 
                 <input type="text" className='w-6 bg-gray-200 opacity-100 text-center text-black' placeholder={user.vacationsNum} ref={vacationsNumRef} onBlur={handleVacationNumChange} readOnly></input>
                 : currUser.role === ROLES.HRMANAGER || currUser.role === ROLES.ADMIN ?
-                <input type="text" className='w-6 bg-gray-200 opacity-100 text-center text-red-500' placeholder={user.vacationsNum} ref={vacationsNumRef} onBlur={handleVacationNumChange}></input>
+                <input type="text" className='w-6 bg-gray-200 opacity-100 text-center text-black' placeholder={user.vacationsNum} ref={vacationsNumRef} onBlur={handleVacationNumChange}></input>
                 : <div>Err</div>
             }
         </div>
