@@ -3,11 +3,12 @@ import dayjs from "dayjs";
 
 export function getMonth(year = dayjs().year(), month) {
   month = Math.floor(month);
-  const firstDayOfTheMonth = dayjs(new Date(year, month, 1)).day();
-  let currentMonthCount = 0 - firstDayOfTheMonth;
+  // const firstDayOfTheMonth = dayjs(new Date(year, month, 1)).day();
+  let currentMonthCount = new Date().getDate() - 1;
+
   // const daysMatrix = new Array(5).fill([]).map(() => {
   //   return new Array(7).fill(null).map(() => {
-  //     currentMonthCount++;
+  //     currentMonthCount++; 
   //     return dayjs(new Date(year, month, currentMonthCount));
   //   });
   // });

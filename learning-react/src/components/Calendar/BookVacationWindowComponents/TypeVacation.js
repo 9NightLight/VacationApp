@@ -11,6 +11,7 @@ export default function TypeVacation({setType}) {
                     <option value={VACATION_TYPE.VACATION}>Vacation</option>
                     <option value={VACATION_TYPE.UNPAID} >Unpayed</option>
                     <option value={VACATION_TYPE.SICK_LEAVE}>Sick leave</option>
+                    <option value={VACATION_TYPE.STUDY}>Study</option>
                 </select>
             </div>
         </React.Fragment>

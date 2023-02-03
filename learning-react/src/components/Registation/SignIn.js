@@ -109,6 +109,7 @@ export default function SignIn() {
                     vacationsNum: 10,
                     unpaidVacationDays: 0,
                     sickLeaves: 0,
+                    study: 0,
                     role: ROLES.ADMIN,
                     email: str.toLowerCase().trim(),
                     room: uuid,
@@ -119,6 +120,7 @@ export default function SignIn() {
                                                                         vacationsNum: 10,
                                                                         unpaidVacationDays: 0,
                                                                         sickLeaves: 0,
+                                                                        study: 0,
                                                                         role: ROLES.ADMIN,
                                                                         email: str.toLowerCase().trim(),
                                                                         uuid: uuid,}))

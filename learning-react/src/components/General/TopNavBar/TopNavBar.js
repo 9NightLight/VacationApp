@@ -39,7 +39,7 @@ function TopNavBar() {
     }
 
     return (
-        <div className="w-full h-12 border-b-2 text-sm sm:text-base ">
+        <div className="w-full h-12 border-b-2 text-sm sm:text-base bg-white">
             <div className="relative w-max--75 h-full left-0 sm:left-12 flex justify-between items-center ">
                     <div className="min-w-fit">
                         Hello, <div className="font-bold inline-block">{currUser.firstName}!</div>

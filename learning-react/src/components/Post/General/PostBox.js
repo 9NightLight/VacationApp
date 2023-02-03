@@ -39,6 +39,7 @@ export default function NotificationsTab({tab}) {
               vacationsNum: 10,
               unpaidVacationDays: 0,
               sickLeaves: 0,
+              study: 0,
               role: ROLES.ADMIN,
               email: currUser.email,
               room: uuid,
@@ -49,6 +50,7 @@ export default function NotificationsTab({tab}) {
                                                                     vacationsNum: 10,
                                                                     unpaidVacationDays: 0,
                                                                     sickLeaves: 0,
+                                                                    study: 0,
                                                                     role: ROLES.ADMIN,
                                                                     email: currUser.email,
                                                                     uuid: uuid,})

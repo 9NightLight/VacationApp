@@ -35,6 +35,7 @@ export default function ConfirmFireMemberWindow({show, setShow, user}) {
             vacationsNum: 10,
             unpaidVacationDays: 0,
             sickLeaves: 0,
+            study: 0,
             role: ROLES.ADMIN,
             email: user.email,
             room: uuid,
@@ -45,6 +46,7 @@ export default function ConfirmFireMemberWindow({show, setShow, user}) {
                                                                 vacationsNum: 10,
                                                                 unpaidVacationDays: 0,
                                                                 sickLeaves: 0,
+                                                                study: 0,
                                                                 role: ROLES.ADMIN,
                                                                 email: user.email,
                                                                 uuid: uuid,})

@@ -11,6 +11,10 @@ const SICK_LEAVES_STATS = {
     CONTAINER: 'w-20 h-20 border-8 border-orange-apple rounded-full flex justify-center items-center'
 }
 
+const STUDY_STATS = {
+    CONTAINER: 'w-20 h-20 border-8 border-purple-700 rounded-full flex justify-center items-center'
+}
+
 
 
 export default function UserStats({user, show}) {
@@ -69,6 +73,12 @@ export default function UserStats({user, show}) {
                             <div className='font-bold'>Sick</div>
                             <div className={SICK_LEAVES_STATS.CONTAINER}>
                                 <div>{ user ? user.sickLeaves : ""}</div>
+                            </div>
+                        </div>
+                        <div className='h-5/6 flex flex-col justify-around items-center'>
+                            <div className='font-bold'>Study</div>
+                            <div className={STUDY_STATS.CONTAINER}>
+                                <div>{ user.study ? user.study : 0}</div>
                             </div>
                         </div>
                     </div>

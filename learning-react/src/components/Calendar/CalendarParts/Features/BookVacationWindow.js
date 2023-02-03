@@ -16,6 +16,7 @@ export const VACATION_TYPE = {
     UNPAID: "Unpayed",
     VACATION: "Vacation",
     SICK_LEAVE: "Sick leave",
+    STUDY: "Study",
     HOLIDAY: "Holiday"
 }
 
@@ -91,13 +92,15 @@ export default function VacationWindow({show, date, setShow}) {
                         eventUID: _uid,
                     })
                     update(ref(db, `rooms/${currUser.room}/members/${currUser.uuid}/`), {   vacationsNum: type === VACATION_TYPE.VACATION ? Number(currUser.vacationsNum) - d : currUser.vacationsNum,
-                                                                                            unpaidVacationDays: type === VACATION_TYPE.UNPAID ? Number(currUser.unpaidVacationDays) + d : currUser.unpaidVacationDays,
-                                                                                            sickLeaves: type === VACATION_TYPE.SICK_LEAVE ? Number(currUser.sickLeaves) + d : currUser.sickLeaves,
+                                                                                            unpaidVacationDays: type === VACATION_TYPE.UNPAID ? Number(currUser.unpaidVacationDays ? currUser.unpaidVacationDays : 0) + d : currUser.unpaidVacationDays,
+                                                                                            sickLeaves: type === VACATION_TYPE.SICK_LEAVE ? Number(currUser.sickLeaves ? currUser.sickLeaves : 0) + d : currUser.sickLeaves,
+                                                                                            study: type === VACATION_TYPE.STUDY ? Number(currUser.study ? currUser.study : 0) + d : currUser.study,
                                                                                         }) 
                     .then(
                         update(ref(db, `users/${currUser.uuid}/`), {    vacationsNum: type === VACATION_TYPE.VACATION ? Number(currUser.vacationsNum) - d : currUser.vacationsNum,
-                                                                        unpaidVacationDays: type === VACATION_TYPE.UNPAID ? Number(currUser.unpaidVacationDays) + d : currUser.unpaidVacationDays,
-                                                                        sickLeaves: type === VACATION_TYPE.SICK_LEAVE ? Number(currUser.sickLeaves) + d : currUser.sickLeaves,
+                                                                        unpaidVacationDays: type === VACATION_TYPE.UNPAID ? Number(currUser.unpaidVacationDays ? currUser.unpaidVacationDays : 0) + d : currUser.unpaidVacationDays,
+                                                                        sickLeaves: type === VACATION_TYPE.SICK_LEAVE ? Number(currUser.sickLeaves ? currUser.sickLeaves : 0) + d : currUser.sickLeaves,
+                                                                        study: type === VACATION_TYPE.STUDY ? Number(currUser.study ? currUser.study : 0) + d : currUser.study,
                                                                     }) 
                         .then(
                             roomUsers.map(u => {
@@ -120,7 +123,7 @@ export default function VacationWindow({show, date, setShow}) {
         setShowVacationWindow(false)
     }
     
-    React.useEffect(()=> {
+    React.useEffect(() => {
         countDelta()
     }, [Dates])
 
@@ -136,7 +139,7 @@ export default function VacationWindow({show, date, setShow}) {
     return (
         <React.Fragment>
             <TransitionComponent content={<div className="z-10 absolute left-0 top-0 w-full h-full flex justify-center items-center">
-                <div className="z-20 w-96 h-96 bg-white flex flex-col justify-start rounded-xl shadow-xl">
+                <div className="z-20 w-96 h-120 bg-white flex flex-col justify-start rounded-xl shadow-xl">
                     <form onSubmit={onSubmit}>
                         <div className="w-full h-20 flex justify-center items-start">
                             <Header delta={deltaDates} type={type}/>
@@ -144,9 +147,9 @@ export default function VacationWindow({show, date, setShow}) {
                         <div className="w-full h-32 flex justify-center items-center">
                             <TypeVacation setType={SetType}/>
                         </div>
-                        {/* <div className="w-full h-20 flex justify-center items-center">
+                        <div className="w-full h-20 flex justify-center items-center">
                             <VacationDescription setDescription={SetDescription}/>
-                        </div> */}
+                        </div>
                         <div className="static w-full h-20 p-4 flex flex-col justify-center items-center">
                             <div className="w-full h-10"><CalendarMini clickedDate={date} setDates={SetDates}/></div>
                             <div className="font-bold">

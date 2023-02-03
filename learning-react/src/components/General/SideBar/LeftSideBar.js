@@ -12,7 +12,7 @@ export default function GlobalSideBar() {
 
     return (
         <div className=" min-h-screen w-12 flex">
-            <aside className="flex-col border-r-2 text-gray-300">
+            <aside className="flex-col border-r-2 text-gray-300 bg-white">
                 {isRoomActive ?
                     <div>
                         <FontAwesomeIcon onClick={()=>setTab(0)} className={tab === 0 ? "w-8 h-12 mt-4 border-r-2 border-green-apple pr-2 pl-3 text-main-gray" : "w-8 h-12 mt-4 pr-2 pl-3 hover:text-main-gray"} icon={faCalendarDays} />

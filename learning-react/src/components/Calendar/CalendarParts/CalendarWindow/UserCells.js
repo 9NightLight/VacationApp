@@ -111,12 +111,18 @@ export default function UserCell({day, _user}) {
                                 onMouseOut={() => setOnHoldHoliday(false)}>
                                 { onHoldHoliday ? <div className='relative z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg mb-10'>Sick leave</div> : "" }
                             </div>
+                            : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.STUDY 
+                            ? <div className='absolute w-4 h-4 bg-purple-700 rounded-full flex justify-center items-center'
+                                onMouseEnter={() => setOnHoldHoliday(true)} 
+                                onMouseOut={() => setOnHoldHoliday(false)}>
+                                { onHoldHoliday ? <div className='relative z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg mb-10'>Study</div> : "" }
+                            </div>
                             : sD.getTime() <= D.getTime() && eD.getTime() >= D.getTime() && e.type === VACATION_TYPE.HOLIDAY 
                             ? <div className='absolute w-4 h-4 bg-blue-500 rounded-full flex justify-center items-center'
                                 onMouseEnter={() => setOnHoldHoliday(true)} 
                                 onMouseOut={() => setOnHoldHoliday(false)}>
                                 { onHoldHoliday ? <div className='relative z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg mb-10'>{e.description}</div> : "" }
-                              </div>
+                            </div>
                             : null
                         })
                         }
@@ -144,7 +150,7 @@ export default function UserCell({day, _user}) {
                                         onMouseOut={() => setOnHoldHoliday(false)}>
                                         { onHoldHoliday ? <div className='relative z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg mb-10'>Unpaid (not confirmed)</div> : "" }
                                     </div>
-                                  </div>
+                                 </div>
                                 : usD.getTime() <= D.getTime() && ueD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.SICK_LEAVE 
                                 ? <div className='absolute w-full h-full bg-orange-200/50 flex justify-center items-center'>
                                     <div className='absolute w-4 h-4 bg-orange-500/30 rounded-full flex justify-center items-center'
@@ -153,6 +159,14 @@ export default function UserCell({day, _user}) {
                                         { onHoldHoliday ? <div className='relative z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg mb-10'>Sick leave (not confirmed)</div> : "" }
                                     </div>
                                   </div>
+                                : usD.getTime() <= D.getTime() && ueD.getTime() >= D.getTime() && roomUsers[_user].uuid === e.uuid && e.type === VACATION_TYPE.STUDY 
+                                ? <div className='absolute w-full h-full bg-indigo-300/50 flex justify-center items-center'>
+                                    <div className='absolute w-4 h-4 bg-indigo-700/50 rounded-full flex justify-center items-center'
+                                        onMouseEnter={() => setOnHoldHoliday(true)} 
+                                        onMouseOut={() => setOnHoldHoliday(false)}>
+                                        { onHoldHoliday ? <div className='relative z-10 bg-black text-white pr-1 pl-1 w-fit whitespace-nowrap h-6 rounded-lg mb-10'>Study (not confirmed)</div> : "" }
+                                    </div>
+                                </div>
                                 : <div></div>
                             })
                             

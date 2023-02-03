@@ -174,6 +174,7 @@ export default function Home() {
             vacationsNum: 10,
             unpaidVacationDays: 0,
             sickLeaves: 0,
+            stydy: 0,
             role: ROLES.EMPLOYER,
             email: "blabla",
             room: currUser.room,
@@ -184,6 +185,7 @@ export default function Home() {
                                                                 vacationsNum: 10,
                                                                 unpaidVacationDays: 0,
                                                                 sickLeaves: 0,
+                                                                stydy: 0,
                                                                 role: ROLES.EMPLOYER,
                                                                 email: "email",
                                                                 uuid: uuid,}))
@@ -195,7 +197,7 @@ export default function Home() {
     }
 
     return (
-        <React.Fragment>
+        <div>
             <CalendarContext.Provider value={{  
                                                 tab, setTab, 
                                                 year, setYear,
@@ -218,7 +220,7 @@ export default function Home() {
                                                 defaultNumVacations, setDefaultNumVacations,
                                                 }}>
                     <TopNavBar />
-                    <div className="h-max--48 flex flex-1">
+                    <div className="min-h-screen flex flex-1 bg-gray-100">
                         <GlobalSideBar />
                         { tab  === 0 ?
                             isRoomActive === true ? 
@@ -291,6 +293,6 @@ export default function Home() {
                     </div>
                     {downloaded ? "" : <LoadingScreen/>}
             </CalendarContext.Provider>
-        </React.Fragment>
+        </div>
     )
 }

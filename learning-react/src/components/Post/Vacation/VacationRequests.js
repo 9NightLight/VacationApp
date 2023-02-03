@@ -145,12 +145,14 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
                                                                                             vacationsNum:       vacation.type === VACATION_TYPE.VACATION ? vacationOwner.vacationsNum + delta.delta : vacationOwner.vacationsNum,
                                                                                             unpaidVacationDays: vacation.type === VACATION_TYPE.UNPAID ? vacationOwner.unpaidVacationDays - delta.delta : vacationOwner.unpaidVacationDays,
                                                                                             sickLeaves:         vacation.type === VACATION_TYPE.SICK_LEAVE ? vacationOwner.sickLeaves - delta.delta : vacationOwner.sickLeaves,
+                                                                                            study:              vacation.type === VACATION_TYPE.STUDY ? vacationOwner.study - delta.delta : vacationOwner.study,
                                                                                         }) 
                 .then(
                     update(ref(db, `users/${vacationOwner.uuid}/`), {
                                                                         vacationsNum:       vacation.type === VACATION_TYPE.VACATION ? vacationOwner.vacationsNum + delta.delta : vacationOwner.vacationsNum,
                                                                         unpaidVacationDays: vacation.type === VACATION_TYPE.UNPAID ? vacationOwner.unpaidVacationDays - delta.delta : vacationOwner.unpaidVacationDays,
                                                                         sickLeaves:         vacation.type === VACATION_TYPE.SICK_LEAVE ? vacationOwner.sickLeaves - delta.delta : vacationOwner.sickLeaves,
+                                                                        study:              vacation.type === VACATION_TYPE.STUDY ? vacationOwner.study - delta.delta : vacationOwner.study,
                                                                     }) 
                     .then(
                         remove(ref(db, `rooms/${currUser.room}/events/pending/${vacation.eventUID}`))
@@ -184,7 +186,7 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
     }
 
     return (
-        <div className='bg-gray-200 mb-1 rounded-md sm:w-120 w-80 screen-840:text-base text-xs'>
+        <div className='bg-white mb-1 rounded-md sm:w-120 w-80 screen-840:text-base text-xs'>
             <div className='sm:w-120 w-80 h-8 flex justify-between items-center mb-1'>
                 <div className='flex justify-between w-full pr-1'>
                     <div className='font-bold'>{vacationOwnerName}</div>
@@ -226,12 +228,17 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
             </div>
             <div>
                 {
-                    vacation.startDate === vacation.endDate ? <div className=''>{`\t${getFormatedDate(vacation.startDate)}`}</div> : 
-                    <div className='flex'>
+                    vacation.startDate === vacation.endDate ? <div className='semi-bold'>{`\t${getFormatedDate(vacation.startDate)}`}</div> : 
+                    <div className='flex semi-bold'>
                         <div className=''>{`\t${getFormatedDate(vacation.startDate)}`}</div>
                         <div className='mr-2 ml-2'>to</div>
                         <div className=''>{`${getFormatedDate(vacation.endDate)}`}</div>
                     </div>
+                }
+                { vacation.description ? 
+                    <div className=' italic text-sm'>P.S.: "{vacation.description}"</div>
+                    :
+                    ""
                 }
             </div>
         </div>
