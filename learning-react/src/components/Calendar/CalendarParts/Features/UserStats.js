@@ -53,7 +53,7 @@ export default function UserStats({user, show}) {
             {
                 show ? 
                 <div className="absolute left-0 top-0 w-full h-full flex justify-end screen-840:justify-center items-center">
-                    <div className='relative w-40 h-96 screen-840:w-96 screen-840:h-40 bg-white shadow-2xl rounded-lg flex flex-col screen-840:flex-row justify-around items-center'>
+                    <div className='relative w-40 h-120 screen-840:w-120 screen-840:h-40 bg-white shadow-2xl rounded-lg flex flex-col screen-840:flex-row justify-around items-center'>
                         <div className='h-5/6 flex flex-col justify-around items-center'>
                             <div className='font-bold'>Vacation</div>
                             <div className={TAIL_STYLES().CONTAINER}>
