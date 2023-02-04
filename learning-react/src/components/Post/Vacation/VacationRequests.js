@@ -191,23 +191,27 @@ export default function VacationsAsk({vacation, setVacations, vacations}) {
                 <div className='flex justify-between w-full pr-1'>
                     <div className='font-bold'>{vacationOwnerName}</div>
                         {
-                            <div className='font-bold flex justify-center items-center'>
-                                <div>
+                            <div className='w-40 font-bold flex justify-between items-center'>
+                                <div className='flex-1'>
                                     {vacation.type === VACATION_TYPE.VACATION ? "Vacation" 
                                     :
                                     vacation.type === VACATION_TYPE.UNPAID ? "Unpaid"
                                     : vacation.type === VACATION_TYPE.SICK_LEAVE ? "Sick"
+                                    : vacation.type === VACATION_TYPE.STUDY ? "Study"
                                     : ""}
                                 </div>
-                                <div className={
-                                    vacation.type === VACATION_TYPE.VACATION ? "ml-1 mr-1 w-4 h-4 bg-green-500 rounded-full" 
-                                    :
-                                    vacation.type === VACATION_TYPE.UNPAID ? "ml-1 mr-1 w-4 h-4 bg-red-500 rounded-full"
-                                    : vacation.type === VACATION_TYPE.SICK_LEAVE ? "ml-1 mr-1 w-4 h-4 bg-orange-500 rounded-full"
-                                    : ""
-                                }> 
+                                <div className=''>
+                                    <div className={
+                                        vacation.type === VACATION_TYPE.VACATION ? "ml-1 mr-1 w-4 h-4 bg-green-500 rounded-full" 
+                                        :
+                                        vacation.type === VACATION_TYPE.UNPAID ? "ml-1 mr-1 w-4 h-4 bg-red-500 rounded-full"
+                                        : vacation.type === VACATION_TYPE.SICK_LEAVE ? "ml-1 mr-1 w-4 h-4 bg-orange-500 rounded-full"
+                                        : vacation.type === VACATION_TYPE.STUDY ? "ml-1 mr-1 w-4 h-4 bg-purple-700 rounded-full"
+                                        : ""
+                                    }> 
+                                    </div>
                                 </div>
-                                <div>
+                                <div className='flex-1'>
                                     {delta.delta} {delta.delta % 10 === 1 && delta.delta !== 11 ? "day" : "days"} 
                                 </div>
                             </div>

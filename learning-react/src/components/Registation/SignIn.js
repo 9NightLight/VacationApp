@@ -45,7 +45,7 @@ export default function SignIn() {
             });
         } else {
             sendSignInLinkToEmail(auth, email, {
-                url: DEV_PATH.TEST,
+                url: DEV_PATH.WEB,
                 handleCodeInApp: true,
             })
             .then(() => {
