@@ -86,6 +86,9 @@ module.exports = {
           "screen-1025": "64.0625em",
           
         },
+        fontFamily: {
+          "helventica": ['Helvetica', 'Arial', 'sans-serif']
+        },
       },
     },
     plugins: [],

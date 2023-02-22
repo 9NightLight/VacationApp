@@ -5,7 +5,7 @@ import { onValue, ref, update } from 'firebase/database';
 import { ROLES } from '../Registation/SignIn';
 import { iso_to_gcal_description } from '../../utils/Calendar/GoogleCalendar';
 
-export default function SettingsTab() {
+export default function Settings() {
     const {darkTheme, setDarkTheme, currUser, defaultNumVacations, setDefaultNumVacations, setCountryAttribute, countryAttribute} = React.useContext(CalendarContext)
     const vacationsNumRef = React.useRef()
 

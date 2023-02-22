@@ -4,6 +4,7 @@ import { auth, db } from '../../firebase/firebase.js';
 import { onValue, ref, set } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
 import { iso_to_gcal_description } from '../../utils/Calendar/GoogleCalendar.js';
+import IconMail from "../../images/Icons/IconMail.svg"
 
 export const ROLES = {
     EMPLOYER: "Employee",
@@ -30,8 +31,17 @@ export default function SignIn() {
     );
 
     const updateEmail = (e) => {
-        setEmail(e.target.value);
+        setEmail(e.target.value)
+        const a = showInvalidData ? setShowInvalidData(false) : ""
     };
+
+    const sendVerificationEmail = async () => {
+        return sendSignInLinkToEmail(auth, email, {
+            url: DEV_PATH.TEST,
+            handleCodeInApp: true,
+        })
+        .then(res => res)
+    }
 
     const trySignIn = async (e) => {
         e.preventDefault();
@@ -44,10 +54,7 @@ export default function SignIn() {
             }
             });
         } else {
-            sendSignInLinkToEmail(auth, email, {
-                url: DEV_PATH.WEB,
-                handleCodeInApp: true,
-            })
+            sendVerificationEmail()
             .then(() => {
                 setShowSend(true)
                 // Save the users email to verify it after they access their email
@@ -140,66 +147,74 @@ export default function SignIn() {
     return (
         <React.Fragment>
             {
-            <div className='absolute left-0 top-0 w-full h-full bg-zinc-300 bg-cover z-10 flex justify-end items-center'>
-                <div className="z-20 w-120 h-5/6 bg-white flex flex-col rounded-xl shadow-xl mr-10">
+            <div className='absolute left-0 top-0 w-full h-full bg-white bg-cover z-10 flex flex-col justify-start items-center '>
+                <div className='w-72 h-full'>
                 {isSignInWithEmailLink(auth, window.location.href) && !!email ? 
-                    <React.Fragment>
-                        <div className="w-full h-20 flex items-center justify-start ml-2 text-2xl font-bold">
-                            Last step
-                        </div>
-                        <div className='relative w-5/6 h-fit ml-10'>
+                    <div className='pl-px pt-4'>
+                        <div className='h-8 text-black font-bold'>Vacate me</div>
+                        <div className="w-full h-14 flex items-center justify-start text-3xl font-bold text-gray-700">Create an account</div>
+                        <div className='relative w-full h-full mt-12'>
                             <form onSubmit={completeSignIn} autoComplete="on">
-                                <div className="w-full h-32 flex justify-around flex-col">
-                                    <div>
-                                        <label className='font-bold'>First name</label>
-                                        <input type="text" autoComplete='given-name' name='firstname' ref={FirstNameRef} required placeholder="Daniel Grey" className='absolute right-0 border-2'></input>       
-                                    </div>
-                                    <div>
-                                        <label className='font-bold'>Last name</label>
-                                        <input type="text" autoComplete='family-name' name='firstname' ref={LastNameRef} required placeholder="Daniel Grey" className='absolute right-0 border-2'></input>                                         
-                                    </div>
-                                    <div className='flex justify-between'>
-                                        <div className='font-bold'>Coutry: </div>
-                                        <select onChange={(event) => handleCountryChange(event)} defaultValue={country} className="w-3/5 l-4 h-5 flex justify-center text-black items-center bg-gray-200">
-                                            {
-                                                Object.values(iso_to_gcal_description).map(val => {return <option value={val.attr}>{val.country}</option>})
-                                            }
-                                        </select>
-                                        </div>
-                                    </div>
-                                    {showInvalidData ? <div className='text-red-400 text-center text-sm'>Oops... Searching the instruments!</div> : ""}
-                                <div className="w-full h-20 flex flex-col justify-end items-center">
-                                    <button type={allow ? 'submit' : 'button' } className="w-24 h-10 bg-green-apple rounded-xl">Sign In/Up</button>
+                                <div className="absolute w-full h-full flex flex-col justify-start items-start mb-2">
+                                    <label className='font-helventica text-gray-500 text-xs'>First name</label>
+                                    <input type="text" autoComplete='given-name' name='firstname' ref={FirstNameRef} required className={!showInvalidData ? 'w-full  h-7 box-content border-b bg-white text-black focus:border-b-2 focus:border-blue-600 focus:outline-none' 
+                                                                                                                                        : 'w-full box-border border-b border-red-600 bg-white text-black focus:outline-none'}></input>
+                                    <label className='font-helventica text-gray-500 text-xs mt-7'>Last name</label>
+                                    <input type="text" autoComplete='given-name' name='firstname' ref={LastNameRef} required className={!showInvalidData ? 'w-full h-7 box-content border-b bg-white text-black focus:border-b-2 focus:border-blue-600 focus:outline-none' 
+                                                                                                                                        : 'w-full box-border border-b border-red-600 bg-white text-black focus:outline-none'}></input>
                                     
+                                    <label className='font-helventica text-gray-500 text-xs mt-7'>Coutry</label>
+                                    <select onChange={(event) => handleCountryChange(event)} defaultValue={country} className="w-full h-7 border-b outline-none bg-white text-black flex justify-center  items-center">
+                                        {
+                                            Object.values(iso_to_gcal_description).map(val => {return <option value={val.attr}>{val.country}</option>})
+                                        }
+                                    </select>
+                                    <div className=" w-full mt-9 flex flex-col justify-center items-end">
+                                        <button type='submit' className="w-20 h-8 bg-blue-600 text-white font-helventica text-xs font-bold rounded-3xl">Done</button>
+                                    </div>
                                 </div>
                             </form>
                         </div>
-                    </React.Fragment>
+                    </div>
                     :
-                    <React.Fragment>
-                        <div className="w-full h-20 flex items-center justify-start ml-2 text-2xl font-bold">
-                            Create an account
-                        </div>
-                        <div className='relative w-5/6 h-fit ml-10'>
-                            <form onSubmit={trySignIn} autoComplete="on">
-                                <div className="w-full h-20 flex justify-start items-center">
-                                    <label className='font-bold'>Email</label>
-                                    <input type="email" autoComplete='email' name='email' value={email} onChange={updateEmail} placeholder="example.example.com" className='absolute right-0 border-2'></input>
+                    <div className='pl-px pt-4'>
+                        <div className='h-8 text-black font-bold'>Vacate me</div>
+                        {!showSend ?  
+                            <React.Fragment>
+                                <div className="w-full h-14 flex items-center justify-start text-4xl font-bold text-gray-700">Sign in</div>
+                                <div className='relative w-full h-fit mt-12'>
+                                    <form onSubmit={trySignIn} autoComplete="on">
+                                        <div className="absolute w-full flex flex-col justify-start items-start mb-2">
+                                            <label className=' font-helventica text-gray-500 text-xs'>Email address</label>
+                                            <input type="email" autoComplete='email' name='email' value={email} onChange={updateEmail} className={!showInvalidData ? 'w-full h-fit bg-white text-black box-content border-b focus:border-b-2 focus:border-blue-600 focus:outline-none' 
+                                                                                                                                                : 'w-full bg-white text-black box-border border-b border-red-600 focus:outline-none'}></input>
+                                            <div hidden={!showInvalidData} className='text-red-600 text-start text-sm'>Please enter an email address.</div> 
+                                        </div>
+                                        
+                                        <div className="w-full h-56 flex flex-col justify-center items-end">
+                                            <button type='submit' className="w-20 h-8 bg-blue-600 text-white font-helventica text-xs font-bold rounded-3xl">Continue</button>
+                                        </div>
+                                    </form>
                                 </div>
-                                {showSend ? <div className='text-green-500 text-sm text-center'>Confirmation sended on email</div> : ""}
-                                {showInvalidData ? <div className='text-red-400 text-center text-sm'>Please enter your email in format example@example.com</div> : ""}
-                                <div className="w-full h-40 flex flex-col justify-center items-center">
-                                    <button type='submit' className="w-24 h-10 bg-green-apple rounded-xl">Sign In/Up</button>
-                                    
-                                    
-                                </div>
-                            </form>
-                        </div>
-                    </React.Fragment>
-                    }   
+                            </React.Fragment>
+                        : showSend ?
+                            <React.Fragment>
+                                <div className="w-full h-14 flex items-center justify-start text-3xl font-bold text-gray-700">Verify your email</div>
+                                <div className='relative w-full h-fit mt-12'>
+                                    <div className="absolute w-full h-40 flex flex-col justify-between items-center mb-2">
+                                        <img src={IconMail} className="w-18" />
+                                        <div className='text-gray-700 text-sm'>Verification email sent to your email.</div> 
+                                        <button onClick={() => sendVerificationEmail()} className="w-28 h-8 bg-blue-600 text-white font-helventica text-xs font-bold rounded-3xl">Resend email</button>
+                                    </div>
+                                </div> 
+                            </React.Fragment>
+                            : <div>Oops... Try to reload the page.</div>
+                        }
+                    </div>
+                    }
                 </div>
             </div>
         }
         </React.Fragment>
-    )
-}
+  );
+};

@@ -10,7 +10,7 @@ import { auth, db, firestore, functions } from "./firebase/firebase";
 import UsersSettings from "./components/Members/Members";
 import NotificationsTab from "./components/Post/General/PostBox";
 import UserSettings from "./components/Profile/User";
-import SettingsTab from "./components/Settings/Settings";
+import Settings from "./components/Settings/Settings";
 import dayjs from "dayjs";
 import LoadingScreen from "./components/Loadings/LoadingScreen";
 
@@ -287,7 +287,7 @@ export default function Home() {
                         : tab === 3 ?
                             <NotificationsTab tab={tab}/>
                         : tab === 4 ?
-                            <SettingsTab />
+                            <Settings />
                         : ""
                         }
                     </div>
