@@ -235,7 +235,7 @@ export default function Home() {
                                 <div className="flex flex-1 flex-col">
                                     <CalendarHeader month={monthIndex}/>
                                     <Month month={currentCalendar} />
-                                    <button className="w-40 h-12 bg-purple-700 ml-40 mt-4 text-white rounded-md" onClick={addFakeUsers}>add user</button>
+                                    {/* <button className="w-40 h-12 bg-purple-700 ml-40 mt-4 text-white rounded-md" onClick={addFakeUsers}>add user</button> */}
                                     {/* <Elements stripe={stripeTestPromise}>
                                         { 
                                         !prem ? 
