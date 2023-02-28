@@ -10,7 +10,7 @@ import RefreshWindow from '../../utils/Members/RefreshWindow';
 import ConfirmFireMemberWindow from '../../utils/Members/ConfirmFireMemberWindow';
 import UserVacateDays from '../../utils/Members/MemberVacationDaysAndEdit';
 
-export default function UsersSettings() {
+export default function Members() {
     const { roomUsers, currUser, setDefaultNumVacations } = React.useContext(CalendarContext)
     const [showRefreshConfirm, SetShowRefreshConfirm] = React.useState(false)
     const [showFireConfirmWindow, setShowFireConfirmWindow] = React.useState(false)

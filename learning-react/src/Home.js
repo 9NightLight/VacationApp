@@ -1,15 +1,15 @@
 // @ts-check
 import React, { useState, useEffect } from "react";
 import TopNavBar from "./components/General/TopNavBar/TopNavBar";
-import GlobalSideBar from "./components/General/SideBar/LeftSideBar";
+import Menu from "./components/General/Menu/Menu";
 import { getMonth } from "./utils/Calendar/utils";
 import CalendarHeader from "./components/Calendar/CalendarParts/CalendarHeader/CalendarHeader";
 import Month from "./components/Calendar/CalendarParts/CalendarWindow/Calendar";
 import { useNavigate } from "react-router-dom";
 import { auth, db, firestore, functions } from "./firebase/firebase";
-import UsersSettings from "./components/Members/Members";
-import NotificationsTab from "./components/Post/General/PostBox";
-import UserSettings from "./components/Profile/User";
+import Members from "./components/Members/Members";
+import Post from "./components/Post/General/Post";
+import Profile from "./components/Profile/Profile";
 import Settings from "./components/Settings/Settings";
 import dayjs from "dayjs";
 import LoadingScreen from "./components/Loadings/LoadingScreen";
@@ -33,11 +33,19 @@ const stripeTestPromise = loadStripe(PUBLIC_KEY);
 
 export const CalendarContext = React.createContext();
 
+export const TABS = {
+    CALENDAR: "CALENDAR",
+    MEMBERS: "MEMBERS",
+    PROFILE: "PROFILE",
+    POST: "POST",
+    SETTINGS: "SETTINGS"
+}
+
 export default function Home() {
     const [year, setYear] = useState(dayjs().year());
     const [monthIndex, setMonthIndex] = useState(new Date().getMonth());
     const [currentCalendar, setCurrentCalendar] = useState(getMonth(year, new Date().getMonth()))
-    const [tab, setTab] = useState(0);
+    const [tab, setTab] = useState(TABS.CALENDAR);
     const [users, setUsers] = React.useState(new Array());
     const [currUser, setCurrUser] = React.useState(new Array());
     const [currUserPhoto, setCurrUserPhoto] = React.useState(null);
@@ -219,15 +227,15 @@ export default function Home() {
                                                 notificationNumber, setNotificationNumber,
                                                 defaultNumVacations, setDefaultNumVacations,
                                                 }}>
-                    <TopNavBar />
+                    {/* <TopNavBar /> */}
                     <div className="min-h-screen flex flex-1 bg-gray-100">
-                        <GlobalSideBar />
-                        { tab  === 0 ?
-                            isRoomActive === true ? 
+                        <Menu />
+                        { tab  === TABS.CALENDAR ?
+                            // isRoomActive === true ? 
                                 <div className="flex flex-1 flex-col">
                                     <CalendarHeader month={monthIndex}/>
                                     <Month month={currentCalendar} />
-                                    {/* <button className="w-40 h-12 bg-purple-700 ml-40 mt-20 text-white rounded-md" onClick={addFakeUsers}>add user</button> */}
+                                    <button className="w-40 h-12 bg-purple-700 ml-40 mt-4 text-white rounded-md" onClick={addFakeUsers}>add user</button>
                                     {/* <Elements stripe={stripeTestPromise}>
                                         { 
                                         !prem ? 
@@ -267,26 +275,26 @@ export default function Home() {
                                         }
                                     </Elements> */}
                                 </div>
-                            : isRoomActive === false ? 
-                                <div className="w-full h-full bg-gray-200 flex justify-center items-center">
-                                    <div className="w-120 h-96 rounded-md p-2 bg-white">
-                                        <div className="font-semibold text-center text-3xl mb-10">The leader of this group leaved</div>
-                                        <div className="font-semibold text-lg mb-6">You can go into Notifications tab to:</div>
-                                        <div className="font-semibold text-lg">• accept someone invite</div>
-                                        <div className="font-semibold text-lg">• leave to your own group</div>
-                                        <div className="w-full h-2/5 flex justify-center items-center">
-                                            <FontAwesomeIcon onClick={()=>setTab(3)} className={"w-15 h-20 pr-2 pl-3 hover:text-main-gray"} icon={faEnvelope} />
-                                        </div>
-                                    </div>
-                                </div>
-                            : ""
-                        : tab === 1 ?
-                            <UsersSettings />
-                        : tab === 2 ?
-                            <UserSettings />
-                        : tab === 3 ?
-                            <NotificationsTab tab={tab}/>
-                        : tab === 4 ?
+                            // : isRoomActive === false ? 
+                            //     <div className="w-full h-full bg-gray-200 flex justify-center items-center">
+                            //         <div className="w-120 h-96 rounded-md p-2 bg-white">
+                            //             <div className="font-semibold text-center text-3xl mb-10">The leader of this group leaved</div>
+                            //             <div className="font-semibold text-lg mb-6">You can go into Notifications tab to:</div>
+                            //             <div className="font-semibold text-lg">• accept someone invite</div>
+                            //             <div className="font-semibold text-lg">• leave to your own group</div>
+                            //             <div className="w-full h-2/5 flex justify-center items-center">
+                            //                 <FontAwesomeIcon onClick={()=>setTab(TABS.)} className={"w-15 h-20 pr-2 pl-3 hover:text-main-gray"} icon={faEnvelope} />
+                            //             </div>
+                            //         </div>
+                            //     </div>
+                            // : ""
+                        : tab === TABS.MEMBERS ?
+                            <Members />
+                        : tab === TABS.PROFILE ?
+                            <Profile />
+                        : tab === TABS.POST ?
+                            <Post />
+                        : tab === TABS.SETTINGS ?
                             <Settings />
                         : ""
                         }

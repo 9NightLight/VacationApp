@@ -2,7 +2,7 @@ import React from 'react';
 import { onValue, ref } from 'firebase/database';
 import { auth, db } from '../../../../firebase/firebase.js';
 import { CalendarContext } from '../../../../Home.js';
-import VacationWindow, { VACATION_TYPE } from '../Features/BookVacationWindow.js';
+import BookVacationWindow, { VACATION_TYPE } from '../Features/BookVacationWindow.js';
 
 
 const axios = require("axios").default;
@@ -82,7 +82,7 @@ export default function UserCell({day, _user}) {
     return (
         <div>
             {new Date(day).getDay() !== 6 && new Date(day).getDay() !== 0 ? 
-                <div className="relative bg-blue-200 flex justify-center items-center w-34px h-6 border-gray-100 border-b border-r"
+                <div style={{width: "30px", height: "30px"}} className="relative bg-blue-200 flex justify-center items-center border-gray-100 border"
                     onClick={() => setShowVacationWindow(true)}>
                         {
                         savedEvents.map(e => {
@@ -173,10 +173,12 @@ export default function UserCell({day, _user}) {
                         }
                 </div>
             : 
-                <div className="relative bg-red-200 flex justify-center items-center w-34px h-6 border-gray-100 border-b border-r"
-                onClick={() => setShowVacationWindow(true)}></div>
+                <div 
+                    style={{width: "30px", height: "30px"}} 
+                    className="relative bg-red-200 flex justify-center items-center border-gray-100 border"
+                    onClick={() => setShowVacationWindow(true)} />
             }
-            <VacationWindow show={ShowVacationWindow} setShow={setShowVacationWindow} date={day}/>
+            <BookVacationWindow show={ShowVacationWindow} setShow={setShowVacationWindow} date={day}/>
         </div>
     )
 }

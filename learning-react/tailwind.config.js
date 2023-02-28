@@ -29,6 +29,8 @@ module.exports = {
           "gray-light": "#A0A0A0",
           "green-apple": "#62C554",
           "orange-apple": "#F5C150",
+          "staticIcon": "#515151",
+          "activeMail": "#C56621",
         },
         backgroundColor: {
           "main-gray": "#404040",
@@ -87,7 +89,7 @@ module.exports = {
           
         },
         fontFamily: {
-          "helventica": ['Helvetica', 'Arial', 'sans-serif']
+          "helvetica": ['Helvetica Neue', 'Arial', 'sans-serif']
         },
       },
     },

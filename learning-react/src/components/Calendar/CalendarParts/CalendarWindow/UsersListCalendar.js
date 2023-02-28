@@ -3,7 +3,7 @@ import { auth, db } from "../../../../firebase/firebase";
 import { onValue, ref, set } from 'firebase/database';
 import { CalendarContext } from '../../../../Home';
 
-export default function UsersCalendar({setOnHoldUser}) {
+export default function UsersListCalendar({setOnHoldUser}) {
     const {setUsers, currUser, setCurrUser, roomUsers, setRoomUsers, setDefaultNumVacations, setCountryAttribute, setDownloaded, setIsRoomActive} = React.useContext(CalendarContext);
 
     React.useEffect(() => {
@@ -103,7 +103,7 @@ export default function UsersCalendar({setOnHoldUser}) {
     }, [currUser])
 
     return (
-        <div className='ml-3'>
+        <div className=''>
             {
                 roomUsers.map((val, idx) => {
                     let u = val.lastName + ", " + val.firstName;
@@ -112,7 +112,7 @@ export default function UsersCalendar({setOnHoldUser}) {
                         u = u.slice(0,20);
                     }
                     return  <div>
-                                <div className='cursor-default' onMouseEnter={() => setOnHoldUser(val)} onMouseOut={() => setOnHoldUser(null)} key={idx}>{u}</div>
+                                <div style={{marginBottom: "14px"}} className='cursor-default text-xs' onMouseEnter={() => setOnHoldUser(val)} onMouseOut={() => setOnHoldUser(null)} key={idx}>{u}</div>
                             </div>
                 })
             }

@@ -1,6 +1,6 @@
 import React from "react";
 import dayjs from "dayjs";
-import { faCircleChevronLeft, faCircleChevronRight, } from "@fortawesome/free-solid-svg-icons";
+import { faChevronLeft, faChevronRight, faPlus} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import VacationWindow from "../Features/BookVacationWindow";
 import { CalendarContext } from "../../../../Home";
@@ -48,19 +48,26 @@ export default function CalendarHeader({month}) {
   )
 
   return (
-      <div className="flex items-center pt-2 pb-2 ml-2">
-        <div className="flex ml-0 sm:ml-44 justify-start">
-          <div className="text-xl font-bold w-40 flex justify-between">
-            <div>{Monthes[month]} {year}</div>
+    <div style={{backgroundImage: "linear-gradient(45deg, #00268E, #439AFF)", height: "144px"}}>
+      <div className="relative w-full h-full flex flex-col justify-between items-center pt-4 pb-12 text-white">
+        <div className="w-full flex justify-center">
+          <div className="font-bold text-2xl">Calendar</div>
+          <FontAwesomeIcon 
+            className="absolute right-4 font-bold text-2xl"
+            onClick={()=>setShowVacationWindow(true)}
+            icon={faPlus}
+          />
+        </div>
+        <div className="w-3/5 max-w-xs flex font-semibold justify-around items-center">
+          <FontAwesomeIcon onClick={handlePrevMonth} className="w-3 cursor-pointer" icon={faChevronLeft}/>
+          <div 
+            onClick={handleReset} 
+            className="text-xl font-medium">{Monthes[month]} {year}
           </div>
-          <div className="ml-4 w-40 flex justify-between">
-            <FontAwesomeIcon onClick={handlePrevMonth} className="w-8 h-8 text-orange-apple cursor-pointer" icon={faCircleChevronLeft}/>
-            <FontAwesomeIcon onClick={handleNextMonth} className="w-8 h-8 text-orange-apple cursor-pointer" icon={faCircleChevronRight}/>
-            <div onClick={handleReset} className="w-8 h-8 relative bg-green-apple text-black box-content rounded-full flex items-center justify-center cursor-pointer">{dayjs().format("D")}</div>
-            <div onClick={()=>setShowVacationWindow(true)} className="bg-blue-300 text-white w-8 h-8 flex justify-center items-center text-3xl rounded-full cursor-pointer pb-1">+</div>
-          </div>
-          <VacationWindow show={ShowVacationWindow} setShow={setShowVacationWindow} date={dayjs()}/>
+          <FontAwesomeIcon onClick={handleNextMonth} className="w-3 cursor-pointer" icon={faChevronRight}/>
         </div>
       </div>
+      <VacationWindow show={ShowVacationWindow} setShow={setShowVacationWindow} date={dayjs()}/>
+    </div>
   )
 }

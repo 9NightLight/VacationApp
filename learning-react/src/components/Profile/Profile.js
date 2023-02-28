@@ -5,7 +5,7 @@ import { faPencil, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import EditPhotoPopUp from './EditUtils/EditPhotoPopUp';
 
-export default function UserSettings() {
+export default function Profile() {
   const {currUser, currUserPhoto} = React.useContext(CalendarContext)
   const [onEdit, setOnEdit] = React.useState(false)
   const firstNameRef = React.useRef()

@@ -10,28 +10,46 @@ export default function Day({day}) {
 
     function GetLessDays() {
         return (day.month() !== monthIndex
-        ? <div className="relative w-8 h-8 justify-center items-center flex box-content text-gray-500 text-sm">{ day.format("D") }</div>
-        : <div className="relative w-8 h-8 justify-center items-center flex box-content text-white text-sm">{ day.format("D") }</div>
+        ? 
+            <div className="text-gray-400">
+                <div 
+                    className="relative justify-center items-center flex box-content text-xs font-medium">{ day.format("D") }
+                </div>
+                <div 
+                    style={{fontSize: "9px"}}>{NameDay[new Date(day).getDay()]}
+                </div>
+            </div>
+        : 
+            <div className="text-white text-xs font-medium">
+                <div 
+                    className="relative justify-center items-center flex box-content">{ day.format("D") }
+                </div>
+                <div 
+                    style={{fontSize: "9px"}}>{NameDay[new Date(day).getDay()]}
+                </div>
+            </div>
         )
     }
 
     function GetCurrentDay() { 
-        return(
-        day.format("DD-MM-YYYY") !== dayjs().format("DD-MM-YYYY")
-        ? GetLessDays()
-        : <div className="relative w-8 h-8 justify-center items-center flex box-content text-black text-sm">
-            <div className="w-6 h-6 bg-green-apple flex justify-center items-center rounded-full">
-                { day.format("D") }
-            </div>
-          </div>
-        ) 
+        return GetLessDays()
+        // return(
+        // day.format("DD-MM-YYYY") !== dayjs().format("DD-MM-YYYY")
+        // ? GetLessDays()
+        // : <div className="relative justify-center items-center flex box-content text-sm text-white">
+        //         { day.format("D") }
+        //   </div>
+        // ) 
     }
 
     return (
-    <div>
-        <div className=" flex justify-center w-34px text-xs">{NameDay[new Date(day).getDay()]}</div>
-        <div onClick={() => setShowVacationWindow(!ShowVacationWindow)} className="w-34 h-34 flex items-center justify-center border-grey-100 border-r-2 border-b-2 bg-main-gray border-grid-gray-180-17 cursor-default">
-            { GetCurrentDay() }
+    <div className="text-white text-xs">
+        {/* <div className=" flex justify-center w-34px text-xs">{NameDay[new Date(day).getDay()]}</div> */}
+        <div 
+            onClick={() => setShowVacationWindow(!ShowVacationWindow)}
+            className="w-34px h-34px flex flex-col items-center justify-center border-grey-100 border border-gray-100 cursor-default"
+            style={{backgroundImage: "linear-gradient(45deg, #39547C, #0066FF)", width: "30px", height: "30px"}}>
+            { GetLessDays() }
         </div>
         <VacationWindow show={ShowVacationWindow} setShow={setShowVacationWindow} date={day}/>
     </div>

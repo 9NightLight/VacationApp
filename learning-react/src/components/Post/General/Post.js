@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { iso_to_gcal_description } from '../../../utils/Calendar/GoogleCalendar';
 import PendingInvites from '../Pending/PendingAccounts';
 
-export default function NotificationsTab({tab}) {
+export default function Post() {
     const {currUser, invites, setInvites, vacations, setVacations, isRoomActive, countryAttribute} = React.useContext(CalendarContext)
     const [show, setShow] = React.useState(false)
     const nav = useNavigate()

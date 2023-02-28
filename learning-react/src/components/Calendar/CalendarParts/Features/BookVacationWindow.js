@@ -20,7 +20,7 @@ export const VACATION_TYPE = {
     HOLIDAY: "Holiday"
 }
 
-export default function VacationWindow({show, date, setShow}) {
+export default function BookVacationWindow({show, date, setShow}) {
     const [ShowVacationWindow, setShowVacationWindow] = React.useState(show);
     const {currUser, roomUsers, unconfirmedEvents, savedEvents} = React.useContext(CalendarContext)
     const [type, SetType] = React.useState(VACATION_TYPE.UNPAID)
@@ -166,7 +166,7 @@ export default function VacationWindow({show, date, setShow}) {
                     </div>
                     <TransitionComponent
                         content = {
-                            <div onClick={() => setShow(false)} className="z-10 bg-gray-700/50 absolute w-full h-full left-0 top-0"></div>
+                            <div onClick={() => setShow(false)} className="z-10 bg-gray-700/50 absolute min-w-full min-h-screen left-0 top-0"></div>
                         }
                     show={ShowVacationWindow}/>
                 </div>
